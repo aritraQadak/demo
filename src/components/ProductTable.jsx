@@ -1,0 +1,190 @@
+import React, { useState } from 'react';
+import { Eye, Edit3, Trash2, Award, CheckCircle2 } from 'lucide-react';
+import { useSeller } from '../context/SellerContext';
+
+export default function ProductTable({ products, onViewProduct, onEditProduct }) {
+  const { deleteProduct } = useSeller();
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+
+  const getStatusBadge = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'live':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+            Live
+          </span>
+        );
+      case 'draft':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+            Draft
+          </span>
+        );
+      case 'under review':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+            Under Review
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+            Rejected
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+            {status}
+          </span>
+        );
+    }
+  };
+
+  const handleDelete = (id) => {
+    deleteProduct(id);
+    setDeleteConfirmId(null);
+  };
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <table className="w-full text-left border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-[#0F172A]/70 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">
+            <th className="py-3 px-4">Product</th>
+            <th className="py-3 px-4">Category</th>
+            <th className="py-3 px-4">Price</th>
+            <th className="py-3 px-4">Stock</th>
+            <th className="py-3 px-4">Status</th>
+            <th className="py-3 px-4">Views</th>
+            <th className="py-3 px-4">Orders</th>
+            <th className="py-3 px-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-gray-700 dark:text-gray-200">
+          {products.map((item) => (
+            <tr key={item.id} className="hover:bg-gray-50/80 dark:hover:bg-[#243244] transition-colors duration-150">
+              <td className="py-3.5 px-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-11 h-11 rounded-lg object-cover border border-gray-200 dark:border-gray-700 shadow-xs flex-shrink-0"
+                    />
+                    {item.authenticityScore && (
+                      <span
+                        title={`Authenticity: ${item.authenticityScore}%`}
+                        className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1F2937] rounded-full p-0.5 shadow-xs border border-emerald-200 dark:border-emerald-700"
+                      >
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 dark:text-[#F9FAFB] leading-tight">{item.name}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {item.giTag && (
+                        <span className="text-[10px] bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-1.5 py-0.2 rounded font-medium inline-flex items-center gap-0.5">
+                          <Award className="w-2.5 h-2.5" /> GI Tag
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-400 dark:text-gray-500">{item.origin || 'West Bengal'}</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td className="py-3.5 px-4 text-gray-600 dark:text-gray-300">
+                <span className="inline-block bg-gray-100 dark:bg-[#243244] px-2 py-0.5 rounded text-xs text-gray-700 dark:text-gray-300 border border-transparent dark:border-gray-700">
+                  {item.category}
+                </span>
+              </td>
+
+              <td className="py-3.5 px-4 font-bold text-gray-900 dark:text-[#F9FAFB]">
+                ₹{Number(item.price).toLocaleString('en-IN')}
+              </td>
+
+              <td className="py-3.5 px-4">
+                <span className={`text-xs font-semibold ${item.stock < 5 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
+                  {item.stock} in stock
+                </span>
+              </td>
+
+              <td className="py-3.5 px-4">
+                {getStatusBadge(item.status)}
+              </td>
+
+              <td className="py-3.5 px-4 text-gray-600 dark:text-gray-400 text-xs font-medium">
+                {item.views || 0}
+              </td>
+
+              <td className="py-3.5 px-4 text-gray-600 dark:text-gray-400 text-xs font-medium">
+                {item.orders || 0}
+              </td>
+
+              <td className="py-3.5 px-4 text-right">
+                <div className="flex items-center justify-end gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => onViewProduct && onViewProduct(item)}
+                    title="View details"
+                    className="p-1.5 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#243244] rounded-md transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onEditProduct && onEditProduct(item)}
+                    title="Edit product"
+                    className="p-1.5 text-gray-500 hover:text-emerald-700 dark:text-gray-400 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 rounded-md transition-colors"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+
+                  {deleteConfirmId === item.id ? (
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(item.id)}
+                        className="text-[11px] bg-red-600 text-white px-2 py-1 rounded font-semibold hover:bg-red-700"
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteConfirmId(null)}
+                        className="text-[11px] text-gray-500 dark:text-gray-400 hover:text-gray-700 px-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setDeleteConfirmId(item.id)}
+                      title="Delete"
+                      className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+
+          {products.length === 0 && (
+            <tr>
+              <td colSpan={8} className="py-12 text-center text-gray-400 dark:text-gray-500">
+                No products match this filter.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}

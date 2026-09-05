@@ -1,0 +1,286 @@
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  DollarSign,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Lock,
+  CheckCircle2,
+  ShieldCheck,
+  Building2,
+  Calendar,
+  Download,
+  AlertCircle
+} from 'lucide-react';
+import { useSeller } from '../../context/SellerContext';
+
+export default function Earnings() {
+  const { t } = useTranslation();
+  const { profile, transactions, withdrawFunds } = useSeller();
+  const [withdrawAmount, setWithdrawAmount] = useState('5000');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const availableBal = profile.withdrawableBalance || profile.availableBalance || 8420;
+
+  const handleWithdraw = (e) => {
+    e.preventDefault();
+    const amt = parseFloat(withdrawAmount);
+    if (!amt || amt <= 0 || amt > availableBal) {
+      alert('Please enter a valid amount within your withdrawable balance.');
+      return;
+    }
+    withdrawFunds(amt);
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Page Title */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#1F2937] p-5 sm:p-6 rounded-2xl border border-gray-200/90 dark:border-gray-700/80 shadow-2xs transition-colors">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-[#F9FAFB] tracking-tight">
+            {t('earnings.pageTitle')}
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-[#CBD5E1] mt-1">
+            {t('earnings.pageSubtitle')}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto"
+        >
+          <ArrowUpRight className="w-4 h-4" />
+          <span>{t('earnings.withdrawButton')}</span>
+        </button>
+      </div>
+
+      {/* Financial Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Card 1: Withdrawable Balance */}
+        <div className="bg-gradient-to-br from-emerald-900 to-[#14532D] text-white rounded-2xl p-5 shadow-2xs relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-emerald-200 uppercase tracking-wider">
+              {t('earnings.availableBalance')}
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-800/80 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-3xl font-black tracking-tight">
+              ₹{availableBal.toLocaleString('en-IN')}
+            </span>
+            <p className="text-xs text-emerald-200/80 mt-1">
+              Cleared from escrow and ready for payout
+            </p>
+          </div>
+        </div>
+
+        {/* Card 2: Pending in Escrow */}
+        <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-5 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              {t('earnings.inEscrow')}
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-200 dark:border-amber-800">
+              <Lock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-3xl font-black text-gray-900 dark:text-[#F9FAFB] tracking-tight">
+              ₹{(profile.pendingBalance || 3100).toLocaleString('en-IN')}
+            </span>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Held safely until delivery confirmation
+            </p>
+          </div>
+        </div>
+
+        {/* Card 3: Total Sales */}
+        <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-5 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs transition-colors">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              {t('earnings.totalEarnings')}
+            </span>
+            <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-200 dark:border-purple-800">
+              <DollarSign className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <span className="text-3xl font-black text-gray-900 dark:text-[#F9FAFB] tracking-tight">
+              ₹{(profile.totalEarnings || 24560).toLocaleString('en-IN')}
+            </span>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+              +18% growth vs previous quarter
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Artisan Value Comparison Banner */}
+      <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50/50 dark:from-orange-950/30 dark:via-amber-950/20 dark:to-orange-950/10 rounded-2xl p-5 border border-orange-200/80 dark:border-orange-900/60 flex flex-col md:flex-row items-center justify-between gap-4 transition-colors">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/60 text-orange-700 dark:text-orange-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+              Direct Trade Guarantee: You keep 96% of retail sale value
+            </h4>
+            <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-relaxed">
+              Traditional handicraft middlemen retain 50-70% margins. Karigar directly connects Sushila Devi to domestic and global art buyers with zero listing fees.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 bg-white dark:bg-[#1F2937] px-3.5 py-2 rounded-xl border border-orange-200 dark:border-orange-800 text-xs font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap shadow-2xs">
+          <Building2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+          <span>Linked: SBI Bank A/c •••• 4892</span>
+        </div>
+      </div>
+
+      {/* Transaction History Table */}
+      <div className="bg-white dark:bg-[#1F2937] rounded-2xl border border-gray-200/90 dark:border-gray-700/80 shadow-2xs overflow-hidden transition-colors">
+        <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700/80 flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-bold text-gray-900 dark:text-[#F9FAFB]">
+              Settlement &amp; Transaction Ledger
+            </h3>
+            <p className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">
+              Verified records of payouts, order escrow releases, and bank deposits
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-gray-50/80 dark:bg-[#0F172A]/70 text-gray-500 dark:text-gray-400 font-semibold border-b border-gray-200/70 dark:border-gray-700">
+              <tr>
+                <th className="py-3 px-4">Transaction ID</th>
+                <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Description</th>
+                <th className="py-3 px-4">Type</th>
+                <th className="py-3 px-4">Amount</th>
+                <th className="py-3 px-4">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-gray-700 dark:text-gray-200">
+              {transactions.map((tx) => {
+                const isCredit = tx.type === 'Credit' || tx.type === 'Escrow Release';
+                return (
+                  <tr key={tx.id} className="hover:bg-gray-50/70 dark:hover:bg-[#243244] transition-colors">
+                    <td className="py-3.5 px-4 font-mono font-medium text-gray-700 dark:text-gray-300">
+                      {tx.id}
+                    </td>
+                    <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                      {tx.date}
+                    </td>
+                    <td className="py-3.5 px-4 text-gray-800 dark:text-gray-200 font-medium max-w-xs truncate">
+                      {tx.description}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span
+                        className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                          isCredit
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                            : 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                        }`}
+                      >
+                        {isCredit ? (
+                          <ArrowDownLeft className="w-3 h-3" />
+                        ) : (
+                          <ArrowUpRight className="w-3 h-3" />
+                        )}
+                        {tx.type}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 font-bold text-sm">
+                      <span className={isCredit ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}>
+                        {isCredit ? '+' : '-'}₹{Math.abs(tx.amount).toLocaleString('en-IN')}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        {tx.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Payout Withdrawal Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-2xs">
+          <div className="bg-white dark:bg-[#1F2937] rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-200 dark:border-gray-700 animate-in fade-in-50 zoom-in-95">
+            <h3 className="text-base font-bold text-gray-900 dark:text-white">
+              {t('earnings.withdrawModalTitle')}
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Funds will be directly deposited into your verified artisan savings account.
+            </p>
+
+            <form onSubmit={handleWithdraw} className="mt-4 space-y-4">
+              <div className="p-3 bg-gray-50 dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-700 text-xs">
+                <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
+                  <span>{t('earnings.availableBalance')}:</span>
+                  <span className="font-bold text-gray-900 dark:text-white">
+                    ₹{availableBal.toLocaleString('en-IN')}
+                  </span>
+                </div>
+                <div className="flex justify-between text-gray-600 dark:text-gray-300">
+                  <span>Destination Account:</span>
+                  <span className="font-bold text-emerald-800 dark:text-emerald-400">
+                    State Bank of India (•••• 4892)
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  {t('earnings.withdrawAmountLabel')}
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-gray-400">₹</span>
+                  <input
+                    type="number"
+                    value={withdrawAmount}
+                    max={availableBal}
+                    min={100}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#111827] rounded-xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
+                  Transfers processed within 2-4 hours via National Electronic Funds Transfer (NEFT).
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-[#243244] rounded-xl"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#14532D] hover:bg-[#0f3e22] rounded-xl shadow-xs"
+                >
+                  {t('earnings.confirmWithdrawal')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

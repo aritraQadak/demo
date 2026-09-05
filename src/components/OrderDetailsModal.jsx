@@ -1,0 +1,221 @@
+import React from 'react';
+import {
+  X,
+  ShieldCheck,
+  Truck,
+  MapPin,
+  Phone,
+  Package,
+  CheckCircle2,
+  Clock,
+  Printer
+} from 'lucide-react';
+import { useSeller } from '../context/SellerContext';
+
+export default function OrderDetailsModal() {
+  const { selectedOrder, setSelectedOrder, addToast } = useSeller();
+
+  if (!selectedOrder) return null;
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleCopyTracking = () => {
+    navigator.clipboard?.writeText(selectedOrder.trackingNumber || 'IP-ART-882194');
+    addToast('Tracking number copied to clipboard!', 'info');
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-2xs animate-in fade-in-50 duration-150">
+      <div className="bg-white dark:bg-[#1F2937] rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700 transition-colors">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700/80 flex items-center justify-between sticky top-0 bg-white/95 dark:bg-[#1F2937]/95 backdrop-blur-xs z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold">
+              <Package className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-[#F9FAFB]">
+                  Order {selectedOrder.id}
+                </h3>
+                <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  {selectedOrder.status}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Placed on {selectedOrder.date} • Secured by Karigar Escrow
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setSelectedOrder(null)}
+            className="p-2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="p-6 space-y-6 text-sm">
+          {/* Escrow Security Highlight */}
+          <div className="bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800 rounded-xl p-4 flex items-start gap-3.5">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-lg flex-shrink-0">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-blue-950 dark:text-blue-200 uppercase tracking-wider">
+                  Karigar Escrow Vault Protection
+                </h4>
+                <span className="text-xs font-bold text-blue-800 dark:text-blue-300">
+                  Stage: {selectedOrder.escrowStage || 'Funds Secured'}
+                </span>
+              </div>
+              <p className="text-xs text-blue-800/90 dark:text-blue-300/90 mt-1 leading-relaxed">
+                Buyer payment of ₹{Number(selectedOrder.amount).toLocaleString('en-IN')} is locked in Karigar Escrow.
+                {selectedOrder.status === 'Delivered'
+                  ? ' Customer received the parcel. Payment has been released to your registered bank account.'
+                  : ' Funds will be released automatically 24h after delivery verification.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Product and Price Grid */}
+          <div className="bg-gray-50 dark:bg-[#111827] rounded-xl p-4 border border-gray-200/80 dark:border-gray-700">
+            <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+              Craft Item Details
+            </h4>
+            <div className="flex items-center gap-4">
+              {selectedOrder.productImage && (
+                <img
+                  src={selectedOrder.productImage}
+                  alt={selectedOrder.product}
+                  className="w-16 h-16 rounded-xl object-cover border border-gray-200 dark:border-gray-700 shadow-xs"
+                />
+              )}
+              <div className="flex-1">
+                <h5 className="text-base font-bold text-gray-900 dark:text-[#F9FAFB]">{selectedOrder.product}</h5>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Artisan: Sushila Devi • GI Tag Verified Authentic Craft
+                </p>
+                <div className="flex items-center gap-4 mt-2">
+                  <span className="text-xs text-gray-600 dark:text-gray-300">Qty: <strong>{selectedOrder.itemsCount || 1}</strong></span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">Unit: <strong>₹{Number(selectedOrder.amount).toLocaleString('en-IN')}</strong></span>
+                  <span className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded font-semibold border border-emerald-200 dark:border-emerald-800">
+                    Artisan Share: 100% (Zero Commission)
+                  </span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-400 dark:text-gray-500">Total Payout</p>
+                <p className="text-xl font-black text-gray-900 dark:text-white">
+                  ₹{Number(selectedOrder.amount).toLocaleString('en-IN')}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 2-column info: Customer & Shipping Address */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Customer */}
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
+              <div className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                <span>Shipping Address</span>
+              </div>
+              <p className="font-bold text-gray-900 dark:text-white">{selectedOrder.customer}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
+                {selectedOrder.customerLocation}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-gray-400" />
+                {selectedOrder.customerPhone || '+91 98450 12345'}
+              </p>
+            </div>
+
+            {/* Logistics & Tracking */}
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
+              <div className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                <Truck className="w-3.5 h-3.5 text-gray-400" />
+                <span>Logistics &amp; Tracking</span>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-300">Carrier: <strong>{selectedOrder.carrier || 'India Post Artisan Express'}</strong></p>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 flex items-center justify-between">
+                <span>AWB / Tracking:</span>
+                <span className="font-mono font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-[11px]">
+                  {selectedOrder.trackingNumber || 'IP-ART-882194'}
+                </span>
+              </p>
+              <button
+                type="button"
+                onClick={handleCopyTracking}
+                className="mt-3 text-xs text-orange-600 dark:text-orange-400 font-semibold hover:text-orange-700 dark:hover:text-orange-300 underline"
+              >
+                Copy Tracking Number
+              </button>
+            </div>
+          </div>
+
+          {/* Delivery Timeline */}
+          <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
+            <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5 text-gray-400" />
+              <span>Order &amp; Authenticity Timeline</span>
+            </h4>
+            <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-700">
+              {(selectedOrder.timeline || [
+                { status: 'Order Placed & Escrow Secured', time: 'Aug 09, 10:30 AM', completed: true },
+                { status: 'GI Verification & Craft Check', time: 'Aug 09, 02:15 PM', completed: true },
+                { status: 'Packed with Certificate of Origin', time: 'Aug 10, 11:00 AM', completed: true },
+                { status: 'Dispatched via Artisan Express', time: 'Aug 10, 04:30 PM', completed: true },
+                { status: 'Delivered to Customer', time: 'Aug 12, 01:20 PM', completed: selectedOrder.status === 'Delivered' }
+              ]).map((step, idx) => (
+                <div key={idx} className="relative">
+                  <div
+                    className={`absolute -left-6 top-0.5 w-4 h-4 rounded-full border-2 bg-white dark:bg-[#1F2937] flex items-center justify-center ${
+                      step.completed
+                        ? 'border-emerald-500 text-emerald-500'
+                        : 'border-gray-300 dark:border-gray-600 text-gray-300'
+                    }`}
+                  >
+                    {step.completed && <CheckCircle2 className="w-3 h-3 fill-emerald-500 text-white" />}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className={`text-xs font-semibold ${step.completed ? 'text-gray-900 dark:text-[#F9FAFB]' : 'text-gray-400 dark:text-gray-500'}`}>
+                      {step.status}
+                    </p>
+                    <span className="text-[11px] text-gray-400 dark:text-gray-500">{step.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 dark:bg-[#0F172A] border-t border-gray-100 dark:border-gray-700/80 flex items-center justify-between rounded-b-2xl">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="px-4 py-2 bg-white dark:bg-[#1F2937] hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 flex items-center gap-1.5 transition-colors"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            <span>Print Invoice &amp; Label</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSelectedOrder(null)}
+            className="px-5 py-2 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+          >
+            Close Details
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
