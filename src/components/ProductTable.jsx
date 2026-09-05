@@ -1,36 +1,45 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, Edit3, Trash2, Award, CheckCircle2 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
 
 export default function ProductTable({ products, onViewProduct, onEditProduct }) {
+  const { t } = useTranslation();
   const { deleteProduct } = useSeller();
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   const getStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
       case 'live':
+      case 'active':
         return (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-            Live
+            {t('common.active')}
           </span>
         );
       case 'draft':
         return (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-            Draft
+            {t('common.draft')}
           </span>
         );
       case 'under review':
         return (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-            Under Review
+            {t('verification.underReview')}
           </span>
         );
       case 'rejected':
         return (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
-            Rejected
+            {t('common.cancelled')}
+          </span>
+        );
+      case 'out of stock':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+            {t('common.outOfStock')}
           </span>
         );
       default:
@@ -52,14 +61,14 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
       <table className="w-full text-left border-collapse text-sm">
         <thead>
           <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-[#0F172A]/70 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">
-            <th className="py-3 px-4">Product</th>
-            <th className="py-3 px-4">Category</th>
-            <th className="py-3 px-4">Price</th>
-            <th className="py-3 px-4">Stock</th>
-            <th className="py-3 px-4">Status</th>
-            <th className="py-3 px-4">Views</th>
-            <th className="py-3 px-4">Orders</th>
-            <th className="py-3 px-4 text-right">Actions</th>
+            <th className="py-3 px-4">{t('productTable.productHeader')}</th>
+            <th className="py-3 px-4">{t('productTable.categoryHeader')}</th>
+            <th className="py-3 px-4">{t('productTable.priceHeader')}</th>
+            <th className="py-3 px-4">{t('productTable.stockHeader')}</th>
+            <th className="py-3 px-4">{t('productTable.statusHeader')}</th>
+            <th className="py-3 px-4">{t('dashboard.meterFeedback')}</th>
+            <th className="py-3 px-4">{t('nav.orders')}</th>
+            <th className="py-3 px-4 text-right">{t('productTable.actionsHeader')}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-gray-700 dark:text-gray-200">
@@ -75,7 +84,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                     />
                     {item.authenticityScore && (
                       <span
-                        title={`Authenticity: ${item.authenticityScore}%`}
+                        title={`${t('dashboard.meterAuthenticity')}: ${item.authenticityScore}%`}
                         className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1F2937] rounded-full p-0.5 shadow-xs border border-emerald-200 dark:border-emerald-700"
                       >
                         <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
@@ -87,7 +96,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                     <div className="flex items-center gap-1.5 mt-0.5">
                       {item.giTag && (
                         <span className="text-[10px] bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-1.5 py-0.2 rounded font-medium inline-flex items-center gap-0.5">
-                          <Award className="w-2.5 h-2.5" /> GI Tag
+                          <Award className="w-2.5 h-2.5" /> {t('nav.giAuthorized')}
                         </span>
                       )}
                       <span className="text-xs text-gray-400 dark:text-gray-500">{item.origin || 'West Bengal'}</span>
@@ -108,7 +117,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
 
               <td className="py-3.5 px-4">
                 <span className={`text-xs font-semibold ${item.stock < 5 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
-                  {item.stock} in stock
+                  {item.stock} {t('common.inStock')}
                 </span>
               </td>
 
@@ -129,7 +138,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                   <button
                     type="button"
                     onClick={() => onViewProduct && onViewProduct(item)}
-                    title="View details"
+                    title={t('common.view')}
                     className="p-1.5 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#243244] rounded-md transition-colors"
                   >
                     <Eye className="w-4 h-4" />
@@ -138,7 +147,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                   <button
                     type="button"
                     onClick={() => onEditProduct && onEditProduct(item)}
-                    title="Edit product"
+                    title={t('common.edit')}
                     className="p-1.5 text-gray-500 hover:text-emerald-700 dark:text-gray-400 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 rounded-md transition-colors"
                   >
                     <Edit3 className="w-4 h-4" />
@@ -151,7 +160,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                         onClick={() => handleDelete(item.id)}
                         className="text-[11px] bg-red-600 text-white px-2 py-1 rounded font-semibold hover:bg-red-700"
                       >
-                        Confirm
+                        {t('common.confirmed')}
                       </button>
                       <button
                         type="button"
@@ -165,7 +174,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
                     <button
                       type="button"
                       onClick={() => setDeleteConfirmId(item.id)}
-                      title="Delete"
+                      title={t('common.delete')}
                       className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -179,7 +188,7 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
           {products.length === 0 && (
             <tr>
               <td colSpan={8} className="py-12 text-center text-gray-400 dark:text-gray-500">
-                No products match this filter.
+                {t('productTable.noProductsFound')}
               </td>
             </tr>
           )}

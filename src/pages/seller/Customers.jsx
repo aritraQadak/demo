@@ -22,7 +22,7 @@ export default function Customers() {
 
         <div className="flex items-center gap-2 text-xs font-semibold text-purple-800 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-3 py-1.5 rounded-xl border border-purple-200 dark:border-purple-800 self-start sm:self-auto">
           <Heart className="w-4 h-4 text-purple-600 dark:text-purple-400 fill-purple-100 dark:fill-purple-950/80" />
-          <span>{customers.length} Art Patrons</span>
+          <span>{customers.length} {t('customers.badgePatron')}</span>
         </div>
       </div>
 
@@ -44,7 +44,7 @@ export default function Customers() {
                   <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB] flex items-center gap-1.5">
                     <span>{cust.name}</span>
                     <span className="text-[10px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 px-2 py-0.2 rounded-full border border-emerald-200 dark:border-emerald-800">
-                      {t('common.confirmed')}
+                      {t('customers.badgePatron')}
                     </span>
                   </h3>
                   <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-0.5">
@@ -55,8 +55,8 @@ export default function Customers() {
               </div>
 
               <div className="text-right">
-                <span className="text-xs text-gray-400 dark:text-gray-500 block">Total Crafts:</span>
-                <span className="text-sm font-bold text-gray-900 dark:text-white">{cust.ordersCount} pieces</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500 block">{t('customers.ordersCount')}:</span>
+                <span className="text-sm font-bold text-gray-900 dark:text-white">{cust.ordersCount} {t('common.units')}</span>
               </div>
             </div>
 
@@ -64,7 +64,7 @@ export default function Customers() {
             <div className="p-3.5 bg-gray-50 dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-700/80 space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-gray-700 dark:text-gray-300">
-                  Last purchase: {cust.favoriteCraft}
+                  {t('customers.lastOrder')}: {cust.favoriteCraft}
                 </span>
                 <div className="flex items-center gap-0.5 text-amber-500">
                   {[...Array(5)].map((_, i) => (
@@ -88,15 +88,15 @@ export default function Customers() {
             {/* Actions */}
             <div className="flex items-center justify-between text-xs pt-1">
               <span className="text-gray-400 dark:text-gray-500 text-[11px]">
-                Patron since {cust.joinedDate}
+                {t('verification.verifiedSince')} {cust.joinedDate}
               </span>
 
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-100 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-100 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 transition-colors cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>{t('customers.messageCustomer')}</span>
+                <span>{t('customers.messagePatron')}</span>
               </button>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   X,
   ShieldCheck,
@@ -13,6 +14,7 @@ import {
 import { useSeller } from '../context/SellerContext';
 
 export default function OrderDetailsModal() {
+  const { t } = useTranslation();
   const { selectedOrder, setSelectedOrder, addToast } = useSeller();
 
   if (!selectedOrder) return null;
@@ -23,7 +25,30 @@ export default function OrderDetailsModal() {
 
   const handleCopyTracking = () => {
     navigator.clipboard?.writeText(selectedOrder.trackingNumber || 'IP-ART-882194');
-    addToast('Tracking number copied to clipboard!', 'info');
+    addToast(t('orderDetails.trackingCopied'), 'info');
+  };
+
+  const timelineSteps = selectedOrder.timeline || [
+    { status: t('orderDetails.timelineStep1'), time: 'Aug 09, 10:30 AM', completed: true },
+    { status: t('orderDetails.timelineStep2'), time: 'Aug 09, 02:15 PM', completed: true },
+    { status: t('orderDetails.timelineStep3'), time: 'Aug 10, 11:00 AM', completed: true },
+    { status: t('orderDetails.timelineStep4'), time: 'Aug 10, 04:30 PM', completed: true },
+    { status: t('orderDetails.timelineStep5'), time: 'Aug 12, 01:20 PM', completed: selectedOrder.status === 'Delivered' }
+  ];
+
+  const getLocalizedStatus = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'delivered':
+        return t('common.delivered');
+      case 'shipped':
+        return t('common.shipped');
+      case 'processing':
+        return t('common.processing');
+      case 'cancelled':
+        return t('common.cancelled');
+      default:
+        return status;
+    }
   };
 
   return (
@@ -38,14 +63,14 @@ export default function OrderDetailsModal() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-[#F9FAFB]">
-                  Order {selectedOrder.id}
+                  {t('dashboard.orderId')} {selectedOrder.id}
                 </h3>
                 <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                  {selectedOrder.status}
+                  {getLocalizedStatus(selectedOrder.status)}
                 </span>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Placed on {selectedOrder.date} • Secured by Karigar Escrow
+                {t('orderDetails.placedOn')} {selectedOrder.date} • {t('orderDetails.securedByEscrow')}
               </p>
             </div>
           </div>
@@ -69,17 +94,16 @@ export default function OrderDetailsModal() {
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-bold text-blue-950 dark:text-blue-200 uppercase tracking-wider">
-                  Karigar Escrow Vault Protection
+                  {t('orderDetails.escrowVaultTitle')}
                 </h4>
                 <span className="text-xs font-bold text-blue-800 dark:text-blue-300">
-                  Stage: {selectedOrder.escrowStage || 'Funds Secured'}
+                  {t('orderDetails.stage')}: {selectedOrder.status === 'Delivered' ? t('orderDetails.fundsReleased') : t('orderDetails.fundsSecured')}
                 </span>
               </div>
               <p className="text-xs text-blue-800/90 dark:text-blue-300/90 mt-1 leading-relaxed">
-                Buyer payment of ₹{Number(selectedOrder.amount).toLocaleString('en-IN')} is locked in Karigar Escrow.
                 {selectedOrder.status === 'Delivered'
-                  ? ' Customer received the parcel. Payment has been released to your registered bank account.'
-                  : ' Funds will be released automatically 24h after delivery verification.'}
+                  ? t('orderDetails.escrowDescDelivered')
+                  : t('orderDetails.escrowDescPending')}
               </p>
             </div>
           </div>
@@ -87,7 +111,7 @@ export default function OrderDetailsModal() {
           {/* Product and Price Grid */}
           <div className="bg-gray-50 dark:bg-[#111827] rounded-xl p-4 border border-gray-200/80 dark:border-gray-700">
             <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-              Craft Item Details
+              {t('orderDetails.craftItemDetails')}
             </h4>
             <div className="flex items-center gap-4">
               {selectedOrder.productImage && (
@@ -100,18 +124,22 @@ export default function OrderDetailsModal() {
               <div className="flex-1">
                 <h5 className="text-base font-bold text-gray-900 dark:text-[#F9FAFB]">{selectedOrder.product}</h5>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Artisan: Sushila Devi • GI Tag Verified Authentic Craft
+                  {t('orderDetails.artisanLabel')}: Sushila Devi • {t('orderDetails.giTagVerified')}
                 </p>
                 <div className="flex items-center gap-4 mt-2">
-                  <span className="text-xs text-gray-600 dark:text-gray-300">Qty: <strong>{selectedOrder.itemsCount || 1}</strong></span>
-                  <span className="text-xs text-gray-600 dark:text-gray-300">Unit: <strong>₹{Number(selectedOrder.amount).toLocaleString('en-IN')}</strong></span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">
+                    {t('orderDetails.qty')}: <strong>{selectedOrder.itemsCount || 1}</strong>
+                  </span>
+                  <span className="text-xs text-gray-600 dark:text-gray-300">
+                    {t('orderDetails.unit')}: <strong>₹{Number(selectedOrder.amount).toLocaleString('en-IN')}</strong>
+                  </span>
                   <span className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded font-semibold border border-emerald-200 dark:border-emerald-800">
-                    Artisan Share: 100% (Zero Commission)
+                    {t('orderDetails.zeroCommission')}
                   </span>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-gray-400 dark:text-gray-500">Total Payout</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">{t('orderDetails.totalPayout')}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">
                   ₹{Number(selectedOrder.amount).toLocaleString('en-IN')}
                 </p>
@@ -125,7 +153,7 @@ export default function OrderDetailsModal() {
             <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
               <div className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                 <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                <span>Shipping Address</span>
+                <span>{t('orderDetails.shippingAddress')}</span>
               </div>
               <p className="font-bold text-gray-900 dark:text-white">{selectedOrder.customer}</p>
               <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
@@ -141,11 +169,13 @@ export default function OrderDetailsModal() {
             <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
               <div className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                 <Truck className="w-3.5 h-3.5 text-gray-400" />
-                <span>Logistics &amp; Tracking</span>
+                <span>{t('orderDetails.logisticsTracking')}</span>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300">Carrier: <strong>{selectedOrder.carrier || 'India Post Artisan Express'}</strong></p>
+              <p className="text-xs text-gray-600 dark:text-gray-300">
+                {t('orderDetails.carrier')}: <strong>{selectedOrder.carrier || 'India Post Artisan Express'}</strong>
+              </p>
               <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 flex items-center justify-between">
-                <span>AWB / Tracking:</span>
+                <span>{t('orderDetails.awbTracking')}:</span>
                 <span className="font-mono font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-[11px]">
                   {selectedOrder.trackingNumber || 'IP-ART-882194'}
                 </span>
@@ -153,9 +183,9 @@ export default function OrderDetailsModal() {
               <button
                 type="button"
                 onClick={handleCopyTracking}
-                className="mt-3 text-xs text-orange-600 dark:text-orange-400 font-semibold hover:text-orange-700 dark:hover:text-orange-300 underline"
+                className="mt-3 text-xs text-orange-600 dark:text-orange-400 font-semibold hover:text-orange-700 dark:hover:text-orange-300 underline cursor-pointer"
               >
-                Copy Tracking Number
+                {t('orderDetails.copyTracking')}
               </button>
             </div>
           </div>
@@ -164,16 +194,10 @@ export default function OrderDetailsModal() {
           <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-white dark:bg-[#1F2937]">
             <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
               <Clock className="w-3.5 h-3.5 text-gray-400" />
-              <span>Order &amp; Authenticity Timeline</span>
+              <span>{t('orderDetails.timelineTitle')}</span>
             </h4>
             <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200 dark:before:bg-gray-700">
-              {(selectedOrder.timeline || [
-                { status: 'Order Placed & Escrow Secured', time: 'Aug 09, 10:30 AM', completed: true },
-                { status: 'GI Verification & Craft Check', time: 'Aug 09, 02:15 PM', completed: true },
-                { status: 'Packed with Certificate of Origin', time: 'Aug 10, 11:00 AM', completed: true },
-                { status: 'Dispatched via Artisan Express', time: 'Aug 10, 04:30 PM', completed: true },
-                { status: 'Delivered to Customer', time: 'Aug 12, 01:20 PM', completed: selectedOrder.status === 'Delivered' }
-              ]).map((step, idx) => (
+              {timelineSteps.map((step, idx) => (
                 <div key={idx} className="relative">
                   <div
                     className={`absolute -left-6 top-0.5 w-4 h-4 rounded-full border-2 bg-white dark:bg-[#1F2937] flex items-center justify-center ${
@@ -201,18 +225,18 @@ export default function OrderDetailsModal() {
           <button
             type="button"
             onClick={handlePrint}
-            className="px-4 py-2 bg-white dark:bg-[#1F2937] hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 bg-white dark:bg-[#1F2937] hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Print Invoice &amp; Label</span>
+            <span>{t('orderDetails.printInvoice')}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setSelectedOrder(null)}
-            className="px-5 py-2 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
+            className="px-5 py-2 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer"
           >
-            Close Details
+            {t('orderDetails.closeDetails')}
           </button>
         </div>
       </div>

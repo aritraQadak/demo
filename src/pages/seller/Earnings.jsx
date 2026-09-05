@@ -7,16 +7,13 @@ import {
   Lock,
   CheckCircle2,
   ShieldCheck,
-  Building2,
-  Calendar,
-  Download,
-  AlertCircle
+  Building2
 } from 'lucide-react';
 import { useSeller } from '../../context/SellerContext';
 
 export default function Earnings() {
   const { t } = useTranslation();
-  const { profile, transactions, withdrawFunds } = useSeller();
+  const { profile, transactions, withdrawFunds, addToast } = useSeller();
   const [withdrawAmount, setWithdrawAmount] = useState('5000');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -26,11 +23,41 @@ export default function Earnings() {
     e.preventDefault();
     const amt = parseFloat(withdrawAmount);
     if (!amt || amt <= 0 || amt > availableBal) {
-      alert('Please enter a valid amount within your withdrawable balance.');
+      if (addToast) {
+        addToast(t('earnings.withdrawMinAmount'), 'error');
+      } else {
+        alert(t('earnings.withdrawMinAmount'));
+      }
       return;
     }
     withdrawFunds(amt);
     setIsModalOpen(false);
+  };
+
+  const getLocalizedType = (type) => {
+    switch (type) {
+      case 'Escrow Release':
+        return t('earnings.typeEscrowRelease');
+      case 'Order Payment':
+      case 'Credit':
+        return t('earnings.typeOrderPayment');
+      case 'Debit':
+      case 'Bank Withdrawal':
+        return t('earnings.typeBankWithdrawal');
+      default:
+        return type;
+    }
+  };
+
+  const getLocalizedStatus = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return t('earnings.statusCompleted');
+      case 'pending':
+        return t('earnings.statusPending');
+      default:
+        return status;
+    }
   };
 
   return (
@@ -49,7 +76,7 @@ export default function Earnings() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <ArrowUpRight className="w-4 h-4" />
           <span>{t('earnings.withdrawButton')}</span>
@@ -73,7 +100,7 @@ export default function Earnings() {
               ₹{availableBal.toLocaleString('en-IN')}
             </span>
             <p className="text-xs text-emerald-200/80 mt-1">
-              Cleared from escrow and ready for payout
+              {t('orderDetails.fundsSecured')}
             </p>
           </div>
         </div>
@@ -93,7 +120,7 @@ export default function Earnings() {
               ₹{(profile.pendingBalance || 3100).toLocaleString('en-IN')}
             </span>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Held safely until delivery confirmation
+              {t('orderDetails.escrowDescPending')}
             </p>
           </div>
         </div>
@@ -113,7 +140,7 @@ export default function Earnings() {
               ₹{(profile.totalEarnings || 24560).toLocaleString('en-IN')}
             </span>
             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
-              +18% growth vs previous quarter
+              {t('dashboard.topTier')}
             </p>
           </div>
         </div>
@@ -127,17 +154,17 @@ export default function Earnings() {
           </div>
           <div>
             <h4 className="text-sm font-bold text-gray-900 dark:text-white">
-              Direct Trade Guarantee: You keep 96% of retail sale value
+              {t('orderDetails.zeroCommission')}
             </h4>
             <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-relaxed">
-              Traditional handicraft middlemen retain 50-70% margins. Karigar directly connects Sushila Devi to domestic and global art buyers with zero listing fees.
+              {t('about.missionDesc2')}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 bg-white dark:bg-[#1F2937] px-3.5 py-2 rounded-xl border border-orange-200 dark:border-orange-800 text-xs font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap shadow-2xs">
           <Building2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-          <span>Linked: SBI Bank A/c •••• 4892</span>
+          <span>{t('verification.bankTitle')}</span>
         </div>
       </div>
 
@@ -146,10 +173,10 @@ export default function Earnings() {
         <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700/80 flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-gray-900 dark:text-[#F9FAFB]">
-              Settlement &amp; Transaction Ledger
+              {t('earnings.transactions')}
             </h3>
             <p className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">
-              Verified records of payouts, order escrow releases, and bank deposits
+              {t('earnings.settlementNote')}
             </p>
           </div>
         </div>
@@ -158,12 +185,12 @@ export default function Earnings() {
           <table className="w-full text-left text-xs">
             <thead className="bg-gray-50/80 dark:bg-[#0F172A]/70 text-gray-500 dark:text-gray-400 font-semibold border-b border-gray-200/70 dark:border-gray-700">
               <tr>
-                <th className="py-3 px-4">Transaction ID</th>
-                <th className="py-3 px-4">Date</th>
-                <th className="py-3 px-4">Description</th>
-                <th className="py-3 px-4">Type</th>
-                <th className="py-3 px-4">Amount</th>
-                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">{t('earnings.txnId')}</th>
+                <th className="py-3 px-4">{t('earnings.date')}</th>
+                <th className="py-3 px-4">{t('earnings.orderRef')}</th>
+                <th className="py-3 px-4">{t('earnings.type')}</th>
+                <th className="py-3 px-4">{t('earnings.amount')}</th>
+                <th className="py-3 px-4">{t('earnings.status')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700/60 text-gray-700 dark:text-gray-200">
@@ -193,7 +220,7 @@ export default function Earnings() {
                         ) : (
                           <ArrowUpRight className="w-3 h-3" />
                         )}
-                        {tx.type}
+                        {getLocalizedType(tx.type)}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 font-bold text-sm">
@@ -204,7 +231,7 @@ export default function Earnings() {
                     <td className="py-3.5 px-4">
                       <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" />
-                        {tx.status}
+                        {getLocalizedStatus(tx.status)}
                       </span>
                     </td>
                   </tr>
@@ -223,21 +250,21 @@ export default function Earnings() {
               {t('earnings.withdrawModalTitle')}
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Funds will be directly deposited into your verified artisan savings account.
+              {t('earnings.withdrawModalSubtitle')}
             </p>
 
             <form onSubmit={handleWithdraw} className="mt-4 space-y-4">
               <div className="p-3 bg-gray-50 dark:bg-[#111827] rounded-xl border border-gray-200 dark:border-gray-700 text-xs">
                 <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                  <span>{t('earnings.availableBalance')}:</span>
+                  <span>{t('earnings.availableForTransfer')}:</span>
                   <span className="font-bold text-gray-900 dark:text-white">
                     ₹{availableBal.toLocaleString('en-IN')}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                  <span>Destination Account:</span>
+                  <span>{t('earnings.transferFee')}:</span>
                   <span className="font-bold text-emerald-800 dark:text-emerald-400">
-                    State Bank of India (•••• 4892)
+                    {t('earnings.freeZeroFee')}
                   </span>
                 </div>
               </div>
@@ -258,7 +285,7 @@ export default function Earnings() {
                   />
                 </div>
                 <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
-                  Transfers processed within 2-4 hours via National Electronic Funds Transfer (NEFT).
+                  {t('earnings.instantImps')}
                 </p>
               </div>
 
@@ -266,13 +293,13 @@ export default function Earnings() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-[#243244] rounded-xl"
+                  className="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-[#243244] rounded-xl cursor-pointer"
                 >
                   {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#14532D] hover:bg-[#0f3e22] rounded-xl shadow-xs"
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#14532D] hover:bg-[#0f3e22] rounded-xl shadow-xs cursor-pointer"
                 >
                   {t('earnings.confirmWithdrawal')}
                 </button>

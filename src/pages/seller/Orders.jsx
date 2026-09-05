@@ -89,7 +89,7 @@ export default function Orders() {
             <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by Order ID, customer, item..."
+              placeholder={t('orders.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-800 dark:text-[#F9FAFB] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white dark:focus:bg-[#111827]"

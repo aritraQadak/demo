@@ -90,10 +90,10 @@ export default function Profile() {
       }
 
       setIsEditModalOpen(false);
-      addToast('Profile updated and saved to localStorage successfully.', 'success');
+      addToast(t('profile.saveProfileSuccess', 'Profile updated and saved to localStorage successfully.'), 'success');
     } catch (err) {
       console.error('Error saving profile:', err);
-      addToast('Failed to save profile changes.', 'error');
+      addToast(t('profile.saveProfileError', 'Failed to save profile changes.'), 'error');
     }
   };
 
@@ -104,27 +104,28 @@ export default function Profile() {
       product: 'Terracotta Pot',
       amount: '₹1,200',
       status: 'Delivered',
-      date: '12 Aug 2026',
-      image: 'https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=200&q=80'
+      date: '2026-03-02',
+      image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=150&q=80'
     },
     {
       id: 'KGR-1235',
-      product: 'Handwoven Basket',
-      amount: '₹980',
+      product: 'Dhokra Brass Figurine',
+      amount: '₹3,450',
       status: 'Shipped',
-      date: '10 Aug 2026',
-      image: 'https://images.unsplash.com/photo-1590736969955-71cc94801759?auto=format&fit=crop&w=200&q=80'
+      date: '2026-03-01',
+      image: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&w=150&q=80'
     },
     {
       id: 'KGR-1236',
-      product: 'Madhubani Painting',
-      amount: '₹2,500',
+      product: 'Handwoven Silk Stole',
+      amount: '₹2,800',
       status: 'Delivered',
-      date: '08 Aug 2026',
-      image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=200&q=80'
+      date: '2026-02-27',
+      image: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&w=150&q=80'
     }
   ];
 
+  // Navigation tabs for Profile page
   const tabs = [
     { id: 'Profile', label: t('profile.tabProfile', 'Profile'), icon: User },
     { id: 'Orders', label: t('profile.tabOrders', 'Orders'), icon: Package },
@@ -226,7 +227,7 @@ export default function Profile() {
           <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 pt-4 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700/80">
             <div className="text-left sm:text-right">
               <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400">
-                Trust Score
+                {t('profile.trustScore', 'Trust Score')}
               </span>
               <div className="flex items-center sm:justify-end gap-1.5 mt-0.5">
                 <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
@@ -238,7 +239,7 @@ export default function Profile() {
 
             <div className="text-left sm:text-right">
               <span className="text-[11px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 font-semibold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-                100% KYC Verified
+                {t('profile.kycVerifiedBadge', '100% KYC Verified')}
               </span>
             </div>
           </div>
@@ -247,7 +248,7 @@ export default function Profile() {
         {/* Artisan Story / Bio */}
         {profileData.aboutArtisan && (
           <div className="mt-6 pt-5 border-t border-gray-100 dark:border-gray-700/80 text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-            <span className="font-semibold text-gray-900 dark:text-gray-100 mr-2">About Artisan:</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100 mr-2">{t('profile.aboutArtisanLabel', 'About Artisan:')}</span>
             {profileData.aboutArtisan}
           </div>
         )}
@@ -286,10 +287,10 @@ export default function Profile() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg sm:text-xl font-bold font-serif text-gray-900 dark:text-white">
-                  My Orders
+                  {t('profile.myOrdersTitle', 'My Orders')}
                 </h2>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Recent customer orders and shipments fulfilled by your studio.
+                  {t('profile.myOrdersSubtitle', 'Recent customer orders and shipments fulfilled by your studio.')}
                 </p>
               </div>
 
@@ -297,7 +298,7 @@ export default function Profile() {
                 to="/orders"
                 className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors"
               >
-                <span>View All</span>
+                <span>{t('profile.viewAll', 'View All')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -307,10 +308,10 @@ export default function Profile() {
               <table className="w-full text-left border-collapse min-w-[540px]">
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-gray-700/80 text-[11px] font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider">
-                    <th className="pb-3 pl-2">Product</th>
-                    <th className="pb-3">Amount</th>
-                    <th className="pb-3">Status</th>
-                    <th className="pb-3 pr-2 text-right">Date</th>
+                    <th className="pb-3 pl-2">{t('profile.thProduct', 'Product')}</th>
+                    <th className="pb-3">{t('profile.thAmount', 'Amount')}</th>
+                    <th className="pb-3">{t('profile.thStatus', 'Status')}</th>
+                    <th className="pb-3 pr-2 text-right">{t('profile.thDate', 'Date')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 dark:divide-gray-700/50 text-xs sm:text-sm">
@@ -350,12 +351,12 @@ export default function Profile() {
                           {isDelivered ? (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                              Delivered
+                              {t('common.delivered', 'Delivered')}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              Shipped
+                              {t('common.shipped', 'Shipped')}
                             </span>
                           )}
                         </td>
@@ -379,17 +380,17 @@ export default function Profile() {
             <Sparkles className="w-6 h-6" />
           </div>
           <h3 className="text-base font-bold text-gray-900 dark:text-white">
-            {activeTab} Management
+            {t('profile.tabFallbackTitle', { tab: activeTab, defaultValue: `${activeTab} Management` })}
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-            Your {activeTab.toLowerCase()} are encrypted and linked with your verified Karigar artisan credentials.
+            {t('profile.tabFallbackDesc', { tab: activeTab.toLowerCase(), defaultValue: `Your ${activeTab.toLowerCase()} are encrypted and linked with your verified Karigar artisan credentials.` })}
           </p>
           <button
             type="button"
             onClick={() => setActiveTab('Profile')}
             className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline"
           >
-            ← Back to Profile Overview
+            {t('profile.backToOverview', '← Back to Profile Overview')}
           </button>
         </div>
       )}
@@ -402,10 +403,10 @@ export default function Profile() {
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-gray-700/80">
               <div>
                 <h3 className="text-lg font-bold font-serif text-gray-900 dark:text-white">
-                  Edit Artisan Profile
+                  {t('profile.editProfileModalTitle', 'Edit Artisan Profile')}
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Update your personal, craft, and cluster details stored in localStorage.
+                  {t('profile.editProfileModalSubtitle', 'Update your personal, craft, and cluster details stored in localStorage.')}
                 </p>
               </div>
 
@@ -423,7 +424,7 @@ export default function Profile() {
               {/* Change Profile Photo Selection */}
               <div>
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
-                  Change Profile Photo
+                  {t('profile.changePhoto', 'Change Profile Photo')}
                 </label>
                 <div className="flex items-center gap-3">
                   {sampleAvatars.map((url, idx) => (
@@ -452,7 +453,7 @@ export default function Profile() {
                 {/* Full Name */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Full Name <span className="text-red-500">*</span>
+                    {t('profile.fullNameReq', 'Full Name')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -466,7 +467,7 @@ export default function Profile() {
                 {/* Phone */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Phone <span className="text-red-500">*</span>
+                    {t('profile.phoneReq', 'Phone')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -480,7 +481,7 @@ export default function Profile() {
                 {/* Email */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Email <span className="text-red-500">*</span>
+                    {t('profile.emailReq', 'Email')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -494,7 +495,7 @@ export default function Profile() {
                 {/* Craft Type */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Craft Type <span className="text-red-500">*</span>
+                    {t('profile.craftTypeReq', 'Craft Type')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -508,7 +509,7 @@ export default function Profile() {
                 {/* State */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    State
+                    {t('profile.stateLabel', 'State')}
                   </label>
                   <input
                     type="text"
@@ -527,7 +528,7 @@ export default function Profile() {
                 {/* District */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    District
+                    {t('profile.districtLabel', 'District')}
                   </label>
                   <input
                     type="text"
@@ -546,7 +547,7 @@ export default function Profile() {
                 {/* Years of Experience */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Years of Experience
+                    {t('profile.experienceLabel', 'Years of Experience')}
                   </label>
                   <input
                     type="number"
@@ -559,7 +560,7 @@ export default function Profile() {
                 {/* Business / Artisan Name */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    Business / Artisan Name
+                    {t('profile.businessNameLabel', 'Business / Artisan Name')}
                   </label>
                   <input
                     type="text"
@@ -573,7 +574,7 @@ export default function Profile() {
               {/* About Artisan */}
               <div>
                 <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                  About Artisan
+                  {t('profile.aboutArtisanField', 'About Artisan')}
                 </label>
                 <textarea
                   rows={3}
@@ -591,13 +592,13 @@ export default function Profile() {
                   onClick={() => setIsEditModalOpen(false)}
                   className="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  Cancel
+                  {t('profile.cancel', 'Cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-[#14532D] hover:bg-[#0f3f22] text-white shadow-xs hover:shadow-md transition-all"
                 >
-                  Save Changes
+                  {t('profile.saveChanges', 'Save Changes')}
                 </button>
               </div>
             </form>

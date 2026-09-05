@@ -27,17 +27,17 @@ export default function Contact() {
   const validate = () => {
     const errs = {};
     if (!formData.name.trim()) {
-      errs.name = 'Full name is required';
+      errs.name = t('contact.nameRequired') || 'Full name is required';
     }
     if (!formData.email.trim()) {
-      errs.email = 'Email address is required';
+      errs.email = t('contact.emailRequired') || 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errs.email = 'Please enter a valid email address';
+      errs.email = t('contact.validEmail') || 'Please enter a valid email address';
     }
     if (!formData.message.trim()) {
-      errs.message = 'Message content is required';
+      errs.message = t('contact.messageRequired') || 'Message content is required';
     } else if (formData.message.trim().length < 10) {
-      errs.message = 'Please provide at least 10 characters';
+      errs.message = t('contact.minChars') || 'Please provide at least 10 characters';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -70,13 +70,13 @@ export default function Contact() {
       localStorage.setItem('karigar-contact-messages', JSON.stringify(existingMessages));
 
       // Show toast
-      addToast('Message sent successfully.', 'success');
+      addToast(t('contact.messageSent') || 'Message sent successfully.', 'success');
       setIsSent(true);
       setFormData({ name: '', email: '', message: '' });
       setErrors({});
     } catch (err) {
       console.error('Error saving message:', err);
-      addToast('Error sending message. Please try again.', 'error');
+      addToast(t('common.error') || 'Error sending message. Please try again.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +122,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                    Email
+                    {t('common.email')}
                   </h3>
                   <a
                     href="mailto:support@karigar.in"
@@ -140,7 +140,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                    Phone
+                    {t('common.phone')}
                   </h3>
                   <a
                     href="tel:+919876543210"
@@ -158,12 +158,10 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                    Address
+                    {t('common.address')}
                   </h3>
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-snug">
-                    Haldia Institute of Technology
-                    <br />
-                    Haldia, West Bengal, India
+                    {t('contact.addressValue') || 'Haldia Institute of Technology, Haldia, West Bengal, India'}
                   </p>
                 </div>
               </div>
@@ -172,7 +170,7 @@ export default function Contact() {
             {/* Social Media Section */}
             <div className="pt-6 border-t border-gray-100 dark:border-gray-700/80">
               <h3 className="text-xs font-bold text-gray-900 dark:text-gray-200 uppercase tracking-wider mb-3">
-                Follow Us
+                {t('contact.followUs')}
               </h3>
               <div className="flex items-center gap-3">
                 <a
@@ -224,7 +222,7 @@ export default function Contact() {
                     {t('common.success')}
                   </p>
                   <p className="text-[11px] text-emerald-700 dark:text-emerald-400">
-                    {t('contact.subtitle')}
+                    {t('contact.messageSent')}
                   </p>
                 </div>
               </div>
@@ -240,7 +238,7 @@ export default function Contact() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Ramesh Chandra"
+                  placeholder={t('contact.namePlaceholder')}
                   className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-gray-50 dark:bg-[#111827] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                     errors.name
                       ? 'border-red-400 focus:ring-red-300'
@@ -261,7 +259,7 @@ export default function Contact() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="you@example.com"
+                  placeholder={t('contact.emailPlaceholder')}
                   className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-gray-50 dark:bg-[#111827] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
                     errors.email
                       ? 'border-red-400 focus:ring-red-300'
@@ -282,7 +280,7 @@ export default function Contact() {
                   rows={4}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="How can we help you?"
+                  placeholder={t('contact.messagePlaceholder')}
                   className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-gray-50 dark:bg-[#111827] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 transition-all resize-none ${
                     errors.message
                       ? 'border-red-400 focus:ring-red-300'
@@ -299,7 +297,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-[#14532D] hover:bg-[#0f3f22] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-[#14532D] hover:bg-[#0f3f22] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>{isSubmitting ? t('common.loading') : t('contact.sendMessage')}</span>

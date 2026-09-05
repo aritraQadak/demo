@@ -76,7 +76,7 @@ export default function OrderTable({ orders, showCustomer = false, limit, onView
               <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-[#F9FAFB] flex items-center gap-1.5">
                 <span>{order.id}</span>
                 {order.escrowStage === 'Payment Secured' && (
-                  <span title="Secured in Escrow">
+                  <span title={t('orderTable.escrowSecured')}>
                     <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
                   </span>
                 )}
@@ -139,7 +139,7 @@ export default function OrderTable({ orders, showCustomer = false, limit, onView
           {displayedOrders.length === 0 && (
             <tr>
               <td colSpan={showCustomer ? 7 : 6} className="py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
-                No orders found in this view.
+                {t('orderTable.noOrdersFound')}
               </td>
             </tr>
           )}

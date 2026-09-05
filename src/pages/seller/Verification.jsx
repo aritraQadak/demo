@@ -24,43 +24,43 @@ export default function Verification() {
   const verificationItems = [
     {
       id: 'identity',
-      title: 'Artisan Pehchan Card & Aadhaar KYC',
-      authority: 'Ministry of Textiles, Development Commissioner (Handicrafts)',
-      status: 'Verified',
+      title: t('verification.item1Title'),
+      authority: t('verification.item1Authority'),
+      status: t('verification.statusVerified'),
       score: '100%',
       regNo: 'PAH-WB-BK-2021-08492',
-      date: 'Verified on 14 Jan 2024',
-      description: 'Physical identity and traditional artisan genealogy verified against national handicrafts artisan registry.'
+      date: '14 Jan 2024',
+      description: t('verification.item1Desc')
     },
     {
       id: 'gi',
-      title: 'Geographical Indication (GI-452)',
-      authority: 'Geographical Indications Registry, Government of India',
-      status: 'Verified',
+      title: t('verification.item2Title'),
+      authority: t('verification.item2Authority'),
+      status: t('verification.statusVerified'),
       score: '100%',
       regNo: 'GI-APPL-452 / Certificate #WB-8821',
-      date: 'Valid through Dec 2030',
-      description: 'Authorized user certificate for Bankura Panchmura Terracotta craft originating exclusively from alluvial clay beds in Bankura, WB.'
+      date: 'Dec 2030',
+      description: t('verification.item2Desc')
     },
     {
       id: 'cluster',
-      title: 'Panchmura Terracotta Artisan Cooperative',
-      authority: 'West Bengal State Handicrafts Development Corporation',
-      status: 'Verified',
+      title: t('verification.item3Title'),
+      authority: t('verification.item3Authority'),
+      status: t('verification.statusVerified'),
       score: '88%',
       regNo: 'COOP-WB-BK-114',
-      date: 'Audit completed March 2026',
-      description: 'Active membership verified in the local community cluster with peer endorsement from fellow master artisans.'
+      date: 'March 2026',
+      description: t('verification.item3Desc')
     },
     {
       id: 'process',
-      title: 'Process Proof & Workshop Firing Audit',
-      authority: 'Karigar Independent Craft Verification Team',
-      status: 'Verified',
+      title: t('verification.item4Title'),
+      authority: t('verification.item4Authority'),
+      status: t('verification.statusVerified'),
       score: '95%',
       regNo: 'AUD-VID-99201',
-      date: 'Verified via Video Inspection',
-      description: 'Raw alluvial clay preparation, traditional manual wheel throwing, and wood-fired kiln proof inspected and cataloged.'
+      date: 'Video Audit',
+      description: t('verification.item4Desc')
     }
   ];
 
@@ -92,21 +92,21 @@ export default function Verification() {
         <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-6 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs space-y-5 transition-colors">
           <div>
             <span className="text-xs font-bold text-gray-400 dark:text-gray-400 uppercase tracking-wider">
-              Composite Trust Score
+              {t('verification.compositeScore')}
             </span>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-4xl font-black text-gray-900 dark:text-[#F9FAFB]">4.8</span>
               <span className="text-sm font-semibold text-gray-400 dark:text-gray-500">/ 5.0</span>
             </div>
             <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mt-1">
-              Top 5% among 12,000+ Indian regional craftspeople
+              {t('verification.topPercentile')}
             </p>
           </div>
 
           <div className="space-y-3 pt-3 border-t border-gray-100 dark:border-gray-700/80 text-xs">
             <div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                <span>Identity Verification</span>
+                <span>{t('verification.identityKyc')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400">100%</strong>
               </div>
               <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">
@@ -116,7 +116,7 @@ export default function Verification() {
 
             <div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                <span>GI Tag Authenticity</span>
+                <span>{t('verification.giTagAuth')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400">100%</strong>
               </div>
               <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">
@@ -126,7 +126,7 @@ export default function Verification() {
 
             <div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                <span>Process &amp; Workshop Proof</span>
+                <span>{t('verification.processWorkshop')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400">95%</strong>
               </div>
               <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">
@@ -136,7 +136,7 @@ export default function Verification() {
 
             <div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                <span>Buyer Satisfaction Rating</span>
+                <span>{t('verification.buyerSatisfaction')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400">94%</strong>
               </div>
               <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">
@@ -146,7 +146,7 @@ export default function Verification() {
 
             <div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
-                <span>Cluster Credibility</span>
+                <span>{t('verification.clusterCredibility')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400">88%</strong>
               </div>
               <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full">
@@ -157,7 +157,7 @@ export default function Verification() {
 
           <div className="p-3 bg-gray-50 dark:bg-[#111827] rounded-xl border border-gray-100 dark:border-gray-700/80 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
             <Info className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 inline mr-1 -mt-0.5" />
-            Scores are recalculated continuously based on dispatch punctuality, buyer feedback, and periodic cluster re-certification.
+            {t('verification.scoreDisclaimer')}
           </div>
         </div>
 
@@ -165,7 +165,7 @@ export default function Verification() {
         <div className="md:col-span-2 space-y-4">
           <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-5 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs transition-colors">
             <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB] mb-3">
-              Active Official Credentials
+              {t('verification.activeCredentials')}
             </h3>
 
             <div className="space-y-3">
@@ -191,7 +191,7 @@ export default function Verification() {
                   </p>
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-gray-200/60 dark:border-gray-700/60 text-[11px] text-gray-400 dark:text-gray-400">
-                    <span>Issued by: <strong className="text-gray-600 dark:text-gray-300">{item.authority}</strong></span>
+                    <span>{t('verification.issuedBy')} <strong className="text-gray-600 dark:text-gray-300">{item.authority}</strong></span>
                     <span className="font-mono text-gray-500 dark:text-gray-400">{item.regNo}</span>
                   </div>
                 </div>
@@ -202,18 +202,18 @@ export default function Verification() {
           {/* Badges Preview on Marketplace */}
           <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-5 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs transition-colors">
             <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB] mb-2">
-              Buyer-Facing Trust Badges
+              {t('verification.buyerBadges')}
             </h3>
             <p className="text-xs text-gray-500 dark:text-[#CBD5E1] mb-3">
-              These verified badges are automatically stamped onto your craft product pages and checkout receipts:
+              {t('verification.buyerBadgesDesc')}
             </p>
 
             <div className="flex flex-wrap gap-2.5">
-              <TrustBadge type="verified_artisan" label="Master Artisan Verified" size="md" />
-              <TrustBadge type="gi_verified" label="GI-452 Certified Origin" size="md" />
-              <TrustBadge type="authentic_image" label="Authentic Craft (No AI)" size="md" />
-              <TrustBadge type="verified_cluster" label="Panchmura Cluster Co-op" size="md" />
-              <TrustBadge type="process_proof" label="Video Firing Proof" size="md" />
+              <TrustBadge type="verified_artisan" label={t('verification.badgeMasterArtisan')} size="md" />
+              <TrustBadge type="gi_verified" label={t('verification.badgeGiCertified')} size="md" />
+              <TrustBadge type="authentic_image" label={t('verification.badgeAuthenticCraft')} size="md" />
+              <TrustBadge type="verified_cluster" label={t('verification.badgeClusterCoop')} size="md" />
+              <TrustBadge type="process_proof" label={t('verification.badgeVideoFiring')} size="md" />
             </div>
           </div>
         </div>

@@ -71,7 +71,7 @@ export default function Settings() {
         <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-6 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs space-y-4 transition-colors">
           <div className="flex items-center gap-2 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <User className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">Artisan Profile</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">{t('settings.artisanProfile', 'Artisan Profile')}</h3>
           </div>
 
           <div className="flex items-center gap-4">
@@ -84,14 +84,14 @@ export default function Settings() {
               <h4 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">{formData.name}</h4>
               <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">{formData.craft}</p>
               <span className="inline-block mt-1 text-[10px] bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
-                Aadhaar &amp; GI Verified
+                {t('settings.aadhaarGiVerified', 'Aadhaar & GI Verified')}
               </span>
             </div>
           </div>
 
           <div className="space-y-3 text-xs">
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Full Name</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.fullName', 'Full Name')}</label>
               <input
                 type="text"
                 value={formData.name}
@@ -101,7 +101,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Craft Specialization</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.craftSpecialization', 'Craft Specialization')}</label>
               <input
                 type="text"
                 value={formData.craft}
@@ -111,7 +111,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Phone Number (For Order SMS)</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.phoneForSms', 'Phone Number (For Order SMS)')}</label>
               <div className="relative">
                 <Phone className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
@@ -124,7 +124,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Workshop / Kiln Physical Address</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.workshopAddress', 'Workshop / Kiln Physical Address')}</label>
               <textarea
                 rows={2}
                 value={formData.workshopAddress}
@@ -139,19 +139,19 @@ export default function Settings() {
         <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-6 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs space-y-4 transition-colors">
           <div className="flex items-center gap-2 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <Building2 className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">Direct Payout Bank Account</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">{t('settings.directPayoutTitle', 'Direct Payout Bank Account')}</h3>
           </div>
 
           <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-900 dark:text-emerald-300 flex items-start gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
             <span>
-              Bank account is Aadhaar-seeded for direct escrow disbursements from verified buyer payments.
+              {t('settings.aadhaarSeededDesc', 'Bank account is Aadhaar-seeded for direct escrow disbursements from verified buyer payments.')}
             </span>
           </div>
 
           <div className="space-y-3 text-xs">
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Account Holder Name</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.accountHolderName', 'Account Holder Name')}</label>
               <input
                 type="text"
                 value={formData.accountHolder}
@@ -161,7 +161,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Bank Name</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.bankName', 'Bank Name')}</label>
               <input
                 type="text"
                 value={formData.bankName}
@@ -171,7 +171,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">Account Number</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.accountNumber', 'Account Number')}</label>
               <input
                 type="text"
                 value={formData.accountNumber}
@@ -181,7 +181,7 @@ export default function Settings() {
             </div>
 
             <div>
-              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">IFSC Code</label>
+              <label className="block text-gray-600 dark:text-gray-300 font-medium mb-1">{t('settings.ifscCode', 'IFSC Code')}</label>
               <input
                 type="text"
                 value={formData.ifsc}
@@ -214,7 +214,7 @@ export default function Settings() {
                 type="button"
                 onClick={() => {
                   setLang(item.code);
-                  addToast(`Language changed to ${item.native}`, 'info');
+                  addToast(t('settings.langChangedToast', { lang: item.native, defaultValue: `Language changed to ${item.native}` }), 'info');
                 }}
                 className={`p-3 rounded-xl border text-center transition-all ${
                   lang === item.code
@@ -233,14 +233,14 @@ export default function Settings() {
         <div className="bg-white dark:bg-[#1F2937] rounded-2xl p-6 border border-gray-200/90 dark:border-gray-700/80 shadow-2xs space-y-4 transition-colors">
           <div className="flex items-center gap-2 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <Bell className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">Alerts &amp; Notifications</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#F9FAFB]">{t('settings.alertsAndNotifications', 'Alerts & Notifications')}</h3>
           </div>
 
           <div className="space-y-3 text-xs">
             <label className="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#111827] cursor-pointer">
               <div>
-                <span className="font-bold text-gray-900 dark:text-white block">Instant SMS Dispatch Alerts</span>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400">Receive SMS in Hindi when a new order is confirmed.</span>
+                <span className="font-bold text-gray-900 dark:text-white block">{t('settings.smsAlertsTitle', 'Instant SMS Dispatch Alerts')}</span>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">{t('settings.smsAlertsDesc', 'Receive SMS alerts when a new order is confirmed.')}</span>
               </div>
               <input
                 type="checkbox"
@@ -252,8 +252,8 @@ export default function Settings() {
 
             <label className="flex items-center justify-between p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#111827] cursor-pointer">
               <div>
-                <span className="font-bold text-gray-900 dark:text-white block">WhatsApp Audio Updates</span>
-                <span className="text-[11px] text-gray-500 dark:text-gray-400">Get payout notifications and voice notes via WhatsApp.</span>
+                <span className="font-bold text-gray-900 dark:text-white block">{t('settings.whatsappAudioTitle', 'WhatsApp Audio Updates')}</span>
+                <span className="text-[11px] text-gray-500 dark:text-gray-400">{t('settings.whatsappAudioDesc', 'Get payout notifications and voice notes via WhatsApp.')}</span>
               </div>
               <input
                 type="checkbox"

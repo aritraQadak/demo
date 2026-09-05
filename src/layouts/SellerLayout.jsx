@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SellerSidebar from '../components/SellerSidebar';
 import SellerHeader from '../components/SellerHeader';
 import OrderDetailsModal from '../components/OrderDetailsModal';
 import ToastContainer from '../components/ToastContainer';
 
 export default function SellerLayout() {
+  const { t } = useTranslation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
 
@@ -40,14 +42,14 @@ export default function SellerLayout() {
         {!hasFullFooter && (
           <footer className="py-4 px-6 border-t border-gray-200/70 dark:border-gray-800 text-center text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-[#0F172A] transition-colors">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl mx-auto">
-              <span>Karigar Direct Artisan Marketplace © 2026. Empowering Indian Craftsmanship.</span>
+              <span>{t('footer.compactDesc', 'Karigar Direct Artisan Marketplace © 2026. Empowering Indian Craftsmanship.')}</span>
               <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
                 <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-medium">
                   <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  Escrow Protected Direct Trade
+                  {t('footer.compactEscrow', 'Escrow Protected Direct Trade')}
                 </span>
                 <span>•</span>
-                <span>Artisan Support: 1800-KARIGAR</span>
+                <span>{t('footer.compactSupport', 'Artisan Support: 1800-KARIGAR')}</span>
               </div>
             </div>
           </footer>

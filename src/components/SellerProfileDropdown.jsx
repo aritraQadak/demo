@@ -67,7 +67,7 @@ export default function SellerProfileDropdown() {
           {/* Green verified dot badge */}
           <span
             className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-[#1F2937] flex items-center justify-center text-white"
-            title="Identity & GI Verified Artisan"
+            title={t('verification.badgeMasterArtisan')}
           >
             <CheckCircle className="w-2.5 h-2.5 stroke-[3]" />
           </span>
@@ -86,7 +86,7 @@ export default function SellerProfileDropdown() {
           </div>
           <div className="flex items-center gap-1 mt-0.5">
             <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">
-              {profile.role || 'Verified Artisan'}
+              {t('nav.verifiedBadge')}
             </span>
           </div>
         </div>

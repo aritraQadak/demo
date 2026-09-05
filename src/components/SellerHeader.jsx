@@ -21,25 +21,25 @@ export default function SellerHeader({ onToggleMobileMenu }) {
   const notifications = [
     {
       id: 1,
-      title: 'Payment Released from Escrow',
-      desc: '₹1,200 for Terracotta Pot (#KGR1234) released to your SBI Account.',
-      time: '10m ago',
+      title: t('notifications.paymentReleased'),
+      desc: t('dashboard.escrowPaymentDesc'),
+      time: t('dashboard.timeAgo10m'),
       icon: ShieldCheck,
       color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400'
     },
     {
       id: 2,
-      title: 'New Customer Inquiry',
-      desc: 'Priya Sharma asked: "Is this terracotta pot 100% handmade?"',
-      time: '1h ago',
+      title: t('notifications.customerInquiry'),
+      desc: t('dashboard.customerInquiryDesc'),
+      time: t('dashboard.timeAgo1h'),
       icon: MessageCircle,
       color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400'
     },
     {
       id: 3,
-      title: 'GI Registry Renewal Approved',
-      desc: 'Bankura Panchmura Pottery GI-452 authorization re-verified.',
-      time: '1d ago',
+      title: t('notifications.giRenewal'),
+      desc: t('dashboard.giRenewalDesc'),
+      time: t('dashboard.timeAgo1d'),
       icon: PackageCheck,
       color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400'
     }
@@ -83,7 +83,7 @@ export default function SellerHeader({ onToggleMobileMenu }) {
           <span className="font-semibold text-gray-900 dark:text-gray-100">{t('nav.artisanStudio')}</span>
           <span className="text-gray-300 dark:text-gray-600">/</span>
           <span className="text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 font-medium px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-            {profile.cluster || 'Bankura Artisan Cluster'}
+            {profile.cluster || t('dashboard.bankuraCluster')}
           </span>
         </div>
       </div>
@@ -138,10 +138,10 @@ export default function SellerHeader({ onToggleMobileMenu }) {
             <div className="absolute right-0 mt-2 w-80 sm:w-88 bg-white dark:bg-[#1F2937] rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50 animate-in fade-in-50 duration-150">
               <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700/80 flex items-center justify-between">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Notifications &amp; Alerts
+                  {t('notifications.title')}
                 </h4>
                 <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-                  All Systems Active
+                  {t('notifications.allSystemsActive')}
                 </span>
               </div>
               <div className="divide-y divide-gray-50 dark:divide-gray-700/50 max-h-80 overflow-y-auto">

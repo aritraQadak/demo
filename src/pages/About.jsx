@@ -83,9 +83,9 @@ export default function About() {
             <div className="pt-2">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#14532D] hover:bg-[#0f3f22] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#14532D] hover:bg-[#0f3f22] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer"
               >
-                <span>{t('about.missionTitle')}</span>
+                <span>{t('contact.title')}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -111,10 +111,10 @@ export default function About() {
                 </div>
                 <div>
                   <p className="font-serif italic font-medium text-gray-900 dark:text-amber-100 text-sm sm:text-base leading-snug">
-                    “When you support a Karigar, you support a legacy.”
+                    {t('about.quote')}
                   </p>
                   <p className="text-[11px] text-amber-900/70 dark:text-amber-300/70 mt-1 font-semibold uppercase tracking-wider">
-                    — Karigar Heritage Pledge
+                    — {t('about.quoteAuthor')}
                   </p>
                 </div>
               </div>

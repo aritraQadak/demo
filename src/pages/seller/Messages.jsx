@@ -93,7 +93,7 @@ export default function Messages() {
     );
 
     setInputText('');
-    addToast('Message sent to buyer', 'success');
+    addToast(t('messages.messageSentSuccess', 'Message sent to buyer'), 'success');
   };
 
   return (
@@ -124,7 +124,7 @@ export default function Messages() {
               <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search conversations..."
+                placeholder={t('messages.searchPlaceholder', 'Search conversations...')}
                 className="w-full pl-8 pr-3 py-1.5 bg-gray-50 dark:bg-[#111827] border border-gray-200 dark:border-gray-700 rounded-lg text-xs text-gray-800 dark:text-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-orange-400"
               />
             </div>
@@ -139,33 +139,38 @@ export default function Messages() {
                 <div
                   key={thread.id}
                   onClick={() => setActiveThreadId(thread.id)}
-                  className={`p-3.5 flex items-start gap-3 cursor-pointer transition-colors ${
+                  className={`p-3.5 cursor-pointer transition-colors flex items-start gap-3 ${
                     isSelected
-                      ? 'bg-orange-50/70 dark:bg-orange-950/40 border-l-3 border-orange-500'
-                      : 'hover:bg-gray-50 dark:hover:bg-[#1E293B]'
+                      ? 'bg-amber-50/70 dark:bg-amber-950/40 border-l-3 border-amber-600'
+                      : 'hover:bg-gray-50 dark:hover:bg-[#1F2937]/70'
                   }`}
                 >
                   <img
                     src={thread.avatar}
                     alt={thread.buyerName}
-                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    className="w-10 h-10 rounded-full object-cover shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-gray-900 dark:text-[#F9FAFB] truncate">
+                    <div className="flex items-baseline justify-between mb-0.5">
+                      <h4 className="text-xs font-bold text-gray-900 dark:text-white truncate">
                         {thread.buyerName}
                       </h4>
-                      <span className="text-[10px] text-gray-400 whitespace-nowrap">
-                        {lastMsg?.time}
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 shrink-0">
+                        {lastMsg.time}
                       </span>
                     </div>
-                    <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium truncate mt-0.5">
-                      Re: {thread.productContext}
+                    <p className="text-[11px] font-medium text-amber-900 dark:text-amber-400 truncate mb-1">
+                      {t('messages.re', 'Re:')} {thread.productName}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                      {lastMsg?.text}
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {lastMsg.text}
                     </p>
                   </div>
+                  {thread.unreadCount > 0 && (
+                    <span className="w-4 h-4 bg-orange-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center shrink-0">
+                      {thread.unreadCount}
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -195,7 +200,7 @@ export default function Messages() {
 
             <div className="flex items-center gap-2">
               <span className="text-[11px] bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800 font-medium">
-                Escrow Order Verified
+                {t('messages.escrowVerified', 'Escrow Order Verified')}
               </span>
             </div>
           </div>
@@ -204,7 +209,7 @@ export default function Messages() {
           <div className="flex-1 p-5 space-y-4 overflow-y-auto">
             <div className="text-center my-2">
               <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400 bg-white/80 dark:bg-[#1F2937] px-2.5 py-1 rounded-full border border-gray-200 dark:border-gray-700">
-                End-to-End Escrow Protected Direct Communication
+                {t('messages.endToEndSecurity', 'End-to-End Escrow Protected Direct Communication')}
               </span>
             </div>
 
@@ -225,12 +230,12 @@ export default function Messages() {
                   >
                     <p className="leading-relaxed">{msg.text}</p>
 
-                    {/* Show Hindi translation toggle for buyer messages */}
+                    {/* Show translation toggle for buyer messages */}
                     {!isArtisan && msg.translatedText && (
                       <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700 text-[11px] text-gray-600 dark:text-gray-300 bg-amber-50/50 dark:bg-amber-950/40 p-2 rounded-lg">
                         <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1 mb-0.5">
                           <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                          हिन्दी अनुवाद (Auto Translated):
+                          {t('messages.translatedLabel', 'Auto Translated:')}
                         </span>
                         <span>{msg.translatedText}</span>
                       </div>

@@ -130,7 +130,7 @@ export default function Dashboard() {
           <div className="p-3 bg-gray-50/70 dark:bg-[#0F172A]/50 border-t border-gray-100 dark:border-gray-700/80 px-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              All active orders are dispatch-verified with India Post
+              {t('dashboard.dispatchNotice')}
             </span>
             <Link to="/orders" className="text-gray-700 dark:text-gray-300 hover:underline font-medium">
               {t('common.viewAll')} ({orders.length})
@@ -148,20 +148,20 @@ export default function Dashboard() {
                 <span>{t('verification.trustScoreTitle')}</span>
               </h3>
               <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
-                Top 5% Tier
+                {t('dashboard.topTier')}
               </span>
             </div>
 
             <div className="flex items-baseline gap-2 mb-3">
               <span className="text-3xl font-black text-gray-900 dark:text-[#F9FAFB]">4.8</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">/ 5.0 Rating</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">/ 5.0 {t('dashboard.rating')}</span>
             </div>
 
             {/* Breakdown meters */}
             <div className="space-y-2 text-xs">
               <div>
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Identity Verification</span>
+                  <span>{t('dashboard.meterIdentity')}</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">100%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -171,7 +171,7 @@ export default function Dashboard() {
 
               <div>
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Product Authenticity</span>
+                  <span>{t('dashboard.meterAuthenticity')}</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">92%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -181,7 +181,7 @@ export default function Dashboard() {
 
               <div>
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Successful Orders</span>
+                  <span>{t('dashboard.meterOrders')}</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">95%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -191,7 +191,7 @@ export default function Dashboard() {
 
               <div>
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Buyer Feedback</span>
+                  <span>{t('dashboard.meterFeedback')}</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">94%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -201,7 +201,7 @@ export default function Dashboard() {
 
               <div>
                 <div className="flex justify-between text-[11px] text-gray-500 dark:text-gray-400 mb-1">
-                  <span>Cluster Credibility</span>
+                  <span>{t('dashboard.meterCluster')}</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">88%</span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -213,8 +213,8 @@ export default function Dashboard() {
             {/* Badges preview */}
             <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/80 flex flex-wrap gap-1.5">
               <TrustBadge type="verified_artisan" label={t('nav.verifiedBadge')} size="sm" />
-              <TrustBadge type="gi_verified" label="GI-452 Terracotta" size="sm" />
-              <TrustBadge type="trusted_seller" label="Escrow Verified" size="sm" />
+              <TrustBadge type="gi_verified" label={t('dashboard.giTerracottaBadge')} size="sm" />
+              <TrustBadge type="trusted_seller" label={t('dashboard.escrowBadge')} size="sm" />
             </div>
 
             <Link

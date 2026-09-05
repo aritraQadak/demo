@@ -136,7 +136,7 @@ export default function AddProduct() {
         clearInterval(interval);
         setIsProcessingAI(false);
         setHasAICompleted(true);
-        addToast('✨ AI catalog generated with authenticity confidence!', 'success');
+        addToast(t('addProduct.aiToastSuccess', '✨ AI catalog generated with authenticity confidence!'), 'success');
       }
     }, 450);
   };
@@ -147,7 +147,7 @@ export default function AddProduct() {
       description: transcript,
       name: transcript.length > 40 ? transcript.slice(0, 40) + '...' : transcript
     }));
-    addToast('Voice transcript inserted into form fields', 'info');
+    addToast(t('addProduct.voiceTranscriptToast', 'Voice transcript inserted into form fields'), 'info');
   };
 
   const handleSelectPresetCraft = (preset) => {
@@ -165,7 +165,7 @@ export default function AddProduct() {
       stock: 12,
       description: preset.description
     });
-    addToast(`Selected sample craft: ${preset.name}`, 'info');
+    addToast(t('addProduct.selectedPresetToast', { name: preset.name, defaultValue: `Selected sample craft: ${preset.name}` }), 'info');
   };
 
   const handlePublish = () => {
@@ -275,9 +275,9 @@ export default function AddProduct() {
       {currentStep === 1 && (
         <div className="bg-white rounded-2xl p-6 border border-gray-200/90 shadow-2xs space-y-6">
           <div>
-            <h3 className="text-base font-bold text-gray-900">Step 1 — Upload Product Images</h3>
+            <h3 className="text-base font-bold text-gray-900">{t('addProduct.step1Title', 'Step 1 — Upload Product Images')}</h3>
             <p className="text-xs text-gray-500 mt-0.5">
-              Take photos on your phone or upload high-resolution craft images. Karigar AI enhances lighting and verifies authenticity automatically.
+              {t('addProduct.step1Subtitle', 'Take photos on your phone or upload high-resolution craft images. Karigar AI enhances lighting and verifies authenticity automatically.')}
             </p>
           </div>
 
@@ -287,13 +287,13 @@ export default function AddProduct() {
               <UploadCloud className="w-7 h-7" />
             </div>
             <h4 className="text-base font-bold text-gray-900">
-              Drag &amp; drop product images
+              {t('addProduct.dragDropTitle', 'Drag & drop product images')}
             </h4>
             <p className="text-xs text-gray-500 mt-1">
-              or <span className="text-orange-600 font-semibold underline">click to browse files</span> from your computer or camera
+              {t('addProduct.orText', 'or')} <span className="text-orange-600 font-semibold underline">{t('addProduct.clickToBrowse', 'click to browse files')}</span> {t('addProduct.fromComputer', 'from your computer or camera')}
             </p>
             <p className="text-[11px] text-gray-400 mt-2">
-              Supports JPEG, PNG, WEBP • Multiple images allowed (up to 5 photos)
+              {t('addProduct.uploadFormats', 'Supports JPEG, PNG, WEBP • Multiple images allowed (up to 5 photos)')}
             </p>
           </div>
 
@@ -301,10 +301,10 @@ export default function AddProduct() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Or choose sample authentic craft images to test:
+                {t('addProduct.chooseSampleCraft', 'Or choose sample authentic craft images to test:')}
               </span>
               <span className="text-[11px] text-emerald-600 font-semibold">
-                Verified Indian Crafts
+                {t('addProduct.verifiedIndianCrafts', 'Verified Indian Crafts')}
               </span>
             </div>
 
@@ -327,7 +327,7 @@ export default function AddProduct() {
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-gray-900 truncate">{sample.name}</p>
                     <p className="text-[11px] text-gray-500 truncate">{sample.craftType}</p>
-                    <span className="text-[10px] text-emerald-700 font-medium">GI Registered</span>
+                    <span className="text-[10px] text-emerald-700 font-medium">{t('addProduct.giRegisteredBadge', 'GI Registered')}</span>
                   </div>
                 </div>
               ))}
@@ -337,7 +337,7 @@ export default function AddProduct() {
           {/* Uploaded Thumbnails Preview */}
           {uploadedImages.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-gray-700 mb-2">Selected Product Images:</h4>
+              <h4 className="text-xs font-bold text-gray-700 mb-2">{t('addProduct.selectedImagesLabel', 'Selected Product Images:')}</h4>
               <div className="flex items-center gap-3 flex-wrap">
                 {uploadedImages.map((img, i) => (
                   <div
@@ -346,7 +346,7 @@ export default function AddProduct() {
                   >
                     <img src={img} alt="Uploaded preview" className="w-full h-full object-cover" />
                     <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1 rounded font-semibold">
-                      Primary
+                      {t('addProduct.primaryBadge', 'Primary')}
                     </span>
                   </div>
                 ))}
@@ -374,9 +374,9 @@ export default function AddProduct() {
       {currentStep === 2 && (
         <div className="bg-white rounded-2xl p-6 border border-gray-200/90 shadow-2xs space-y-6">
           <div>
-            <h3 className="text-base font-bold text-gray-900">Step 2 — Product Details</h3>
+            <h3 className="text-base font-bold text-gray-900">{t('addProduct.step2Title', 'Step 2 — Product Details')}</h3>
             <p className="text-xs text-gray-500 mt-0.5">
-              Enter your craft details or speak naturally using your microphone.
+              {t('addProduct.step2Subtitle', 'Enter your craft details or speak naturally using your microphone.')}
             </p>
           </div>
 
@@ -391,40 +391,40 @@ export default function AddProduct() {
             {/* Product Name */}
             <div className="sm:col-span-2">
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Product Name *
+                {t('addProduct.productName', 'Product Name')} *
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent font-medium"
-                placeholder="e.g. Handcrafted Bengal Terracotta Decorative Pot"
+                placeholder={t('addProduct.productNamePlaceholder', 'e.g. Handcrafted Bengal Terracotta Decorative Pot')}
               />
             </div>
 
             {/* Category */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Category *
+                {t('addProduct.category', 'Category')} *
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
               >
-                <option value="Pottery">Pottery &amp; Ceramics</option>
-                <option value="Bamboo & Cane">Bamboo &amp; Cane Craft</option>
-                <option value="Woodcraft">Woodcraft &amp; Carvings</option>
-                <option value="Folk Painting">Folk Painting &amp; Art</option>
-                <option value="Metal Craft">Dhokra &amp; Brass Metalwork</option>
-                <option value="Handloom">Handloom &amp; Textiles</option>
+                <option value="Pottery">{t('addProduct.catPottery', 'Pottery & Ceramics')}</option>
+                <option value="Bamboo & Cane">{t('addProduct.catBamboo', 'Bamboo & Cane Craft')}</option>
+                <option value="Woodcraft">{t('addProduct.catWoodcraft', 'Woodcraft & Carvings')}</option>
+                <option value="Folk Painting">{t('addProduct.catFolkPainting', 'Folk Painting & Art')}</option>
+                <option value="Metal Craft">{t('addProduct.catMetalCraft', 'Dhokra & Brass Metalwork')}</option>
+                <option value="Handloom">{t('addProduct.catHandloom', 'Handloom & Textiles')}</option>
               </select>
             </div>
 
             {/* Price */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Price (₹) *
+                {t('addProduct.priceLabel', 'Price (₹)')} *
               </label>
               <div className="relative">
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
@@ -441,68 +441,68 @@ export default function AddProduct() {
             {/* Material Used */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Material Used *
+                {t('addProduct.materialLabel', 'Material Used')} *
               </label>
               <input
                 type="text"
                 value={formData.material}
                 onChange={(e) => setFormData({ ...formData, material: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
-                placeholder="e.g. Alluvial Terracotta Clay"
+                placeholder={t('addProduct.materialPlaceholder', 'e.g. Alluvial Terracotta Clay')}
               />
             </div>
 
             {/* State / Region */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                State / Region *
+                {t('addProduct.stateLabel', 'State / Region')} *
               </label>
               <input
                 type="text"
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
-                placeholder="e.g. West Bengal"
+                placeholder={t('addProduct.statePlaceholder', 'e.g. West Bengal')}
               />
             </div>
 
             {/* Craft Type */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Craft Type *
+                {t('addProduct.craftTypeLabel', 'Craft Type')} *
               </label>
               <input
                 type="text"
                 value={formData.craftType}
                 onChange={(e) => setFormData({ ...formData, craftType: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
-                placeholder="e.g. Bankura Panchmura Pottery"
+                placeholder={t('addProduct.craftTypePlaceholder', 'e.g. Bankura Panchmura Pottery')}
               />
             </div>
 
             {/* GI Tag */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1 flex items-center justify-between">
-                <span>GI Tag Verification</span>
-                <span className="text-[10px] text-emerald-600 font-semibold">Government Certified</span>
+                <span>{t('addProduct.giTagVerification', 'GI Tag Verification')}</span>
+                <span className="text-[10px] text-emerald-600 font-semibold">{t('addProduct.govCertified', 'Government Certified')}</span>
               </label>
               <select
                 value={formData.giTag}
                 onChange={(e) => setFormData({ ...formData, giTag: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
               >
-                <option value="Bankura Terracotta (GI-452)">Bankura Terracotta (GI-452)</option>
-                <option value="Bengal Dhokra (GI-564)">Bengal Dhokra (GI-564)</option>
-                <option value="Madhubani Painting (GI-105)">Madhubani Painting (GI-105)</option>
-                <option value="Shantiniketan Leather Goods (GI-86)">Shantiniketan Leather Goods (GI-86)</option>
-                <option value="None / Other Traditional Craft">None / Other Traditional Craft</option>
+                <option value="Bankura Terracotta (GI-452)">{t('addProduct.giBankura', 'Bankura Terracotta (GI-452)')}</option>
+                <option value="Bengal Dhokra (GI-564)">{t('addProduct.giDhokra', 'Bengal Dhokra (GI-564)')}</option>
+                <option value="Madhubani Painting (GI-105)">{t('addProduct.giMadhubani', 'Madhubani Painting (GI-105)')}</option>
+                <option value="Shantiniketan Leather Goods (GI-86)">{t('addProduct.giShantiniketan', 'Shantiniketan Leather Goods (GI-86)')}</option>
+                <option value="None / Other Traditional Craft">{t('addProduct.giNone', 'None / Other Traditional Craft')}</option>
               </select>
             </div>
 
             {/* Stock Quantity */}
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Stock Quantity *
+                {t('addProduct.stockLabel', 'Stock Quantity')} *
               </label>
               <input
                 type="number"
@@ -516,14 +516,14 @@ export default function AddProduct() {
             {/* Description */}
             <div className="sm:col-span-2">
               <label className="block text-xs font-bold text-gray-700 mb-1">
-                Product Description *
+                {t('addProduct.descLabel', 'Product Description')} *
               </label>
               <textarea
                 rows={3}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-400 font-medium"
-                placeholder="Describe your craft, inspiration, firing methods, dimensions..."
+                placeholder={t('addProduct.descPlaceholder', 'Describe your craft, inspiration, firing methods, dimensions...')}
               />
             </div>
           </div>
@@ -561,17 +561,17 @@ export default function AddProduct() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-orange-600" />
-                  <span>Karigar AI Catalog &amp; Authenticity Studio</span>
+                  <span>{t('addProduct.studioTitle', 'Karigar AI Catalog & Authenticity Studio')}</span>
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Enhancing physical craft images, estimating fair artisan prices &amp; evaluating authenticity signals.
+                  {t('addProduct.studioSubtitle', 'Enhancing physical craft images, estimating fair artisan prices & evaluating authenticity signals.')}
                 </p>
               </div>
 
               {hasAICompleted && (
                 <span className="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1 self-start sm:self-auto">
                   <CheckCircle2 className="w-4 h-4" />
-                  All 9 Processing Steps Complete
+                  {t('addProduct.allStepsComplete', 'All 9 Processing Steps Complete')}
                 </span>
               )}
             </div>
@@ -580,7 +580,7 @@ export default function AddProduct() {
             <div className="my-5">
               <div className="flex items-center justify-between text-xs font-bold mb-1.5">
                 <span className="text-gray-700">
-                  {isProcessingAI ? 'AI Processing Craft Metadata...' : 'Processing Complete'}
+                  {isProcessingAI ? t('addProduct.aiProcessingStatus', 'AI Processing Craft Metadata...') : t('addProduct.processingCompleteStatus', 'Processing Complete')}
                 </span>
                 <span className="text-orange-600">{processingProgress}%</span>
               </div>
@@ -610,7 +610,7 @@ export default function AddProduct() {
                     ) : (
                       <RefreshCw className="w-3.5 h-3.5 text-gray-300 animate-spin flex-shrink-0" />
                     )}
-                    <span className="truncate">{step}</span>
+                    <span className="truncate">{t(`addProduct.aiStep${idx + 1}`, step)}</span>
                   </div>
                 );
               })}
@@ -625,7 +625,7 @@ export default function AddProduct() {
                 <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                   <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-orange-600" />
-                    <span>AI Generated Catalog Preview</span>
+                    <span>{t('addProduct.aiCatalogPreview', 'AI Generated Catalog Preview')}</span>
                   </h4>
                   <div className="flex items-center gap-2">
                     <button
@@ -633,14 +633,14 @@ export default function AddProduct() {
                       onClick={startAIWorkflow}
                       className="text-xs text-gray-500 hover:text-gray-800 font-semibold flex items-center gap-1"
                     >
-                      <RefreshCw className="w-3 h-3" /> Regenerate
+                      <RefreshCw className="w-3 h-3" /> {t('addProduct.regenerate', 'Regenerate')}
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurrentStep(2)}
                       className="text-xs text-gray-500 hover:text-gray-800 font-semibold flex items-center gap-1"
                     >
-                      <Edit3 className="w-3 h-3" /> Edit
+                      <Edit3 className="w-3 h-3" /> {t('addProduct.edit', 'Edit')}
                     </button>
                   </div>
                 </div>
@@ -648,7 +648,7 @@ export default function AddProduct() {
                 {/* AI Title */}
                 <div>
                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    AI Generated Title:
+                    {t('addProduct.aiGenTitle', 'AI Generated Title:')}
                   </span>
                   <p className="text-base font-bold text-gray-900 mt-0.5">
                     {formData.name}
@@ -658,7 +658,7 @@ export default function AddProduct() {
                 {/* AI Description */}
                 <div>
                   <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                    AI Generated Description:
+                    {t('addProduct.aiGenDesc', 'AI Generated Description:')}
                   </span>
                   <p className="text-sm text-gray-700 mt-1 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-200">
                     {formData.description}
@@ -668,15 +668,15 @@ export default function AddProduct() {
                 {/* Metadata Badges */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs">
-                    <span className="text-gray-400 block text-[10px]">Suggested Category:</span>
+                    <span className="text-gray-400 block text-[10px]">{t('addProduct.suggestedCat', 'Suggested Category:')}</span>
                     <strong className="text-gray-800">{formData.category}</strong>
                   </div>
                   <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs">
-                    <span className="text-gray-400 block text-[10px]">Material:</span>
+                    <span className="text-gray-400 block text-[10px]">{t('addProduct.material', 'Material:')}</span>
                     <strong className="text-gray-800">{formData.material}</strong>
                   </div>
                   <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs">
-                    <span className="text-gray-400 block text-[10px]">Origin:</span>
+                    <span className="text-gray-400 block text-[10px]">{t('addProduct.origin', 'Origin:')}</span>
                     <strong className="text-gray-800">{formData.state}</strong>
                   </div>
                 </div>
@@ -685,15 +685,15 @@ export default function AddProduct() {
                 <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50/40 p-4 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <span className="text-xs text-emerald-900 font-semibold">
-                      Market Price Range Analysis:
+                      {t('addProduct.priceRangeAnalysis', 'Market Price Range Analysis:')}
                     </span>
                     <p className="text-sm text-gray-600 font-medium mt-0.5">
-                      Suggested Price: <span className="font-bold text-gray-900">{formData.suggestedPriceRange}</span>
+                      {t('addProduct.suggestedPriceLabel', 'Suggested Price:')} <span className="font-bold text-gray-900">{formData.suggestedPriceRange}</span>
                     </p>
                   </div>
                   <div className="text-left sm:text-right">
                     <span className="text-[11px] text-emerald-700 font-bold block">
-                      Recommended Listing Price:
+                      {t('addProduct.recommendedListingPrice', 'Recommended Listing Price:')}
                     </span>
                     <span className="text-2xl font-black text-emerald-900">
                       ₹{formData.price}
@@ -708,7 +708,7 @@ export default function AddProduct() {
                     onClick={() => setCurrentStep(4)}
                     className="px-6 py-2.5 bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs transition-colors"
                   >
-                    <span>Accept AI Suggestions &amp; Review</span>
+                    <span>{t('addProduct.acceptAISuggestions', 'Accept AI Suggestions & Review')}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -719,10 +719,10 @@ export default function AddProduct() {
                 <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                   <h4 className="text-sm font-bold text-gray-900 flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Product Authenticity Check</span>
+                    <span>{t('addProduct.authenticityCheckTitle', 'Product Authenticity Check')}</span>
                   </h4>
                   <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                    Screened
+                    {t('addProduct.screenedBadge', 'Screened')}
                   </span>
                 </div>
 
@@ -732,11 +732,11 @@ export default function AddProduct() {
                     92%
                   </div>
                   <p className="text-xs font-bold text-emerald-900 mt-0.5">
-                    Authenticity Confidence
+                    {t('addProduct.authenticityConfidence', 'Authenticity Confidence')}
                   </p>
                   <p className="text-xs font-semibold text-emerald-700 mt-1 inline-flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    Status: Likely Authentic ✓
+                    {t('addProduct.statusLikelyAuthentic', 'Status: Likely Authentic ✓')}
                   </p>
                 </div>
 
@@ -744,8 +744,8 @@ export default function AddProduct() {
                 <div className="space-y-3 text-xs">
                   <div>
                     <div className="flex justify-between text-gray-600 mb-1">
-                      <span>AI Image Detection</span>
-                      <span className="font-bold text-gray-900">Passed (Natural)</span>
+                      <span>{t('addProduct.signalImageDetection', 'AI Image Detection')}</span>
+                      <span className="font-bold text-gray-900">{t('addProduct.signalPassedNatural', 'Passed (Natural)')}</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-100 rounded-full">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: '96%' }} />
@@ -754,8 +754,8 @@ export default function AddProduct() {
 
                   <div>
                     <div className="flex justify-between text-gray-600 mb-1">
-                      <span>Duplicate Image Check</span>
-                      <span className="font-bold text-gray-900">0 Matches (Original)</span>
+                      <span>{t('addProduct.signalDuplicateCheck', 'Duplicate Image Check')}</span>
+                      <span className="font-bold text-gray-900">{t('addProduct.signal0MatchesOriginal', '0 Matches (Original)')}</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-100 rounded-full">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: '100%' }} />
@@ -764,8 +764,8 @@ export default function AddProduct() {
 
                   <div>
                     <div className="flex justify-between text-gray-600 mb-1">
-                      <span>Image Manipulation Check</span>
-                      <span className="font-bold text-gray-900">Clean (No Edits)</span>
+                      <span>{t('addProduct.signalManipulationCheck', 'Image Manipulation Check')}</span>
+                      <span className="font-bold text-gray-900">{t('addProduct.signalCleanNoEdits', 'Clean (No Edits)')}</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-100 rounded-full">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: '94%' }} />
@@ -774,8 +774,8 @@ export default function AddProduct() {
 
                   <div>
                     <div className="flex justify-between text-gray-600 mb-1">
-                      <span>Image/Product Consistency</span>
-                      <span className="font-bold text-gray-900">94% Match</span>
+                      <span>{t('addProduct.signalConsistency', 'Image/Product Consistency')}</span>
+                      <span className="font-bold text-gray-900">{t('addProduct.signal94Match', '94% Match')}</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-100 rounded-full">
                       <div className="h-full bg-emerald-500 rounded-full" style={{ width: '94%' }} />
@@ -787,7 +787,7 @@ export default function AddProduct() {
                 <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 leading-snug flex items-start gap-2">
                   <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p>
-                    “Multiple signals are used to estimate image authenticity. AI detection estimates probability based on sensor patterns and physical light scattering.”
+                    {t('addProduct.transparencyNote', '“Multiple signals are used to estimate image authenticity. AI detection estimates probability based on sensor patterns and physical light scattering.”')}
                   </p>
                 </div>
               </div>
@@ -803,13 +803,13 @@ export default function AddProduct() {
         <div className="bg-white rounded-2xl p-6 border border-gray-200/90 shadow-2xs space-y-6">
           <div className="pb-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="text-base font-bold text-gray-900">Step 4 — Review &amp; Publish</h3>
+              <h3 className="text-base font-bold text-gray-900">{t('addProduct.step4Title', 'Step 4 — Review & Publish')}</h3>
               <p className="text-xs text-gray-500 mt-0.5">
-                Inspect your final marketplace listing, verified credentials, and escrow protection details.
+                {t('addProduct.step4Subtitle', 'Inspect your final marketplace listing, verified credentials, and escrow protection details.')}
               </p>
             </div>
             <span className="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
-              Ready for Global Buyers
+              {t('addProduct.readyForBuyers', 'Ready for Global Buyers')}
             </span>
           </div>
 
@@ -825,7 +825,7 @@ export default function AddProduct() {
               <div className="p-2 bg-white rounded-lg border border-gray-200 text-center">
                 <span className="text-xs font-bold text-emerald-700 flex items-center justify-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  AI Enhanced &amp; Lighting Normalized
+                  {t('addProduct.aiEnhancedLighting', 'AI Enhanced & Lighting Normalized')}
                 </span>
               </div>
             </div>
@@ -845,9 +845,9 @@ export default function AddProduct() {
                     {profile.location}
                   </span>
                   <span>•</span>
-                  <span>Artisan: <strong>{profile.name}</strong></span>
+                  <span>{t('addProduct.artisanLabel', 'Artisan:')} <strong>{profile.name}</strong></span>
                   <span>•</span>
-                  <span className="font-bold text-purple-700">Trust Score: 4.8 / 5</span>
+                  <span className="font-bold text-purple-700">{t('addProduct.trustScore', 'Trust Score: 4.8 / 5')}</span>
                 </div>
               </div>
 
@@ -860,14 +860,14 @@ export default function AddProduct() {
                   ₹{Math.round(Number(formData.price) * 1.25).toLocaleString('en-IN')}
                 </span>
                 <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  {formData.stock} units ready in workshop
+                  {t('addProduct.unitsInWorkshop', '{{count}} units ready in workshop', { count: formData.stock })}
                 </span>
               </div>
 
               {/* Description */}
               <div>
                 <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                  Craft Story &amp; Details:
+                  {t('addProduct.craftStoryLabel', 'Craft Story & Details:')}
                 </h4>
                 <p className="text-xs text-gray-600 leading-relaxed bg-white p-3 rounded-xl border border-gray-200">
                   {formData.description}
@@ -877,14 +877,14 @@ export default function AddProduct() {
               {/* Verification Badges */}
               <div>
                 <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Included Verification Badges:
+                  {t('addProduct.includedBadges', 'Included Verification Badges:')}
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  <TrustBadge type="verified_artisan" label="Identity Verified" size="sm" />
-                  <TrustBadge type="gi_verified" label="GI Verified (GI-452)" size="sm" />
-                  <TrustBadge type="authentic_image" label="Authentic Image (92%)" size="sm" />
-                  <TrustBadge type="verified_cluster" label="Cluster Verified" size="sm" />
-                  <TrustBadge type="process_proof" label="Process Proof" size="sm" />
+                  <TrustBadge type="verified_artisan" label={t('addProduct.badgeIdentityVerified', 'Identity Verified')} size="sm" />
+                  <TrustBadge type="gi_verified" label={t('addProduct.badgeGIVerified', 'GI Verified (GI-452)')} size="sm" />
+                  <TrustBadge type="authentic_image" label={t('addProduct.badgeAuthenticImage', 'Authentic Image (92%)')} size="sm" />
+                  <TrustBadge type="verified_cluster" label={t('addProduct.badgeClusterVerified', 'Cluster Verified')} size="sm" />
+                  <TrustBadge type="process_proof" label={t('addProduct.badgeProcessProof', 'Process Proof')} size="sm" />
                 </div>
               </div>
             </div>
@@ -897,7 +897,7 @@ export default function AddProduct() {
               onClick={() => setCurrentStep(3)}
               className="text-xs text-gray-500 hover:text-gray-900 font-medium"
             >
-              {t('common.back', 'Back to AI Suggestions')}
+              {t('addProduct.backToAI', 'Back to AI Suggestions')}
             </button>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -917,7 +917,7 @@ export default function AddProduct() {
                 }}
                 className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold rounded-xl border border-gray-300 transition-colors"
               >
-                {t('common.draft', 'Save as Draft')}
+                {t('addProduct.saveDraft', 'Save as Draft')}
               </button>
 
               <button
