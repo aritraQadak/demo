@@ -8,26 +8,30 @@ datasource db {
 }
 
 model User {
-  id                 String   @id @default(cuid())
-  fullName           String
-  email              String   @unique
-  mobile             String?  @unique
-  passwordHash       String
+  id       String  @id @default(cuid())
+  fullName String
+  email    String  @unique
+  mobile   String? @unique
+  password String?
 
-  role               String   @default("ARTISAN") // UserRole: ARTISAN, PATRON, ADMIN
+  role String @default("ARTISAN") // UserRole: ARTISAN, PATRON, ADMIN
 
-  craftType          String?
-  state              String?
-  district           String?
-  yearsOfExperience  Int?
-  businessName       String?
+  provider          String?
+  providerAccountId String?
+  avatarUrl         String?
 
-  giTagNumber        String?
-  clusterName        String?
+  craftType         String?
+  state             String?
+  district          String?
+  yearsOfExperience Int?
+  businessName      String?
 
-  isVerified         Boolean  @default(false)
-  isActive           Boolean  @default(true)
+  giTagNumber String?
+  clusterName String?
 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

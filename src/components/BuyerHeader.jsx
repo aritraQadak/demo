@@ -50,7 +50,7 @@ export default function BuyerHeader({ className = '' }) {
   const handleSignOut = () => {
     logout();
     setIsUserMenuOpen(false);
-    navigate('/');
+    navigate('/login');
   };
 
   return (

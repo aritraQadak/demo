@@ -17,9 +17,13 @@ model User {
   fullName           String
   email              String   @unique
   mobile             String?  @unique
-  passwordHash       String
+  password           String?
 
   role               UserRole @default(ARTISAN)
+
+  provider           String?
+  providerAccountId  String?
+  avatarUrl          String?
 
   craftType          String?
   state              String?

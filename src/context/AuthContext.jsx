@@ -135,6 +135,37 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Log in with Google authentication
+   */
+  const loginWithGoogle = async (googleToken, selectedRole) => {
+    const res = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token: googleToken, selectedRole })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Google authentication failed.');
+    }
+
+    setToken(data.token);
+    setUser(data.user);
+
+    try {
+      localStorage.setItem('karigar-auth-token', data.token);
+      localStorage.setItem('karigar-user', JSON.stringify(data.user));
+    } catch (e) {
+      console.warn('Error storing auth token:', e);
+    }
+
+    return data.user;
+  };
+
+  /**
    * Log out: clears auth session while preserving karigar-theme & karigar-language
    */
   const logout = useCallback(async () => {
@@ -157,15 +188,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const isAuthenticated = Boolean(token && user);
+  const role = user?.role || null;
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        role,
         token,
         isAuthenticated,
         loading,
         login,
+        loginWithGoogle,
         signup,
         logout,
         setUser

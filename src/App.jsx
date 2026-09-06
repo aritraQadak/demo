@@ -49,47 +49,23 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth" element={<Navigate to="/login" replace />} />
 
-                {/* Buyer / Public Application Routes */}
-                <Route element={<BuyerLayout />}>
+                {/* Protected Buyer / Patron Application Routes (requires PATRON role) */}
+                <Route
+                  element={
+                    <ProtectedRoute allowedRoles={['PATRON']}>
+                      <BuyerLayout />
+                    </ProtectedRoute>
+                  }
+                >
                   <Route path="/" element={<Home />} />
                   <Route path="/explore/:stateSlug" element={<StateExplore />} />
                   <Route path="/product/:productId" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Checkout />} />
-
-                  {/* Protected Buyer Routes */}
-                  <Route
-                    path="/buyer/orders"
-                    element={
-                      <ProtectedRoute requiredRole="PATRON">
-                        <BuyerOrders />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/buyer/certificates"
-                    element={
-                      <ProtectedRoute requiredRole="PATRON">
-                        <Certificates />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/buyer/saved"
-                    element={
-                      <ProtectedRoute requiredRole="PATRON">
-                        <Saved />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/buyer/wallet"
-                    element={
-                      <ProtectedRoute requiredRole="PATRON">
-                        <Wallet />
-                      </ProtectedRoute>
-                    }
-                  />
+                  <Route path="/buyer/orders" element={<BuyerOrders />} />
+                  <Route path="/buyer/certificates" element={<Certificates />} />
+                  <Route path="/buyer/saved" element={<Saved />} />
+                  <Route path="/buyer/wallet" element={<Wallet />} />
 
                   {/* Shared Info Pages */}
                   <Route path="/about" element={<About />} />

@@ -1,13 +1,15 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
-import { ShieldAlert, ArrowLeft } from 'lucide-react';
+import { ShieldAlert, ArrowLeft, ArrowRight } from 'lucide-react';
 
-export default function ProtectedRoute({ children, requiredRole = 'ARTISAN' }) {
+export default function ProtectedRoute({ children, requiredRole, allowedRoles }) {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
+
+  const roles = allowedRoles || (requiredRole ? [requiredRole] : ['ARTISAN']);
 
   if (loading) {
     return (
@@ -27,9 +29,10 @@ export default function ProtectedRoute({ children, requiredRole = 'ARTISAN' }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If authenticated but role mismatch (e.g. PATRON accessing ARTISAN or vice versa)
-  if (requiredRole && user.role !== requiredRole) {
-    const isPatronAccessingArtisan = requiredRole === 'ARTISAN' && user.role === 'PATRON';
+  // If authenticated but role mismatch
+  const hasAllowedRole = roles.includes(user.role);
+  if (!hasAllowedRole) {
+    const isArtisanTryingPatron = user.role === 'ARTISAN';
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-surface dark:bg-[#111827]">
         <div className="max-w-md w-full bg-surface-container-lowest dark:bg-[#1E293B] rounded-2xl p-6 sm:p-8 shadow-xl border border-outline-variant/60 dark:border-red-900/50 text-center">
@@ -40,9 +43,9 @@ export default function ProtectedRoute({ children, requiredRole = 'ARTISAN' }) {
             {t('auth.accessRestricted', 'Access Restricted')}
           </h2>
           <p className="text-sm text-on-surface-variant dark:text-gray-300 mb-6">
-            {isPatronAccessingArtisan
-              ? t('auth.artisanOnlyNotice', 'Access restricted to registered artisans. Buyer and patron accounts cannot access the seller dashboard.')
-              : t('auth.patronOnlyNotice', 'Access restricted to registered patrons. Artisan accounts must switch to a patron account to access buyer features.')}
+            {isArtisanTryingPatron
+              ? t('auth.patronOnlyNotice', 'This page is available only for Patron / Collector accounts.')
+              : t('auth.artisanOnlyNotice', 'This page is available only for Artisan / Weaver accounts.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
@@ -53,17 +56,18 @@ export default function ProtectedRoute({ children, requiredRole = 'ARTISAN' }) {
               <ArrowLeft className="w-4 h-4" />
               {t('auth.switchAccount', 'Switch Account')}
             </button>
-            <a
-              href="/login"
-              className="flex-1 py-2.5 px-4 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-sm font-semibold transition-colors flex items-center justify-center"
+            <Link
+              to={isArtisanTryingPatron ? '/seller/dashboard' : '/'}
+              className="flex-1 py-2.5 px-4 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-sm font-semibold transition-colors flex items-center justify-center gap-1.5"
             >
-              {t('auth.backToLogin', 'Go to Login')}
-            </a>
+              <span>{isArtisanTryingPatron ? t('nav.dashboard', 'Seller Dashboard') : t('buyer.nav.marketplace', 'Marketplace')}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </div>
     );
   }
 
-  return children;
+  return children ? children : <Outlet />;
 }
