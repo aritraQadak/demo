@@ -12,6 +12,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function SellerProfileDropdown() {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ export default function SellerProfileDropdown() {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { profile, addToast } = useSeller();
+  const { logout } = useAuth();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -36,9 +38,11 @@ export default function SellerProfileDropdown() {
     navigate(path);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsOpen(false);
-    addToast(t('common.loggedOut'), 'info');
+    await logout();
+    addToast(t('common.loggedOut', 'Logged out successfully'), 'info');
+    navigate('/login', { replace: true });
   };
 
   const menuItems = [

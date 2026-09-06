@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { SellerProvider } from './context/SellerContext';
 import SellerLayout from './layouts/SellerLayout';
+import ProtectedRoute from './components/ProtectedRoute';
 
+import Login from './pages/Login';
 import Dashboard from './pages/seller/Dashboard';
 import AddProduct from './pages/seller/AddProduct';
 import Products from './pages/seller/Products';
@@ -20,38 +23,61 @@ import Contact from './pages/Contact';
 export default function App() {
   return (
     <ThemeProvider>
-      <SellerProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<SellerLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="add-product" element={<AddProduct />} />
-              <Route path="products" element={<Products />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="earnings" element={<Earnings />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="verification" element={<Verification />} />
-              <Route path="messages" element={<Messages />} />
-              <Route path="settings" element={<Settings />} />
+      <AuthProvider>
+        <SellerProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Authentication Route */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/auth" element={<Navigate to="/login" replace />} />
 
-              {/* Seller Profile Route (and aliases) */}
-              <Route path="seller/profile" element={<Profile />} />
-              <Route path="profile" element={<Profile />} />
+              {/* Protected Seller Application Routes (requires ARTISAN role) */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute requiredRole="ARTISAN">
+                    <SellerLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Dashboard />} />
+                <Route path="seller/dashboard" element={<Dashboard />} />
+                <Route path="add-product" element={<AddProduct />} />
+                <Route path="seller/add-product" element={<AddProduct />} />
+                <Route path="products" element={<Products />} />
+                <Route path="seller/products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="seller/orders" element={<Orders />} />
+                <Route path="earnings" element={<Earnings />} />
+                <Route path="seller/earnings" element={<Earnings />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="seller/customers" element={<Customers />} />
+                <Route path="verification" element={<Verification />} />
+                <Route path="seller/verification" element={<Verification />} />
+                <Route path="messages" element={<Messages />} />
+                <Route path="seller/messages" element={<Messages />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="seller/settings" element={<Settings />} />
 
-              {/* About Karigar Page (and aliases) */}
-              <Route path="about" element={<About />} />
-              <Route path="seller/about" element={<About />} />
+                {/* Seller Profile Route (and aliases) */}
+                <Route path="seller/profile" element={<Profile />} />
+                <Route path="profile" element={<Profile />} />
 
-              {/* Get in Touch / Contact Page (and aliases) */}
-              <Route path="contact" element={<Contact />} />
-              <Route path="seller/contact" element={<Contact />} />
+                {/* About Karigar Page (and aliases) */}
+                <Route path="about" element={<About />} />
+                <Route path="seller/about" element={<About />} />
 
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </SellerProvider>
+                {/* Get in Touch / Contact Page (and aliases) */}
+                <Route path="contact" element={<Contact />} />
+                <Route path="seller/contact" element={<Contact />} />
+
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </SellerProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
+import { NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
@@ -18,12 +18,15 @@ import {
   Mail
 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
+import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.jpg';
 
 export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { addToast, profile } = useSeller();
+  const { logout } = useAuth();
 
   const mainNavItems = [
     { name: t('nav.dashboard'), path: '/', icon: LayoutDashboard },
@@ -43,8 +46,10 @@ export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
     { name: t('nav.getInTouch'), path: '/contact', icon: Mail },
   ];
 
-  const handleLogout = () => {
-    addToast(t('common.loggedOut'), 'info');
+  const handleLogout = async () => {
+    await logout();
+    addToast(t('common.loggedOut', 'Logged out successfully'), 'info');
+    navigate('/login', { replace: true });
   };
 
   const sidebarContent = (
@@ -52,7 +57,7 @@ export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
       {/* Brand / Logo */}
       <div className="h-20 px-4 sm:px-5 flex items-center justify-between border-b border-gray-100 dark:border-gray-800/80">
         <RouterNavLink to="/" className="flex items-center group">
-          <div className="bg-white/95 dark:bg-white/90 rounded-xl p-1.5 shadow-2xs transition-transform duration-200 group-hover:scale-102 flex items-center justify-center">
+          <div className="flex items-center justify-center transition-transform duration-200 group-hover:scale-102">
             <img
               src={logo}
               alt="Karigar"
