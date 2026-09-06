@@ -79,6 +79,7 @@ export async function handleAuthRequest(req, res) {
         mobile,
         password,
         confirmPassword,
+        role: requestedRole,
         craftType,
         state,
         district,
@@ -88,6 +89,8 @@ export async function handleAuthRequest(req, res) {
         clusterName,
         agreeTerms
       } = body;
+
+      const userRole = requestedRole === 'PATRON' ? 'PATRON' : 'ARTISAN';
 
       // Validation
       if (!fullName || !fullName.trim()) {
@@ -119,12 +122,15 @@ export async function handleAuthRequest(req, res) {
         return jsonResponse(400, { error: 'Passwords do not match' });
       }
 
-      if (!craftType || !craftType.trim()) {
-        return jsonResponse(400, { error: 'Craft Type is required' });
-      }
+      // Artisan specific validations (only if userRole is ARTISAN)
+      if (userRole === 'ARTISAN') {
+        if (!craftType || !craftType.trim()) {
+          return jsonResponse(400, { error: 'Craft Type is required for Artisan registration' });
+        }
 
-      if (!state || !state.trim()) {
-        return jsonResponse(400, { error: 'State is required' });
+        if (!state || !state.trim()) {
+          return jsonResponse(400, { error: 'State is required for Artisan registration' });
+        }
       }
 
       if (agreeTerms !== undefined && !agreeTerms) {
@@ -153,22 +159,22 @@ export async function handleAuthRequest(req, res) {
       // Hash password
       const passwordHash = await bcrypt.hash(password, 10);
 
-      // Create Artisan user
+      // Create User (ARTISAN or PATRON)
       const user = await prisma.user.create({
         data: {
           fullName: fullName.trim(),
           email: normalizedEmail,
           mobile: cleanMobile,
           passwordHash,
-          role: 'ARTISAN', // Force role to ARTISAN for artisan registration
-          craftType: craftType.trim(),
-          state: state.trim(),
+          role: userRole,
+          craftType: craftType ? craftType.trim() : null,
+          state: state ? state.trim() : null,
           district: district ? district.trim() : null,
           yearsOfExperience: yearsOfExperience ? parseInt(yearsOfExperience, 10) || 0 : null,
           businessName: businessName ? businessName.trim() : null,
           giTagNumber: giTagNumber ? giTagNumber.trim() : null,
           clusterName: clusterName ? clusterName.trim() : null,
-          isVerified: false,
+          isVerified: userRole === 'PATRON', // Patron is verified by default
           isActive: true
         }
       });
@@ -184,7 +190,7 @@ export async function handleAuthRequest(req, res) {
 
       return jsonResponse(201, {
         success: true,
-        message: 'Artisan account created successfully',
+        message: `${userRole === 'PATRON' ? 'Patron' : 'Artisan'} account created successfully`,
         token,
         user: safeUser
       });
@@ -229,18 +235,17 @@ export async function handleAuthRequest(req, res) {
         return jsonResponse(401, { error: 'Invalid email/mobile or password' });
       }
 
-      // Authorization Rule:
-      // If Artisan / Weaver is selected: database role MUST be ARTISAN
+      // Role check: enforce registered role matching
       if (selectedRole === 'ARTISAN' || selectedRole === 'Artisan / Weaver') {
         if (user.role !== 'ARTISAN') {
           return jsonResponse(403, { error: 'This account is not registered as an artisan.' });
         }
       } else if (selectedRole === 'PATRON' || selectedRole === 'Patron / Collector') {
-        // Buyer/Collector login is not available in seller portal
-        return jsonResponse(403, {
-          error: 'Buyer/Collector login is not available in this portal yet. Please use the main marketplace.'
-        });
+        if (user.role !== 'PATRON') {
+          return jsonResponse(403, { error: 'This account is not registered as a patron.' });
+        }
       }
+
 
       const safeUser = sanitizeUser(user);
 

@@ -3,10 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { SellerProvider } from './context/SellerContext';
+import { BuyerProvider } from './context/BuyerContext';
 import SellerLayout from './layouts/SellerLayout';
+import BuyerLayout from './layouts/BuyerLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Login from './pages/Login';
+
+// Seller Pages
 import Dashboard from './pages/seller/Dashboard';
 import AddProduct from './pages/seller/AddProduct';
 import Products from './pages/seller/Products';
@@ -17,6 +21,19 @@ import Verification from './pages/seller/Verification';
 import Messages from './pages/seller/Messages';
 import Settings from './pages/seller/Settings';
 import Profile from './pages/seller/Profile';
+
+// Buyer Pages
+import Home from './pages/buyer/Home';
+import StateExplore from './pages/buyer/StateExplore';
+import ProductDetail from './pages/buyer/ProductDetail';
+import Cart from './pages/buyer/Cart';
+import Checkout from './pages/buyer/Checkout';
+import BuyerOrders from './pages/buyer/Orders';
+import Certificates from './pages/buyer/Certificates';
+import Saved from './pages/buyer/Saved';
+import Wallet from './pages/buyer/Wallet';
+
+// Shared Pages
 import About from './pages/About';
 import Contact from './pages/Contact';
 
@@ -24,60 +41,105 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <SellerProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Public Authentication Route */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/auth" element={<Navigate to="/login" replace />} />
+        <BuyerProvider>
+          <SellerProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Authentication Route */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/auth" element={<Navigate to="/login" replace />} />
 
-              {/* Protected Seller Application Routes (requires ARTISAN role) */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute requiredRole="ARTISAN">
-                    <SellerLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Dashboard />} />
-                <Route path="seller/dashboard" element={<Dashboard />} />
-                <Route path="add-product" element={<AddProduct />} />
-                <Route path="seller/add-product" element={<AddProduct />} />
-                <Route path="products" element={<Products />} />
-                <Route path="seller/products" element={<Products />} />
-                <Route path="orders" element={<Orders />} />
-                <Route path="seller/orders" element={<Orders />} />
-                <Route path="earnings" element={<Earnings />} />
-                <Route path="seller/earnings" element={<Earnings />} />
-                <Route path="customers" element={<Customers />} />
-                <Route path="seller/customers" element={<Customers />} />
-                <Route path="verification" element={<Verification />} />
-                <Route path="seller/verification" element={<Verification />} />
-                <Route path="messages" element={<Messages />} />
-                <Route path="seller/messages" element={<Messages />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="seller/settings" element={<Settings />} />
+                {/* Buyer / Public Application Routes */}
+                <Route element={<BuyerLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/explore/:stateSlug" element={<StateExplore />} />
+                  <Route path="/product/:productId" element={<ProductDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
 
-                {/* Seller Profile Route (and aliases) */}
-                <Route path="seller/profile" element={<Profile />} />
-                <Route path="profile" element={<Profile />} />
+                  {/* Protected Buyer Routes */}
+                  <Route
+                    path="/buyer/orders"
+                    element={
+                      <ProtectedRoute requiredRole="PATRON">
+                        <BuyerOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/certificates"
+                    element={
+                      <ProtectedRoute requiredRole="PATRON">
+                        <Certificates />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/saved"
+                    element={
+                      <ProtectedRoute requiredRole="PATRON">
+                        <Saved />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/wallet"
+                    element={
+                      <ProtectedRoute requiredRole="PATRON">
+                        <Wallet />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* About Karigar Page (and aliases) */}
-                <Route path="about" element={<About />} />
-                <Route path="seller/about" element={<About />} />
+                  {/* Shared Info Pages */}
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                </Route>
 
-                {/* Get in Touch / Contact Page (and aliases) */}
-                <Route path="contact" element={<Contact />} />
-                <Route path="seller/contact" element={<Contact />} />
+                {/* Protected Seller Application Routes (requires ARTISAN role) */}
+                <Route
+                  path="/seller"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <SellerLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Dashboard />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="add-product" element={<AddProduct />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="orders" element={<Orders />} />
+                  <Route path="earnings" element={<Earnings />} />
+                  <Route path="customers" element={<Customers />} />
+                  <Route path="verification" element={<Verification />} />
+                  <Route path="messages" element={<Messages />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="about" element={<About />} />
+                  <Route path="contact" element={<Contact />} />
+                </Route>
+
+                {/* Legacy seller direct route aliases for backwards compatibility */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <SellerLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Dashboard />} />
+                </Route>
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </SellerProvider>
+              </Routes>
+            </BrowserRouter>
+          </SellerProvider>
+        </BuyerProvider>
       </AuthProvider>
     </ThemeProvider>
   );
 }
+

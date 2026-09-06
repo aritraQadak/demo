@@ -27,32 +27,35 @@ export default function ProtectedRoute({ children, requiredRole = 'ARTISAN' }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If authenticated but role mismatch (e.g. PATRON)
+  // If authenticated but role mismatch (e.g. PATRON accessing ARTISAN or vice versa)
   if (requiredRole && user.role !== requiredRole) {
+    const isPatronAccessingArtisan = requiredRole === 'ARTISAN' && user.role === 'PATRON';
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-[#F8F9FA] dark:bg-[#111827]">
-        <div className="max-w-md w-full bg-white dark:bg-[#1E293B] rounded-2xl p-6 sm:p-8 shadow-xl border border-red-100 dark:border-red-900/50 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-50 dark:bg-red-950/50 rounded-full flex items-center justify-center text-red-600 dark:text-red-400">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-surface dark:bg-[#111827]">
+        <div className="max-w-md w-full bg-surface-container-lowest dark:bg-[#1E293B] rounded-2xl p-6 sm:p-8 shadow-xl border border-outline-variant/60 dark:border-red-900/50 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-secondary/10 dark:bg-red-950/50 rounded-full flex items-center justify-center text-secondary dark:text-red-400">
             <ShieldAlert className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-xl font-bold text-on-surface dark:text-white mb-2">
             {t('auth.accessRestricted', 'Access Restricted')}
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-            {t('auth.artisanOnlyNotice', 'Access restricted to registered artisans. Buyer and patron accounts cannot access the seller dashboard.')}
+          <p className="text-sm text-on-surface-variant dark:text-gray-300 mb-6">
+            {isPatronAccessingArtisan
+              ? t('auth.artisanOnlyNotice', 'Access restricted to registered artisans. Buyer and patron accounts cannot access the seller dashboard.')
+              : t('auth.patronOnlyNotice', 'Access restricted to registered patrons. Artisan accounts must switch to a patron account to access buyer features.')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
               onClick={logout}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-surface-container dark:bg-gray-800 hover:bg-surface-container-high dark:hover:bg-gray-700 text-on-surface dark:text-gray-200 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('auth.switchAccount', 'Switch Account')}
             </button>
             <a
               href="/login"
-              className="flex-1 py-2.5 px-4 rounded-xl bg-[#14532D] hover:bg-[#0f3e21] text-white text-sm font-semibold transition-colors flex items-center justify-center"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-sm font-semibold transition-colors flex items-center justify-center"
             >
               {t('auth.backToLogin', 'Go to Login')}
             </a>

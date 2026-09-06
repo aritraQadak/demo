@@ -1,12 +1,135 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Heart } from 'lucide-react';
+import { Heart, BadgeCheck, Store, Building2 } from 'lucide-react';
 import { FacebookIcon, InstagramIcon, LinkedInIcon, YouTubeIcon } from './SocialIcons';
-import logo from '../assets/logo.jpg';
+import Logo from './Logo';
 
-export default function Footer({ className = '' }) {
+export default function Footer({ className = '', variant = 'seller' }) {
   const { t } = useTranslation();
+
+  if (variant === 'buyer') {
+    return (
+      <footer className={`w-full bg-surface-container-low border-t border-outline-variant/40 pt-space-2xl pb-space-xl ${className}`}>
+        <div className="max-w-[1440px] mx-auto px-space-xl">
+          {/* Institution & GI Credentials Row */}
+          <div className="border-b border-outline-variant/40 pb-space-xl mb-space-xl">
+            <div className="text-center mb-space-md">
+              <span className="font-label-sm text-label-sm uppercase tracking-[0.2em] text-outline font-semibold">
+                {t('buyer.footer.nationalRegistry', 'National Heritage Provenance & Institutional Registry')}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md max-w-4xl mx-auto">
+              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
+                <BadgeCheck className="w-6 h-6 text-secondary flex-shrink-0" />
+                <div>
+                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                    {t('buyer.footer.giTitle', 'Geographical Indication (GI)')}
+                  </div>
+                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                    {t('buyer.footer.giDesc', 'Certified Sovereign Origin Mark')}
+                  </div>
+                </div>
+              </div>
+              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
+                <Store className="w-6 h-6 text-secondary flex-shrink-0" />
+                <div>
+                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                    {t('buyer.footer.gemTitle', 'Government e-Marketplace')}
+                  </div>
+                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                    {t('buyer.footer.gemDesc', 'Accredited GeM Guild Seller')}
+                  </div>
+                </div>
+              </div>
+              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
+                <Building2 className="w-6 h-6 text-secondary flex-shrink-0" />
+                <div>
+                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                    {t('buyer.footer.ministryTitle', 'Ministry of Textiles')}
+                  </div>
+                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                    {t('buyer.footer.ministryDesc', 'Office of Dev. Commissioner (Handlooms)')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Regional Guild Columns */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-space-xl pb-space-2xl border-b border-outline-variant/30">
+            <div>
+              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+                {t('buyer.footer.northernWeaves', 'Northern Weaves')}
+              </h4>
+              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/jammu-kashmir">{t('buyer.footer.kaniPashmina', 'Kani & Pashmina (Kashmir)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.banarasiKatan', 'Banarasi Katan (Varanasi)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.chikankari', 'Chikankari (Lucknow)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/himachal-pradesh">{t('buyer.footer.kulluShawls', 'Kullu Shawls (Himachal)')}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+                {t('buyer.footer.westernGuilds', 'Western Guilds')}
+              </h4>
+              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/gujarat">{t('buyer.footer.patanPatola', 'Patan Patola (Gujarat)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/gujarat">{t('buyer.footer.ajrakhPrint', 'Ajrakh Block Print (Kutch)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/maharashtra">{t('buyer.footer.paithaniSilks', 'Paithani Silks (Maharashtra)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/rajasthan">{t('buyer.footer.kotaDoria', 'Kota Doria (Rajasthan)')}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+                {t('buyer.footer.southernHeirlooms', 'Southern Heirlooms')}
+              </h4>
+              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/tamil-nadu">{t('buyer.footer.kanchipuramSilk', 'Kanchipuram Silk (Tamil Nadu)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/telangana">{t('buyer.footer.pochampallyIkat', 'Pochampally Ikat (Telangana)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/kerala">{t('buyer.footer.balaramapuram', 'Balaramapuram (Kerala)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/karnataka">{t('buyer.footer.mysoreCrepe', 'Mysore Crepe (Karnataka)')}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+                {t('buyer.footer.easternLooms', 'Eastern Looms')}
+              </h4>
+              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/west-bengal">{t('buyer.footer.jamdaniBaluchari', 'Jamdani & Baluchari (Bengal)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/assam">{t('buyer.footer.mugaEriSilk', 'Muga & Eri Silk (Assam)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/odisha">{t('buyer.footer.sambalpuriIkat', 'Sambalpuri Ikat (Odisha)')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/explore/bihar">{t('buyer.footer.bhagalpuriTussar', 'Bhagalpuri Tussar (Bihar)')}</Link></li>
+              </ul>
+            </div>
+            <div className="col-span-2 md:col-span-4 lg:col-span-1">
+              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+                {t('buyer.footer.patronServices', 'Patron Services')}
+              </h4>
+              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                <li><Link className="hover:text-secondary transition-colors" to="/buyer/certificates">{t('buyer.footer.provenanceVerification', 'Provenance Verification')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/about">{t('buyer.footer.fairTrade', 'Artisan Direct Fair Trade')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/contact">{t('buyer.footer.institutionalInquiries', 'Institutional Inquiries')}</Link></li>
+                <li><Link className="hover:text-secondary transition-colors" to="/buyer/wallet">{t('buyer.footer.restorationFund', 'Cluster Restoration Fund')}</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant font-label-sm text-label-sm tracking-[0.1em]">
+            <div>
+              © 2026 KARIGAR Artisanal Heritage Platform. {t('buyer.footer.allRightsReserved', 'All rights reserved under National Handloom Archives.')}
+            </div>
+            <div className="flex gap-space-lg">
+              <Link className="hover:text-on-surface transition-colors" to="/buyer/certificates">{t('buyer.footer.compliance', 'GI Compliance')}</Link>
+              <Link className="hover:text-on-surface transition-colors" to="/about">{t('buyer.footer.artisanRights', 'Artisan Rights')}</Link>
+              <Link className="hover:text-on-surface transition-colors" to="/contact">{t('buyer.footer.privacy', 'Privacy Gazette')}</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+    );
+  }
 
   const quickLinks = [
     { name: t('common.all') === 'All' ? 'Home' : t('nav.dashboard'), path: '/' },
@@ -57,14 +180,7 @@ export default function Footer({ className = '' }) {
           {/* Column 1: Brand, Tagline, Description, Socials */}
           <div className="sm:col-span-2 lg:col-span-1 flex flex-col justify-between">
             <div>
-              <Link to="/" className="inline-block bg-white/95 rounded-xl p-2 shadow-sm hover:opacity-95 transition-opacity">
-                <img
-                  src={logo}
-                  alt="Karigar"
-                  className="h-14 sm:h-16 w-auto object-contain max-w-[200px]"
-                  style={{ objectFit: 'contain', width: 'auto' }}
-                />
-              </Link>
+              <Logo clickable linkTo="/" imgClassName="h-14 sm:h-16 w-auto" />
               <h3 className="text-amber-300/90 font-serif font-semibold text-sm mt-3 tracking-wide">
                 {t('footer.tagline')}
               </h3>
@@ -200,3 +316,4 @@ export default function Footer({ className = '' }) {
     </footer>
   );
 }
+

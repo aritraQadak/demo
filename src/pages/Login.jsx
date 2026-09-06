@@ -73,6 +73,8 @@ export default function Login() {
 
   // Role in login tab: 'ARTISAN' | 'PATRON'
   const [selectedRole, setSelectedRole] = useState('ARTISAN');
+  // Role in signup tab: 'ARTISAN' | 'PATRON'
+  const [signupRole, setSignupRole] = useState('ARTISAN');
 
   // Password visibility toggles
   const [showPassword, setShowPassword] = useState(false);
@@ -147,23 +149,13 @@ export default function Login() {
       return;
     }
 
-    if (selectedRole === 'PATRON') {
-      setErrorMessage(
-        t(
-          'auth.buyerRestrictedMsg',
-          'Buyer/Collector login is not available in this portal yet. Please use the main marketplace.'
-        )
-      );
-      return;
-    }
-
     setLoading(true);
     try {
-      await login(loginForm.identifier.trim(), loginForm.password, 'ARTISAN');
+      const user = await login(loginForm.identifier.trim(), loginForm.password, selectedRole);
       setSuccessMessage(t('common.success', 'Login successful! Redirecting...'));
 
-      // Redirect to seller dashboard or previously intended route
-      const destination = location.state?.from?.pathname || '/seller/dashboard';
+      // Redirect based on role
+      const destination = location.state?.from?.pathname || (user.role === 'PATRON' ? '/' : '/seller/dashboard');
       setTimeout(() => {
         navigate(destination, { replace: true });
       }, 500);
@@ -184,6 +176,7 @@ export default function Login() {
     setFieldErrors({});
 
     const errors = {};
+    const isPatronSignup = signupRole === 'PATRON';
 
     if (!signupForm.fullName.trim()) {
       errors.fullName = t('auth.errors.nameRequired', 'Full Name is required');
@@ -211,12 +204,14 @@ export default function Login() {
       errors.confirmPassword = t('auth.errors.passwordMismatch', 'Passwords do not match');
     }
 
-    if (!signupForm.craftType.trim()) {
-      errors.craftType = t('auth.errors.craftRequired', 'Craft Type is required');
-    }
+    if (!isPatronSignup) {
+      if (!signupForm.craftType.trim()) {
+        errors.craftType = t('auth.errors.craftRequired', 'Craft Type is required');
+      }
 
-    if (!signupForm.state.trim()) {
-      errors.state = t('auth.errors.stateRequired', 'State is required');
+      if (!signupForm.state.trim()) {
+        errors.state = t('auth.errors.stateRequired', 'State is required');
+      }
     }
 
     if (!signupForm.agreeTerms) {
@@ -230,27 +225,28 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await signup({
+      const user = await signup({
         fullName: signupForm.fullName.trim(),
         email: signupForm.email.trim(),
         mobile: signupForm.mobile.trim(),
         password: signupForm.password,
         confirmPassword: signupForm.confirmPassword,
-        craftType: signupForm.craftType.trim(),
-        state: signupForm.state.trim(),
-        district: signupForm.district.trim(),
-        yearsOfExperience: signupForm.yearsOfExperience ? parseInt(signupForm.yearsOfExperience, 10) : 0,
-        businessName: signupForm.businessName.trim(),
-        giTagNumber: signupForm.giTagNumber.trim(),
-        clusterName: signupForm.clusterName.trim(),
+        role: isPatronSignup ? 'PATRON' : 'ARTISAN',
+        craftType: isPatronSignup ? '' : signupForm.craftType.trim(),
+        state: isPatronSignup ? '' : signupForm.state.trim(),
+        district: isPatronSignup ? '' : signupForm.district.trim(),
+        yearsOfExperience: (!isPatronSignup && signupForm.yearsOfExperience) ? parseInt(signupForm.yearsOfExperience, 10) : 0,
+        businessName: isPatronSignup ? '' : signupForm.businessName.trim(),
+        giTagNumber: isPatronSignup ? '' : signupForm.giTagNumber.trim(),
+        clusterName: isPatronSignup ? '' : signupForm.clusterName.trim(),
         agreeTerms: true
       });
 
-      setSuccessMessage('Artisan account created successfully! Opening your dashboard...');
+      setSuccessMessage(`${isPatronSignup ? 'Patron' : 'Artisan'} account created successfully! Opening portal...`);
 
-      // Auto-navigate to seller dashboard
+      // Auto-navigate to home or seller dashboard
       setTimeout(() => {
-        navigate('/seller/dashboard', { replace: true });
+        navigate(user.role === 'PATRON' ? '/' : '/seller/dashboard', { replace: true });
       }, 700);
     } catch (err) {
       setErrorMessage(err.message || 'Signup failed. Please check your inputs.');
@@ -465,12 +461,7 @@ export default function Login() {
                     type="button"
                     onClick={() => {
                       setSelectedRole('PATRON');
-                      setErrorMessage(
-                        t(
-                          'auth.buyerRestrictedMsg',
-                          'Buyer/Collector login is not available in this portal yet. Please use the main marketplace.'
-                        )
-                      );
+                      setErrorMessage('');
                     }}
                     className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
                       selectedRole === 'PATRON'
@@ -715,7 +706,45 @@ export default function Login() {
                 </p>
               </div>
 
+              {/* Sign Up Role Selector */}
+              <div className="mb-5">
+                <div className="grid grid-cols-2 gap-2 p-1 bg-[#F3EFE6] rounded-xl border border-[#E5D7C2]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSignupRole('ARTISAN');
+                      setFieldErrors({});
+                    }}
+                    className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                      signupRole === 'ARTISAN'
+                        ? 'bg-[#FCFAF6] border border-[#C2410C]/30 text-[#C2410C] font-bold shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    <Sparkles className="w-4 h-4 text-[#C2410C]" />
+                    <span>{t('auth.artisanWeaver', 'Artisan / Weaver')}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSignupRole('PATRON');
+                      setFieldErrors({});
+                    }}
+                    className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                      signupRole === 'PATRON'
+                        ? 'bg-[#FCFAF6] border border-[#C2410C]/30 text-[#C2410C] font-bold shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    <ShoppingBag className="w-4 h-4 text-stone-500" />
+                    <span>{t('auth.patronCollector', 'Patron / Collector')}</span>
+                  </button>
+                </div>
+              </div>
+
               <form onSubmit={handleSignupSubmit}>
+
                 {/* 2-column fields on desktop/tablet with consistent 16px–20px field gaps */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 sm:gap-y-[18px]">
                   {/* Full Name */}
@@ -794,147 +823,152 @@ export default function Login() {
                     )}
                   </div>
 
-                  {/* Craft Type */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.craftTypeLabel', 'Craft Type')} <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={signupForm.craftType}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, craftType: e.target.value })
-                      }
-                      className={`w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border ${
-                        fieldErrors.craftType
-                          ? 'border-red-400'
-                          : 'border-[#D5C9B3] focus:border-[#14532D]'
-                      } text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#14532D]/20`}
-                    >
-                      <option value="">{t('auth.craftTypePlaceholder', 'Select or enter your craft')}</option>
-                      {CRAFT_TYPES.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                    {fieldErrors.craftType && (
-                      <p className="mt-1 text-xs text-red-600 font-medium leading-tight">
-                        {fieldErrors.craftType}
-                      </p>
-                    )}
-                  </div>
+                  {/* Artisan-Only Craft Fields */}
+                  {signupRole === 'ARTISAN' && (
+                    <>
+                      {/* Craft Type */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.craftTypeLabel', 'Craft Type')} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={signupForm.craftType}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, craftType: e.target.value })
+                          }
+                          className={`w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border ${
+                            fieldErrors.craftType
+                              ? 'border-red-400'
+                              : 'border-[#D5C9B3] focus:border-[#14532D]'
+                          } text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#14532D]/20`}
+                        >
+                          <option value="">{t('auth.craftTypePlaceholder', 'Select or enter your craft')}</option>
+                          {CRAFT_TYPES.map((c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        {fieldErrors.craftType && (
+                          <p className="mt-1 text-xs text-red-600 font-medium leading-tight">
+                            {fieldErrors.craftType}
+                          </p>
+                        )}
+                      </div>
 
-                  {/* State */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.stateLabel', 'State')} <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={signupForm.state}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, state: e.target.value })
-                      }
-                      className={`w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border ${
-                        fieldErrors.state
-                          ? 'border-red-400'
-                          : 'border-[#D5C9B3] focus:border-[#14532D]'
-                      } text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#14532D]/20`}
-                    >
-                      <option value="">{t('auth.statePlaceholder', 'Select State')}</option>
-                      {INDIAN_STATES.map((st) => (
-                        <option key={st} value={st}>
-                          {st}
-                        </option>
-                      ))}
-                    </select>
-                    {fieldErrors.state && (
-                      <p className="mt-1 text-xs text-red-600 font-medium leading-tight">
-                        {fieldErrors.state}
-                      </p>
-                    )}
-                  </div>
+                      {/* State */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.stateLabel', 'State')} <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={signupForm.state}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, state: e.target.value })
+                          }
+                          className={`w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border ${
+                            fieldErrors.state
+                              ? 'border-red-400'
+                              : 'border-[#D5C9B3] focus:border-[#14532D]'
+                          } text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#14532D]/20`}
+                        >
+                          <option value="">{t('auth.statePlaceholder', 'Select State')}</option>
+                          {INDIAN_STATES.map((st) => (
+                            <option key={st} value={st}>
+                              {st}
+                            </option>
+                          ))}
+                        </select>
+                        {fieldErrors.state && (
+                          <p className="mt-1 text-xs text-red-600 font-medium leading-tight">
+                            {fieldErrors.state}
+                          </p>
+                        )}
+                      </div>
 
-                  {/* District */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.districtLabel', 'District')}
-                    </label>
-                    <input
-                      type="text"
-                      value={signupForm.district}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, district: e.target.value })
-                      }
-                      placeholder={t('auth.districtPlaceholder', 'e.g. Varanasi, Nadia')}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
-                    />
-                  </div>
+                      {/* District */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.districtLabel', 'District')}
+                        </label>
+                        <input
+                          type="text"
+                          value={signupForm.district}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, district: e.target.value })
+                          }
+                          placeholder={t('auth.districtPlaceholder', 'e.g. Varanasi, Nadia')}
+                          className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
+                        />
+                      </div>
 
-                  {/* Years of Experience */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.yearsExpLabel', 'Years of Experience')}
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="70"
-                      value={signupForm.yearsOfExperience}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, yearsOfExperience: e.target.value })
-                      }
-                      placeholder={t('auth.yearsExpPlaceholder', 'e.g. 15')}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
-                    />
-                  </div>
+                      {/* Years of Experience */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.yearsExpLabel', 'Years of Experience')}
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="70"
+                          value={signupForm.yearsOfExperience}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, yearsOfExperience: e.target.value })
+                          }
+                          placeholder={t('auth.yearsExpPlaceholder', 'e.g. 15')}
+                          className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
+                        />
+                      </div>
 
-                  {/* Business Name */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.businessNameLabel', 'Artisan / Business Name')}
-                    </label>
-                    <input
-                      type="text"
-                      value={signupForm.businessName}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, businessName: e.target.value })
-                      }
-                      placeholder={t('auth.businessNamePlaceholder', 'e.g. Nadia Handloom Guild')}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
-                    />
-                  </div>
+                      {/* Business Name */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.businessNameLabel', 'Artisan / Business Name')}
+                        </label>
+                        <input
+                          type="text"
+                          value={signupForm.businessName}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, businessName: e.target.value })
+                          }
+                          placeholder={t('auth.businessNamePlaceholder', 'e.g. Nadia Handloom Guild')}
+                          className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
+                        />
+                      </div>
 
-                  {/* GI Tag Number */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.giTagLabel', 'GI Tag Number (Optional)')}
-                    </label>
-                    <input
-                      type="text"
-                      value={signupForm.giTagNumber}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, giTagNumber: e.target.value })
-                      }
-                      placeholder={t('auth.giTagPlaceholder', 'e.g. GI-WB-0452')}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
-                    />
-                  </div>
+                      {/* GI Tag Number */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.giTagLabel', 'GI Tag Number (Optional)')}
+                        </label>
+                        <input
+                          type="text"
+                          value={signupForm.giTagNumber}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, giTagNumber: e.target.value })
+                          }
+                          placeholder={t('auth.giTagPlaceholder', 'e.g. GI-WB-0452')}
+                          className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
+                        />
+                      </div>
 
-                  {/* Cluster Name */}
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
-                      {t('auth.clusterNameLabel', 'Cluster / Cooperative (Optional)')}
-                    </label>
-                    <input
-                      type="text"
-                      value={signupForm.clusterName}
-                      onChange={(e) =>
-                        setSignupForm({ ...signupForm, clusterName: e.target.value })
-                      }
-                      placeholder={t('auth.clusterNamePlaceholder', 'e.g. Shantipur Weavers Co-op')}
-                      className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
-                    />
-                  </div>
+                      {/* Cluster Name */}
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-700 mb-1.5 leading-none">
+                          {t('auth.clusterNameLabel', 'Cluster / Cooperative (Optional)')}
+                        </label>
+                        <input
+                          type="text"
+                          value={signupForm.clusterName}
+                          onChange={(e) =>
+                            setSignupForm({ ...signupForm, clusterName: e.target.value })
+                          }
+                          placeholder={t('auth.clusterNamePlaceholder', 'e.g. Shantipur Weavers Co-op')}
+                          className="w-full px-3.5 py-2.5 rounded-xl text-sm bg-white border border-[#D5C9B3] text-stone-900 focus:border-[#14532D] focus:outline-none focus:ring-2 focus:ring-[#14532D]/20"
+                        />
+                      </div>
+                    </>
+                  )}
 
                   {/* Password */}
                   <div>

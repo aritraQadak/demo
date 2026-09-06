@@ -1,0 +1,255 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import {
+  ShoppingBag,
+  Trash2,
+  Plus,
+  Minus,
+  ArrowRight,
+  ShieldCheck,
+  Truck,
+  Award,
+  ArrowLeft
+} from 'lucide-react';
+import { useBuyer } from '../../context/BuyerContext';
+
+export default function Cart() {
+  const { t } = useTranslation();
+  const { cart, removeFromCart, updateQuantity, clearCart, cartTotal, artisanDirectTotal } = useBuyer();
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    navigate('/checkout');
+  };
+
+  return (
+    <div className="w-full bg-surface py-space-2xl px-space-md lg:px-space-4xl min-h-[70vh]">
+      <div className="max-w-[1440px] mx-auto space-y-space-2xl">
+        {/* Header Breadcrumb & Title */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md border-b border-outline-variant/40 pb-space-lg">
+          <div>
+            <div className="flex items-center gap-space-xs text-outline font-label-sm text-label-sm uppercase tracking-[0.14em] mb-1">
+              <Link to="/" className="hover:text-secondary transition-colors">
+                {t('buyer.cart.home', 'Home')}
+              </Link>
+              <span>/</span>
+              <span className="text-on-surface font-semibold">{t('buyer.cart.title', 'Sovereign Cart')}</span>
+            </div>
+            <h1 className="font-headline-lg text-headline-lg text-on-surface">
+              {t('buyer.cart.heading', 'Your Masterwork Selection')}
+            </h1>
+          </div>
+          {cart.length > 0 && (
+            <button
+              type="button"
+              onClick={clearCart}
+              className="font-label-sm text-label-sm uppercase tracking-[0.14em] text-outline hover:text-secondary transition-colors self-start md:self-auto"
+            >
+              {t('buyer.cart.clearCart', 'Empty Cart')}
+            </button>
+          )}
+        </div>
+
+        {cart.length === 0 ? (
+          /* Empty Cart State */
+          <div className="bg-surface-container-lowest p-space-4xl text-center flex flex-col items-center justify-center space-y-space-md shadow-sm border border-outline-variant/30">
+            <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center text-outline">
+              <ShoppingBag className="w-10 h-10 stroke-1 text-secondary" />
+            </div>
+            <h2 className="font-headline-sm text-headline-sm text-on-surface">
+              {t('buyer.cart.emptyTitle', 'Your Cart is Currently Empty')}
+            </h2>
+            <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
+              {t('buyer.cart.emptyDesc', 'Discover rare GI-certified handloom silks, fine pottery, and narrative tapestries crafted by India’s master artisans.')}
+            </p>
+            <Link
+              to="/explore/west-bengal"
+              className="inline-flex items-center gap-space-xs px-space-2xl py-space-md bg-secondary text-on-secondary font-label-md text-label-md uppercase tracking-[0.18em] shadow-md hover:bg-secondary-container hover:text-on-secondary-container transition-all"
+            >
+              <span>{t('buyer.cart.exploreCrafts', 'Explore Masterworks')}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
+          /* Active Cart Grid */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-start">
+            {/* Left Items List (8 Cols) */}
+            <div className="lg:col-span-8 space-y-space-md">
+              {cart.map((item) => {
+                const p = item.product;
+                const itemTotal = p.price * item.quantity;
+                const itemArtisanShare = (p.artisanShareAmount || p.price * 0.9) * item.quantity;
+
+                return (
+                  <div
+                    key={p.id}
+                    className="bg-surface-container-lowest p-space-lg shadow-sm border border-outline-variant/30 flex flex-col sm:flex-row gap-space-md items-start sm:items-center justify-between"
+                  >
+                    {/* Item Image */}
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 bg-surface-container flex-shrink-0 overflow-hidden shadow-xs">
+                      <img
+                        src={p.images?.[0] || p.image}
+                        alt={p.name}
+                        className="w-full h-full object-cover"
+                      />
+                      {p.giCertified && (
+                        <span className="absolute top-1 left-1 bg-secondary text-on-secondary font-label-sm text-[9px] px-1 py-0.5 uppercase tracking-wider font-bold">
+                          GI
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">
+                        {p.craftCategory || p.craft} • {p.stateName || 'Master Guild'}
+                      </div>
+                      <Link
+                        to={`/product/${p.id}`}
+                        className="font-title-lg text-title-lg text-on-surface hover:text-secondary transition-colors block truncate font-semibold"
+                      >
+                        {p.name}
+                      </Link>
+                      <div className="font-body-sm text-body-sm text-on-surface-variant">
+                        {t('buyer.cart.artisan', 'Master Artisan')}: <span className="text-on-surface font-medium">{p.artisanName}</span>
+                      </div>
+
+                      {/* Artisan Direct Payout Badge */}
+                      <div className="inline-flex items-center gap-1 bg-surface-container px-2 py-0.5 rounded text-[11px] font-label-sm text-secondary font-semibold mt-1">
+                        <Award className="w-3.5 h-3.5" />
+                        <span>
+                          {t('buyer.cart.directPayout', 'Direct Artisan Payout')}: ₹{itemArtisanShare.toLocaleString('en-IN')} ({p.artisanSharePercent || 90}%)
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Quantity & Actions */}
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-space-sm pt-space-xs sm:pt-0 border-t sm:border-t-0 border-outline-variant/20">
+                      <div className="font-headline-sm text-headline-sm text-on-surface font-semibold">
+                        ₹{itemTotal.toLocaleString('en-IN')}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {/* Quantity Controls */}
+                        <div className="flex items-center border border-outline-variant/60 bg-surface">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(p.id, item.quantity - 1)}
+                            className="p-1.5 text-on-surface hover:bg-surface-container transition-colors"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="px-3 font-label-sm text-label-sm font-bold text-on-surface">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(p.id, item.quantity + 1)}
+                            className="p-1.5 text-on-surface hover:bg-surface-container transition-colors"
+                            aria-label="Increase quantity"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Delete Button */}
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(p.id)}
+                          className="p-2 text-outline hover:text-secondary transition-colors"
+                          title={t('buyer.cart.remove', 'Remove Item')}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="pt-space-md flex items-center justify-between">
+                <Link
+                  to="/explore/west-bengal"
+                  className="inline-flex items-center gap-space-xs font-label-sm text-label-sm uppercase tracking-[0.14em] text-secondary font-bold hover:underline"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>{t('buyer.cart.continueShopping', 'Continue Exploring Guilds')}</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Summary Sidebar (4 Cols) */}
+            <div className="lg:col-span-4 space-y-space-md">
+              <div className="bg-surface-container-lowest p-space-xl shadow-md border border-outline-variant/40 space-y-space-md">
+                <h3 className="font-title-lg text-title-lg text-on-surface border-b border-outline-variant/30 pb-space-sm font-semibold">
+                  {t('buyer.cart.summaryTitle', 'Sovereign Order Summary')}
+                </h3>
+
+                <div className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                  <div className="flex justify-between">
+                    <span>{t('buyer.cart.subtotal', 'Acquisition Subtotal')}</span>
+                    <span className="font-semibold text-on-surface">₹{cartTotal.toLocaleString('en-IN')}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{t('buyer.cart.logistics', 'Insured Climate Courier')}</span>
+                    <span className="text-secondary font-semibold">{t('buyer.cart.complimentary', 'COMPLIMENTARY')}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{t('buyer.cart.escrowFee', 'Sovereign Vault Protection')}</span>
+                    <span className="text-secondary font-semibold">0% ({t('buyer.cart.included', 'INCLUDED')})</span>
+                  </div>
+                </div>
+
+                <div className="h-[1px] bg-outline-variant/40"></div>
+
+                {/* Direct Payout Box */}
+                <div className="bg-surface-container p-space-md space-y-1">
+                  <div className="flex justify-between items-center text-xs font-label-sm text-secondary font-bold uppercase tracking-wider">
+                    <span>{t('buyer.cart.directArtisanFund', 'Guaranteed Direct Artisan Fund')}</span>
+                  </div>
+                  <div className="font-headline-sm text-headline-sm text-secondary font-bold">
+                    ₹{artisanDirectTotal.toLocaleString('en-IN')}
+                  </div>
+                  <p className="text-[11px] text-outline">
+                    {t('buyer.cart.fundDesc', 'Disbursed straight to master artisan bank accounts upon delivery confirmation.')}
+                  </p>
+                </div>
+
+                <div className="h-[1px] bg-outline-variant/40"></div>
+
+                {/* Total */}
+                <div className="flex justify-between items-baseline">
+                  <span className="font-title-lg text-title-lg text-on-surface font-semibold">{t('buyer.cart.total', 'Total Payable')}</span>
+                  <span className="font-headline-md text-headline-md text-secondary font-bold">₹{cartTotal.toLocaleString('en-IN')}</span>
+                </div>
+
+                {/* Checkout CTA */}
+                <button
+                  type="button"
+                  onClick={handleCheckout}
+                  className="w-full py-space-md bg-secondary text-on-secondary font-label-md text-label-md uppercase tracking-[0.18em] shadow-lg hover:bg-secondary-container hover:text-on-secondary-container transition-all flex items-center justify-center gap-space-xs font-semibold"
+                >
+                  <span>{t('buyer.cart.proceedCheckout', 'Proceed to Sovereign Checkout')}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Security Badges */}
+              <div className="bg-surface-container-high p-space-md space-y-space-xs border border-outline-variant/30">
+                <div className="flex items-center gap-space-xs text-secondary font-bold text-xs uppercase tracking-wider">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{t('buyer.cart.escrowGuarantee', '100% Escrow Protection')}</span>
+                </div>
+                <p className="text-xs text-on-surface-variant leading-relaxed">
+                  {t('buyer.cart.escrowInfo', 'Funds remain in secure escrow until you inspect the parcel and confirm authenticity.')}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

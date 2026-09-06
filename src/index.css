@@ -2,6 +2,68 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-surface: #fff8f5;
+  --color-surface-container: #f5ece7;
+  --color-surface-container-low: #fbf2ec;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #f0e6e1;
+  --color-surface-container-highest: #eae1dc;
+  --color-surface-variant: #eae1dc;
+  --color-surface-dim: #e1d8d3;
+  --color-surface-bright: #fff8f5;
+  --color-on-surface: #1f1b18;
+  --color-on-surface-variant: #4f4535;
+  --color-secondary: #9b4428;
+  --color-secondary-container: #fd916e;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #75290e;
+  --color-secondary-fixed: #ffdbd0;
+  --color-secondary-fixed-dim: #ffb59e;
+  --color-on-secondary-fixed: #3a0b00;
+  --color-on-secondary-fixed-variant: #7c2e13;
+  --color-primary: #785600;
+  --color-primary-container: #986d00;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #fffbff;
+  --color-primary-fixed: #ffdea6;
+  --color-primary-fixed-dim: #f7bd48;
+  --color-on-primary-fixed: #271900;
+  --color-on-primary-fixed-variant: #5d4200;
+  --color-tertiary: #884e00;
+  --color-tertiary-container: #ab6300;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #fffbff;
+  --color-tertiary-fixed: #ffdcbf;
+  --color-tertiary-fixed-dim: #ffb873;
+  --color-on-tertiary-fixed: #2d1600;
+  --color-on-tertiary-fixed-variant: #6a3b00;
+  --color-outline: #817563;
+  --color-outline-variant: #d3c4af;
+  --color-background: #fff8f5;
+  --color-on-background: #1f1b18;
+  --color-inverse-surface: #342f2c;
+  --color-inverse-on-surface: #f8efea;
+  --color-inverse-primary: #f7bd48;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  --font-garamond: 'EB Garamond', serif;
+  --font-manrope: 'Manrope', sans-serif;
+
+  --spacing-space-2xs: 0.25rem;
+  --spacing-space-xs: 0.5rem;
+  --spacing-space-sm: 0.75rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2rem;
+  --spacing-space-2xl: 3rem;
+  --spacing-space-3xl: 4.5rem;
+  --spacing-space-4xl: 6rem;
+}
+
 @layer base {
   :root {
     --primary-green: #14532D;
@@ -10,9 +72,9 @@
   }
 
   body {
-    background-color: #F8F9FA;
-    color: #1F2937;
-    font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-surface, #fff8f5);
+    color: var(--color-on-surface, #1f1b18);
+    font-family: 'Manrope', 'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -20,8 +82,26 @@
   }
 
   .dark body {
-    background-color: #111827;
-    color: #F9FAFB;
+    background-color: #12100e;
+    color: #f5ece7;
+  }
+
+  .dark {
+    --color-surface: #181412;
+    --color-surface-container: #221c19;
+    --color-surface-container-low: #1c1815;
+    --color-surface-container-lowest: #14100e;
+    --color-surface-container-high: #2b2420;
+    --color-surface-container-highest: #342b26;
+    --color-surface-variant: #342b26;
+    --color-on-surface: #f5ece7;
+    --color-on-surface-variant: #d3c4af;
+    --color-background: #181412;
+    --color-on-background: #f5ece7;
+    --color-outline: #a39580;
+    --color-outline-variant: #524739;
+    --color-inverse-surface: #eae1dc;
+    --color-inverse-on-surface: #1f1b18;
   }
 
   #root {
@@ -46,3 +126,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #CBD5E1;
 }
+
