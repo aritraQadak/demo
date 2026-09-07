@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { navigateByRole } from '../utils/navigation';
 import logo from '../assets/logo.jpg';
 import loginBackground from '../assets/LoginBackground.jpg';
 import {
@@ -71,8 +72,7 @@ export default function Login() {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated && user) {
-      const destination = location.state?.from?.pathname || (user.role === 'PATRON' ? '/' : '/seller/dashboard');
-      navigate(destination, { replace: true });
+      navigateByRole(navigate, user, location.state?.from);
     }
   }, [isAuthenticated, user, navigate, location]);
 
@@ -195,13 +195,21 @@ export default function Login() {
       const loggedUser = await login(loginForm.identifier.trim(), loginForm.password, selectedRole);
       setSuccessMessage(t('common.success', 'Login successful! Redirecting...'));
 
-      // Redirect based on role
-      const destination = location.state?.from?.pathname || (loggedUser.role === 'PATRON' ? '/' : '/seller/dashboard');
+      // Redirect based strictly on authenticated role from Prisma
       setTimeout(() => {
-        navigate(destination, { replace: true });
+        navigateByRole(navigate, loggedUser, location.state?.from);
       }, 500);
     } catch (err) {
-      setErrorMessage(err.message || 'Login failed. Please verify your credentials.');
+      const rawMsg = err.message || '';
+      if (rawMsg.includes('registered as Artisan / Weaver')) {
+        setErrorMessage(t('auth.roleMismatchArtisan', 'This account is registered as Artisan / Weaver. Please select Artisan / Weaver to continue.'));
+      } else if (rawMsg.includes('registered as Patron / Collector')) {
+        setErrorMessage(t('auth.roleMismatchPatron', 'This account is registered as Patron / Collector. Please select Patron / Collector to continue.'));
+      } else if (rawMsg.includes('select your account type')) {
+        setErrorMessage(t('auth.pleaseSelectAccountType', 'Please select your account type first.'));
+      } else {
+        setErrorMessage(rawMsg || 'Login failed. Please verify your credentials.');
+      }
     } finally {
       setLoading(false);
     }
@@ -260,12 +268,20 @@ export default function Login() {
           try {
             const authUser = await loginWithGoogle(response.access_token, selectedRole);
             setSuccessMessage(t('common.success', 'Login successful! Redirecting...'));
-            const destination = location.state?.from?.pathname || (authUser.role === 'PATRON' ? '/' : '/seller/dashboard');
             setTimeout(() => {
-              navigate(destination, { replace: true });
+              navigateByRole(navigate, authUser, location.state?.from);
             }, 500);
           } catch (err) {
-            setErrorMessage(err.message || t('auth.googleFailed', 'Unable to sign in with Google. Please try again.'));
+            const rawMsg = err.message || '';
+            if (rawMsg.includes('registered as Artisan / Weaver')) {
+              setErrorMessage(t('auth.roleMismatchArtisan', 'This account is registered as Artisan / Weaver. Please select Artisan / Weaver to continue.'));
+            } else if (rawMsg.includes('registered as Patron / Collector')) {
+              setErrorMessage(t('auth.roleMismatchPatron', 'This account is registered as Patron / Collector. Please select Patron / Collector to continue.'));
+            } else if (rawMsg.includes('select your account type')) {
+              setErrorMessage(t('auth.pleaseSelectAccountType', 'Please select your account type first.'));
+            } else {
+              setErrorMessage(rawMsg || t('auth.googleFailed', 'Unable to sign in with Google. Please try again.'));
+            }
           } finally {
             setGoogleLoading(false);
           }
@@ -365,12 +381,19 @@ export default function Login() {
 
       setSuccessMessage(`${isPatronSignup ? 'Patron' : 'Artisan'} account created successfully! Opening portal...`);
 
-      // Auto-navigate to home or seller dashboard
+      // Auto-navigate to home or seller dashboard based on authenticated role
       setTimeout(() => {
-        navigate(user.role === 'PATRON' ? '/' : '/seller/dashboard', { replace: true });
+        navigateByRole(navigate, newUser);
       }, 700);
     } catch (err) {
-      setErrorMessage(err.message || 'Signup failed. Please check your inputs.');
+      const rawMsg = err.message || '';
+      if (rawMsg.includes('already exists with this email')) {
+        setErrorMessage(t('auth.errors.emailAlreadyExists', 'An account already exists with this email. Please log in using the registered account type.'));
+      } else if (rawMsg.includes('already exists with this mobile number')) {
+        setErrorMessage(t('auth.errors.mobileAlreadyExists', 'An account already exists with this mobile number. Please log in using the registered account type.'));
+      } else {
+        setErrorMessage(rawMsg || 'Signup failed. Please check your inputs.');
+      }
     } finally {
       setLoading(false);
     }

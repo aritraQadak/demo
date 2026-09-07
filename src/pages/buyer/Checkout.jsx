@@ -12,9 +12,10 @@ import {
 } from 'lucide-react';
 import { useBuyer } from '../../context/BuyerContext';
 import { useAuth } from '../../context/AuthContext';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 export default function Checkout() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { cart, cartTotal, artisanDirectTotal, clearCart } = useBuyer();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ export default function Checkout() {
             </div>
             <div className="flex justify-between font-label-sm text-label-sm text-outline uppercase">
               <span>{t('buyer.checkout.directArtisanPayout', 'Direct Artisan Release')}:</span>
-              <span className="text-secondary font-bold">₹{artisanDirectTotal.toLocaleString('en-IN')}</span>
+              <span className="text-secondary font-bold">{formatCurrency(artisanDirectTotal, i18n.language)}</span>
             </div>
           </div>
 
@@ -306,11 +307,11 @@ export default function Checkout() {
                     <div className="min-w-0 pr-2">
                       <div className="font-semibold text-on-surface truncate">{item.product.name}</div>
                       <div className="text-[11px] text-outline">
-                        Qty: {item.quantity} × ₹{item.product.price.toLocaleString('en-IN')}
+                        {t('buyer.checkout.qty', 'Qty')}: {formatNumber(item.quantity, i18n.language)} × {formatCurrency(item.product.price, i18n.language)}
                       </div>
                     </div>
                     <span className="font-semibold text-on-surface flex-shrink-0">
-                      ₹{(item.product.price * item.quantity).toLocaleString('en-IN')}
+                      {formatCurrency(item.product.price * item.quantity, i18n.language)}
                     </span>
                   </div>
                 ))}
@@ -322,7 +323,7 @@ export default function Checkout() {
               <div className="space-y-space-xs font-body-sm">
                 <div className="flex justify-between text-on-surface-variant">
                   <span>{t('buyer.checkout.subtotal', 'Items Total')}</span>
-                  <span className="font-semibold text-on-surface">₹{cartTotal.toLocaleString('en-IN')}</span>
+                  <span className="font-semibold text-on-surface">{formatCurrency(cartTotal, i18n.language)}</span>
                 </div>
                 <div className="flex justify-between text-on-surface-variant">
                   <span>{t('buyer.checkout.logistics', 'Insured Express Shipping')}</span>
@@ -330,7 +331,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between text-on-surface-variant">
                   <span>{t('buyer.checkout.guaranteedArtisan', 'Direct Artisan Payout')}</span>
-                  <span className="text-secondary font-bold">₹{artisanDirectTotal.toLocaleString('en-IN')}</span>
+                  <span className="text-secondary font-bold">{formatCurrency(artisanDirectTotal, i18n.language)}</span>
                 </div>
               </div>
 
@@ -339,7 +340,7 @@ export default function Checkout() {
               <div className="flex justify-between items-baseline">
                 <span className="font-title-lg text-title-lg text-on-surface font-semibold">{t('buyer.checkout.totalAmount', 'Total Escrow Amount')}</span>
                 <span className="font-headline-md text-headline-md text-secondary font-bold">
-                  ₹{cartTotal.toLocaleString('en-IN')}
+                  {formatCurrency(cartTotal, i18n.language)}
                 </span>
               </div>
 

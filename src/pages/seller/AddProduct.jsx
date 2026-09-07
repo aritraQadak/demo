@@ -24,6 +24,7 @@ import { useSeller } from '../../context/SellerContext';
 import { useTranslation } from 'react-i18next';
 import VoiceInput from '../../components/VoiceInput';
 import TrustBadge from '../../components/TrustBadge';
+import { formatCurrency } from '../../utils/formatters';
 
 // Sample curated authentic craft images artisans can choose from or upload
 const sampleCraftUploads = [
@@ -70,7 +71,7 @@ const sampleCraftUploads = [
 
 export default function AddProduct() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addProduct, profile, addToast } = useSeller();
 
   // Wizard Step: 1 = Upload Images, 2 = Product Details, 3 = AI Processing, 4 = Review & Publish
@@ -182,7 +183,7 @@ export default function AddProduct() {
       description: formData.description,
       authenticityScore: 92
     });
-    navigate('/products');
+    navigate('/seller/products');
   };
 
   const stepsList = [
@@ -696,7 +697,7 @@ export default function AddProduct() {
                       {t('addProduct.recommendedListingPrice', 'Recommended Listing Price:')}
                     </span>
                     <span className="text-2xl font-black text-emerald-900">
-                      ₹{formData.price}
+                      {formatCurrency(formData.price, i18n.language)}
                     </span>
                   </div>
                 </div>
@@ -854,10 +855,10 @@ export default function AddProduct() {
               {/* Price & Stock */}
               <div className="flex items-baseline gap-3 p-3 bg-white rounded-xl border border-gray-200">
                 <span className="text-3xl font-black text-gray-900">
-                  ₹{Number(formData.price).toLocaleString('en-IN')}
+                  {formatCurrency(formData.price, i18n.language)}
                 </span>
                 <span className="text-xs text-gray-400 line-through">
-                  ₹{Math.round(Number(formData.price) * 1.25).toLocaleString('en-IN')}
+                  {formatCurrency(Math.round(Number(formData.price) * 1.25), i18n.language)}
                 </span>
                 <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   {t('addProduct.unitsInWorkshop', '{{count}} units ready in workshop', { count: formData.stock })}
@@ -913,7 +914,7 @@ export default function AddProduct() {
                     image: uploadedImages[selectedImageIndex] || sampleCraftUploads[0].url,
                     description: formData.description
                   });
-                  navigate('/products');
+                  navigate('/seller/products');
                 }}
                 className="w-full sm:w-auto px-5 py-2.5 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold rounded-xl border border-gray-300 transition-colors"
               >

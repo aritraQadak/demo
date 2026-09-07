@@ -21,9 +21,10 @@ import {
 import { PRODUCTS } from '../../data/products';
 import { STATES_CRAFTS } from '../../data/statesCrafts';
 import { useBuyer } from '../../context/BuyerContext';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useBuyer();
 
@@ -110,16 +111,16 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-space-md w-full sm:w-auto">
             <a
               href="#clusters"
-              className="w-full sm:w-auto px-space-2xl py-space-md bg-secondary text-on-secondary font-label-md text-label-md uppercase tracking-[0.18em] shadow-xl hover:bg-secondary-container hover:text-on-secondary-container transition-all text-center"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#14532D] hover:bg-[#0E3D20] text-white font-label-md text-xs sm:text-sm uppercase tracking-[0.18em] shadow-lg transition-all duration-200 hover:-translate-y-0.5 text-center font-bold"
             >
               {t('buyer.home.exploreClustersCta', 'Explore Craft Clusters')}
             </a>
             <button
               type="button"
               onClick={() => setIsStoryModalOpen(true)}
-              className="w-full sm:w-auto px-space-2xl py-space-md bg-surface/5 backdrop-blur-sm text-primary-fixed font-label-md text-label-md uppercase tracking-[0.18em] hover:bg-surface/15 transition-all text-center flex items-center justify-center gap-space-xs border border-primary-fixed/30"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md text-amber-100 font-label-md text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-200 text-center flex items-center justify-center gap-2 border border-amber-200/30"
             >
-              <PlayCircle className="w-4 h-4" />
+              <PlayCircle className="w-4 h-4 text-amber-300" />
               <span>{t('buyer.home.watchStoriesCta', 'Watch Artisan Stories')}</span>
             </button>
           </div>
@@ -133,19 +134,19 @@ export default function Home() {
               </div>
             </div>
             <div className="p-space-md bg-surface-container-low/5 backdrop-blur-sm rounded-none border border-surface-variant/10">
-              <div className="font-garamond text-headline-sm text-primary-fixed">128</div>
+              <div className="font-garamond text-headline-sm text-primary-fixed">{t('buyer.home.statClustersNum', '128')}</div>
               <div className="font-label-sm text-[11px] text-outline-variant uppercase tracking-[0.14em] mt-1">
                 {t('buyer.home.tickerClusters', 'Certified GI Clusters')}
               </div>
             </div>
             <div className="p-space-md bg-surface-container-low/5 backdrop-blur-sm rounded-none border border-surface-variant/10">
-              <div className="font-garamond text-headline-sm text-primary-fixed">100%</div>
+              <div className="font-garamond text-headline-sm text-primary-fixed">{t('buyer.home.statEscrowNum', '100%')}</div>
               <div className="font-label-sm text-[11px] text-outline-variant uppercase tracking-[0.14em] mt-1">
                 {t('buyer.home.tickerEscrow', 'Escrow Protected Payout')}
               </div>
             </div>
             <div className="p-space-md bg-surface-container-low/5 backdrop-blur-sm rounded-none border border-surface-variant/10">
-              <div className="font-garamond text-headline-sm text-primary-fixed">₹4.8 Cr</div>
+              <div className="font-garamond text-headline-sm text-primary-fixed">{t('buyer.home.statHonorariumNum', '₹4.8 Cr')}</div>
               <div className="font-label-sm text-[11px] text-outline-variant uppercase tracking-[0.14em] mt-1">
                 {t('buyer.home.tickerHonorarium', 'Direct Artisan Honorarium')}
               </div>
@@ -199,26 +200,26 @@ export default function Home() {
                 key={st.slug}
                 type="button"
                 onClick={() => navigate(`/explore/${st.slug}`)}
-                className="group flex-shrink-0 flex items-center gap-space-md p-space-md bg-surface-container-lowest hover:bg-surface-container transition-all text-left shadow-sm w-72 border border-outline-variant/30"
+                className="group flex-shrink-0 flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-stone-900 hover:bg-[#FCFAF6] dark:hover:bg-stone-850 transition-all text-left shadow-xs hover:shadow-md hover:-translate-y-0.5 w-72 border border-stone-200/80 dark:border-stone-800 cursor-pointer"
               >
-                <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-surface-container-high">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-stone-100 dark:bg-stone-800 ring-2 ring-[#14532D]/10">
                   <img
                     src={st.img}
                     alt={st.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1 text-secondary mb-0.5">
+                  <div className="flex items-center gap-1 text-[#14532D] dark:text-emerald-400 mb-0.5">
                     <MapPin className="w-3.5 h-3.5" />
-                    <span className="font-label-sm text-[11px] uppercase tracking-wider text-secondary font-semibold">
+                    <span className="font-label-sm text-[11px] uppercase tracking-wider font-bold">
                       {st.name}
                     </span>
                   </div>
-                  <div className="font-title-md text-title-md text-on-surface truncate font-semibold">
+                  <div className="font-title-md text-sm text-stone-900 dark:text-stone-100 truncate font-bold">
                     {st.craft}
                   </div>
-                  <div className="font-label-sm text-[11px] text-outline tracking-tight mt-0.5">
+                  <div className="font-label-sm text-[11px] text-stone-500 dark:text-stone-400 tracking-tight mt-0.5">
                     {st.looms}
                   </div>
                 </div>
@@ -250,40 +251,40 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 4 Artisan {t('buyer.home.dossier', 'Dossier')} Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl">
+          {/* 4 Artisan Dossier Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Artisan 1 */}
-            <div className="group bg-surface-container-lowest p-space-lg flex flex-col shadow-md hover:-translate-y-1 transition-all duration-300 border border-outline-variant/40">
-              <div className="relative w-full aspect-[4/5] bg-surface-container mb-space-md overflow-hidden">
+            <div className="group bg-white dark:bg-stone-900 rounded-2xl p-5 flex flex-col shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-stone-200/80 dark:border-stone-800">
+              <div className="relative w-full aspect-[4/5] rounded-xl bg-stone-100 dark:bg-stone-800 mb-4 overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80"
-                  alt="{t('buyer.home.ramdasName', 'Ustad Ramdas Ansari')}"
+                  alt={t('buyer.home.ramdasName', 'Ustad Ramdas Ansari')}
                   className="w-full h-full object-cover grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm p-1 flex items-center justify-center shadow-md">
-                  <Award className="w-5 h-5 text-secondary" />
+                <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur-sm p-1 flex items-center justify-center shadow-xs">
+                  <Award className="w-4 h-4 text-[#14532D] dark:text-emerald-400" />
                 </div>
-                <div className="absolute top-3 left-3 bg-secondary px-2 py-0.5 text-on-secondary font-label-sm text-[10px] uppercase tracking-widest">
-                  5th Gen Weaver
+                <div className="absolute top-3 left-3 bg-[#14532D] px-2.5 py-0.5 rounded-full text-white font-label-sm text-[10px] font-bold uppercase tracking-widest">
+                  {t('buyer.home.fiveGenWeaver', '5th Gen Weaver')}
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-secondary mb-1">
+                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-[#C2410C] font-bold mb-1">
                     {t('buyer.home.varanasiLoc', 'Varanasi, Uttar Pradesh')}
                   </div>
-                  <h3 className="font-garamond text-title-lg text-on-surface mb-1 font-bold">
+                  <h3 className="font-garamond text-xl text-stone-900 dark:text-stone-100 mb-1 font-bold">
                     {t('buyer.home.ramdasName', 'Ustad Ramdas Ansari')}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-md">
+                  <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">
                     {t('buyer.home.ramdasBio', 'Master of Kadwa and Katan silk techniques. Keeper of 18th-century Persian jaal draught cards.')}
                   </p>
                 </div>
-                <div className="pt-space-sm bg-surface-container-low/50 -mx-space-lg -mb-space-lg p-space-md flex items-center justify-between border-t border-outline-variant/30">
-                  <span className="font-label-sm text-[11px] text-outline uppercase tracking-wider">{t('buyer.home.padmaNominee', 'Padma Shri Nominee')}</span>
+                <div className="pt-3 -mx-5 -mb-5 px-5 py-3 rounded-b-2xl bg-[#FCFAF6] dark:bg-stone-850 flex items-center justify-between border-t border-stone-200/60 dark:border-stone-800">
+                  <span className="font-label-sm text-[11px] text-stone-500 uppercase tracking-wider font-medium">{t('buyer.home.padmaNominee', 'Padma Shri Nominee')}</span>
                   <Link
                     to="/explore/uttar-pradesh"
-                    className="font-label-sm text-[11px] text-secondary font-semibold uppercase tracking-wider flex items-center hover:underline"
+                    className="font-label-sm text-[11px] text-[#14532D] dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center hover:underline"
                   >
                     {t('buyer.home.dossier', 'Dossier')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
@@ -292,37 +293,37 @@ export default function Home() {
             </div>
 
             {/* Artisan 2 */}
-            <div className="group bg-surface-container-lowest p-space-lg flex flex-col shadow-md hover:-translate-y-1 transition-all duration-300 border border-outline-variant/40">
-              <div className="relative w-full aspect-[4/5] bg-surface-container mb-space-md overflow-hidden">
+            <div className="group bg-white dark:bg-stone-900 rounded-2xl p-5 flex flex-col shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-stone-200/80 dark:border-stone-800">
+              <div className="relative w-full aspect-[4/5] rounded-xl bg-stone-100 dark:bg-stone-800 mb-4 overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80"
                   alt="{t('buyer.home.ananyaName', 'Smt. Ananya Devi')}"
                   className="w-full h-full object-cover grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm p-1 flex items-center justify-center shadow-md">
-                  <BadgeCheck className="w-5 h-5 text-secondary" />
+                <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur-sm p-1 flex items-center justify-center shadow-xs">
+                  <BadgeCheck className="w-4 h-4 text-[#14532D] dark:text-emerald-400" />
                 </div>
-                <div className="absolute top-3 left-3 bg-secondary px-2 py-0.5 text-on-secondary font-label-sm text-[10px] uppercase tracking-widest">
-                  {t('buyer.home.presidentialAwardee', 'Presidential Awardee')}
+                <div className="absolute top-3 left-3 bg-[#14532D] px-2.5 py-0.5 rounded-full text-white font-label-sm text-[10px] font-bold uppercase tracking-widest">
+                  {t('buyer.home.nationalAwardee', 'National Awardee')}
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-secondary mb-1">
-                    {t('buyer.home.bolpurLoc', 'Bolpur, West Bengal')}
+                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-[#C2410C] font-bold mb-1">
+                    {t('buyer.home.santipurLoc', 'Santipur, West Bengal')}
                   </div>
-                  <h3 className="font-garamond text-title-lg text-on-surface mb-1 font-bold">
+                  <h3 className="font-garamond text-xl text-stone-900 dark:text-stone-100 mb-1 font-bold">
                     {t('buyer.home.ananyaName', 'Smt. Ananya Devi')}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-md">
-                    {t('buyer.home.ananyaBio', 'Reviving narrative Nakshi Kantha tapestries depicting traditional agrarian folklore and flora.')}
+                  <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">
+                    {t('buyer.home.ananyaBio', 'Narrative Nakshi Kantha embroidery stitching folk cosmologies and botanical motifs on handloom tussar.')}
                   </p>
                 </div>
-                <div className="pt-space-sm bg-surface-container-low/50 -mx-space-lg -mb-space-lg p-space-md flex items-center justify-between border-t border-outline-variant/30">
-                  <span className="font-label-sm text-[11px] text-outline uppercase tracking-wider">{t('buyer.home.nationalAward18', "National Award '18")}</span>
+                <div className="pt-3 -mx-5 -mb-5 px-5 py-3 rounded-b-2xl bg-[#FCFAF6] dark:bg-stone-850 flex items-center justify-between border-t border-stone-200/60 dark:border-stone-800">
+                  <span className="font-label-sm text-[11px] text-stone-500 uppercase tracking-wider font-medium">{t('buyer.home.giMarkWB', 'GI Mark #WB-0452')}</span>
                   <Link
                     to="/explore/west-bengal"
-                    className="font-label-sm text-[11px] text-secondary font-semibold uppercase tracking-wider flex items-center hover:underline"
+                    className="font-label-sm text-[11px] text-[#14532D] dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center hover:underline"
                   >
                     {t('buyer.home.dossier', 'Dossier')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
@@ -331,37 +332,37 @@ export default function Home() {
             </div>
 
             {/* Artisan 3 */}
-            <div className="group bg-surface-container-lowest p-space-lg flex flex-col shadow-md hover:-translate-y-1 transition-all duration-300 border border-outline-variant/40">
-              <div className="relative w-full aspect-[4/5] bg-surface-container mb-space-md overflow-hidden">
+            <div className="group bg-white dark:bg-stone-900 rounded-2xl p-5 flex flex-col shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-stone-200/80 dark:border-stone-800">
+              <div className="relative w-full aspect-[4/5] rounded-xl bg-stone-100 dark:bg-stone-800 mb-4 overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80"
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80"
                   alt="{t('buyer.home.ismailName', 'Dr. Ismail M. Khatri')}"
                   className="w-full h-full object-cover grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm p-1 flex items-center justify-center shadow-md">
-                  <BadgeCheck className="w-5 h-5 text-secondary" />
+                <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur-sm p-1 flex items-center justify-center shadow-xs">
+                  <Award className="w-4 h-4 text-[#14532D] dark:text-emerald-400" />
                 </div>
-                <div className="absolute top-3 left-3 bg-secondary px-2 py-0.5 text-on-secondary font-label-sm text-[10px] uppercase tracking-widest">
-                  {t('buyer.home.naturalDyeGuild', 'Natural Dye Guild')}
+                <div className="absolute top-3 left-3 bg-[#14532D] px-2.5 py-0.5 rounded-full text-white font-label-sm text-[10px] font-bold uppercase tracking-widest">
+                  {t('buyer.home.shilpGuru', 'Shilp Guru Awardee')}
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-secondary mb-1">
+                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-[#C2410C] font-bold mb-1">
                     {t('buyer.home.ajrakhpurLoc', 'Ajrakhpur, Gujarat')}
                   </div>
-                  <h3 className="font-garamond text-title-lg text-on-surface mb-1 font-bold">
+                  <h3 className="font-garamond text-xl text-stone-900 dark:text-stone-100 mb-1 font-bold">
                     {t('buyer.home.ismailName', 'Dr. Ismail M. Khatri')}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-md">
+                  <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">
                     {t('buyer.home.ismailBio', '16-stage resist block dyeing using wild pomegranate, river mud, and fermented scrap iron.')}
                   </p>
                 </div>
-                <div className="pt-space-sm bg-surface-container-low/50 -mx-space-lg -mb-space-lg p-space-md flex items-center justify-between border-t border-outline-variant/30">
-                  <span className="font-label-sm text-[11px] text-outline uppercase tracking-wider">{t('buyer.home.carverGen', '9th Gen Block Carver')}</span>
+                <div className="pt-3 -mx-5 -mb-5 px-5 py-3 rounded-b-2xl bg-[#FCFAF6] dark:bg-stone-850 flex items-center justify-between border-t border-stone-200/60 dark:border-stone-800">
+                  <span className="font-label-sm text-[11px] text-stone-500 uppercase tracking-wider font-medium">{t('buyer.home.carverGen', '9th Gen Block Carver')}</span>
                   <Link
                     to="/explore/gujarat"
-                    className="font-label-sm text-[11px] text-secondary font-semibold uppercase tracking-wider flex items-center hover:underline"
+                    className="font-label-sm text-[11px] text-[#14532D] dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center hover:underline"
                   >
                     {t('buyer.home.dossier', 'Dossier')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
@@ -370,37 +371,37 @@ export default function Home() {
             </div>
 
             {/* Artisan 4 */}
-            <div className="group bg-surface-container-lowest p-space-lg flex flex-col shadow-md hover:-translate-y-1 transition-all duration-300 border border-outline-variant/40">
-              <div className="relative w-full aspect-[4/5] bg-surface-container mb-space-md overflow-hidden">
+            <div className="group bg-white dark:bg-stone-900 rounded-2xl p-5 flex flex-col shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-stone-200/80 dark:border-stone-800">
+              <div className="relative w-full aspect-[4/5] rounded-xl bg-stone-100 dark:bg-stone-800 mb-4 overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
                   alt="{t('buyer.home.ghulamName', 'Ghulam Hassan Mir')}"
                   className="w-full h-full object-cover grayscale contrast-125 group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm p-1 flex items-center justify-center shadow-md">
-                  <BadgeCheck className="w-5 h-5 text-secondary" />
+                <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur-sm p-1 flex items-center justify-center shadow-xs">
+                  <BadgeCheck className="w-4 h-4 text-[#14532D] dark:text-emerald-400" />
                 </div>
-                <div className="absolute top-3 left-3 bg-secondary px-2 py-0.5 text-on-secondary font-label-sm text-[10px] uppercase tracking-widest">
+                <div className="absolute top-3 left-3 bg-[#14532D] px-2.5 py-0.5 rounded-full text-white font-label-sm text-[10px] font-bold uppercase tracking-widest">
                   {t('buyer.home.kaniLoomMaster', 'Kani Loom Master')}
                 </div>
               </div>
               <div className="flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-secondary mb-1">
+                  <div className="font-label-sm text-[11px] uppercase tracking-wider text-[#C2410C] font-bold mb-1">
                     {t('buyer.home.srinagarLoc', 'Srinagar, Kashmir')}
                   </div>
-                  <h3 className="font-garamond text-title-lg text-on-surface mb-1 font-bold">
+                  <h3 className="font-garamond text-xl text-stone-900 dark:text-stone-100 mb-1 font-bold">
                     {t('buyer.home.ghulamName', 'Ghulam Hassan Mir')}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-md">
+                  <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 line-clamp-2 mb-4 leading-relaxed">
                     {t('buyer.home.ghulamBio', "Weaving coded 'Talim' manuscripts into whisper-soft Changthangi cashmere goat fleece.")}
                   </p>
                 </div>
-                <div className="pt-space-sm bg-surface-container-low/50 -mx-space-lg -mb-space-lg p-space-md flex items-center justify-between border-t border-outline-variant/30">
-                  <span className="font-label-sm text-[11px] text-outline uppercase tracking-wider">{t('buyer.home.giMarkJK', 'GI Mark #JK-0921')}</span>
+                <div className="pt-3 -mx-5 -mb-5 px-5 py-3 rounded-b-2xl bg-[#FCFAF6] dark:bg-stone-850 flex items-center justify-between border-t border-stone-200/60 dark:border-stone-800">
+                  <span className="font-label-sm text-[11px] text-stone-500 uppercase tracking-wider font-medium">{t('buyer.home.giMarkJK', 'GI Mark #JK-0921')}</span>
                   <Link
                     to="/explore/jammu-kashmir"
-                    className="font-label-sm text-[11px] text-secondary font-semibold uppercase tracking-wider flex items-center hover:underline"
+                    className="font-label-sm text-[11px] text-[#14532D] dark:text-emerald-400 font-bold uppercase tracking-wider flex items-center hover:underline"
                   >
                     {t('buyer.home.dossier', 'Dossier')} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Link>
@@ -412,49 +413,49 @@ export default function Home() {
       </section>
 
       {/* 3. QUIET TRUST STRIP */}
-      <section className="w-full bg-surface-container-high py-space-2xl">
-        <div className="max-w-[1440px] mx-auto px-space-md sm:px-space-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-xl">
+      <section className="w-full bg-[#F8F4EC] dark:bg-stone-900/60 py-12 border-y border-[#E7DECB]/80 dark:border-stone-800">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Pillar 1 */}
-            <div className="flex gap-space-md items-start p-space-md bg-surface-container-lowest shadow-sm border border-outline-variant/30">
-              <div className="w-12 h-12 bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
-                <Fingerprint className="w-7 h-7" />
+            <div className="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-stone-900 shadow-xs border border-stone-200/80 dark:border-stone-800">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 flex-shrink-0">
+                <Fingerprint className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-title-md text-title-md text-on-surface mb-1 font-bold">
+                <h4 className="font-title-md text-base text-stone-900 dark:text-stone-100 mb-1.5 font-bold">
                   {t('buyer.home.pillar1Title', 'Direct Kinship Verification')}
                 </h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('buyer.home.pillar1Desc', 'We bypass intermediate middlemen. Connect directly with over 14,000 certified national awardees, weaver societies, and sovereign guild masters.')}
                 </p>
               </div>
             </div>
 
             {/* Pillar 2 */}
-            <div className="flex gap-space-md items-start p-space-md bg-surface-container-lowest shadow-sm border border-outline-variant/30">
-              <div className="w-12 h-12 bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
-                <FlaskConical className="w-7 h-7" />
+            <div className="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-stone-900 shadow-xs border border-stone-200/80 dark:border-stone-800">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 flex-shrink-0">
+                <FlaskConical className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-title-md text-title-md text-on-surface mb-1 font-bold">
+                <h4 className="font-title-md text-base text-stone-900 dark:text-stone-100 mb-1.5 font-bold">
                   {t('buyer.home.pillar2Title', 'Rigorous Lab Provenance')}
                 </h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('buyer.home.pillar2Desc', 'Every textile is authenticated with Geographical Indication tags and laboratory burn-testing for 100% natural mulberry, tussar, and pure zari threads.')}
                 </p>
               </div>
             </div>
 
             {/* Pillar 3 */}
-            <div className="flex gap-space-md items-start p-space-md bg-surface-container-lowest shadow-sm border border-outline-variant/30">
-              <div className="w-12 h-12 bg-surface-container flex items-center justify-center text-secondary flex-shrink-0">
-                <ShieldCheck className="w-7 h-7" />
+            <div className="flex gap-4 items-start p-6 rounded-2xl bg-white dark:bg-stone-900 shadow-xs border border-stone-200/80 dark:border-stone-800">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 flex-shrink-0">
+                <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-title-md text-title-md text-on-surface mb-1 font-bold">
+                <h4 className="font-title-md text-base text-stone-900 dark:text-stone-100 mb-1.5 font-bold">
                   {t('buyer.home.pillar3Title', 'Fair-Wage Escrow Vault')}
                 </h4>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                   {t('buyer.home.pillar3Desc', 'Your patron funds are held in sovereign escrow until parcel receipt & inspection, with 88-92% guaranteed release straight to artisan bank accounts.')}
                 </p>
               </div>
@@ -489,76 +490,76 @@ export default function Home() {
           </div>
 
           {/* Editorial Magazine Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-space-xl items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             {/* Large Feature (7 cols) */}
             {mainFeature && (
-              <div className="md:col-span-7 group bg-surface-container-lowest p-space-lg shadow-md flex flex-col border border-outline-variant/40">
-                <div className="relative w-full aspect-[16/10] bg-surface-container-high overflow-hidden mb-space-lg">
+              <div className="md:col-span-7 group bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-xs hover:shadow-md flex flex-col border border-stone-200/80 dark:border-stone-800 transition-all duration-300">
+                <div className="relative w-full aspect-[16/10] bg-stone-100 dark:bg-stone-800 rounded-xl overflow-hidden mb-5">
                   <img
                     src={mainFeature.images[0]}
                     alt={mainFeature.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-md px-3 py-1 font-label-sm text-[11px] text-on-surface uppercase tracking-widest shadow-sm">
+                  <div className="absolute top-3.5 left-3.5 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-3 py-1 rounded-full font-label-sm text-[11px] text-stone-800 dark:text-stone-200 uppercase tracking-wider font-semibold shadow-xs">
                     {mainFeature.craftLineage} • {mainFeature.district}
                   </div>
-                  <div className="absolute bottom-4 right-4 bg-secondary text-on-secondary px-3 py-1 font-label-sm text-[11px] uppercase tracking-wider shadow-sm flex items-center gap-1">
+                  <div className="absolute bottom-3.5 right-3.5 bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 px-3 py-1 rounded-full font-label-sm text-[11px] uppercase tracking-wider shadow-xs flex items-center gap-1 font-bold">
                     <BadgeCheck className="w-3.5 h-3.5" /> {mainFeature.giTagStatus}
                   </div>
                 </div>
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-space-md mb-space-md">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                   <div>
-                    <div className="font-label-sm text-[11px] text-secondary uppercase tracking-widest mb-1">
-                      Master Artisan: {mainFeature.artisanName}
+                    <div className="font-label-sm text-[11px] text-[#C2410C] uppercase tracking-wider font-bold mb-1">
+                      {t('buyer.home.masterArtisan', 'Master Artisan:')} {mainFeature.artisanName}
                     </div>
-                    <h3 className="font-garamond text-headline-sm text-on-surface font-bold">
-                      <Link to={`/product/${mainFeature.id}`} className="hover:text-secondary transition-colors">
+                    <h3 className="font-garamond text-2xl text-stone-900 dark:text-stone-100 font-bold">
+                      <Link to={`/product/${mainFeature.id}`} className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors">
                         {mainFeature.name}
                       </Link>
                     </h3>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant max-w-xl mt-1">
+                    <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 max-w-xl mt-1 leading-relaxed">
                       {mainFeature.description}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="font-garamond text-headline-sm text-secondary font-bold">
-                      ₹ {mainFeature.price.toLocaleString('en-IN')}
+                    <div className="font-garamond text-2xl text-[#14532D] dark:text-emerald-400 font-bold">
+                      {formatCurrency(mainFeature.price, i18n.language)}
                     </div>
-                    <div className="font-label-sm text-[11px] text-outline tracking-tight">
-                      Artisan Share: ₹ {mainFeature.artisanShareAmount.toLocaleString('en-IN')} ({mainFeature.artisanSharePercent}%)
+                    <div className="font-label-sm text-[11px] text-stone-500 dark:text-stone-400 tracking-tight">
+                      {t('buyer.home.artisanShare', 'Artisan Share:')} {formatCurrency(mainFeature.artisanShareAmount, i18n.language)} ({formatNumber(mainFeature.artisanSharePercent, i18n.language)}%)
                     </div>
                   </div>
                 </div>
 
                 {/* Transparent Payout Bar */}
-                <div className="bg-surface-container p-space-md flex flex-col gap-2 mt-auto">
-                  <div className="flex justify-between text-on-surface-variant font-label-sm text-[11px]">
-                    <span>{t('buyer.home.fairWageAllocation', 'Fair Wage Transparency Allocation')}</span>
-                    <span className="text-secondary font-semibold">{mainFeature.artisanSharePercent}% Direct Artisan Payout</span>
+                <div className="bg-[#FCFAF6] dark:bg-stone-850 p-4 rounded-xl border border-stone-200/60 dark:border-stone-800 flex flex-col gap-2 mt-auto">
+                  <div className="flex justify-between text-stone-700 dark:text-stone-300 font-label-sm text-[11px]">
+                    <span className="font-medium">{t('buyer.home.fairWageAllocation', 'Fair Wage Transparency Allocation')}</span>
+                    <span className="text-[#14532D] dark:text-emerald-400 font-bold">{formatNumber(mainFeature.artisanSharePercent, i18n.language)}% {t('buyer.home.directArtisanPayoutBadge', 'Direct Artisan Payout')}</span>
                   </div>
-                  <div className="w-full bg-surface-container-high h-1.5 flex overflow-hidden rounded-full">
-                    <div className="bg-secondary h-full" style={{ width: `${mainFeature.artisanSharePercent}%` }} />
-                    <div className="bg-primary-container h-full" style={{ width: '7%' }} />
-                    <div className="bg-outline h-full" style={{ width: '3%' }} />
+                  <div className="w-full bg-stone-200 dark:bg-stone-700 h-2 flex overflow-hidden rounded-full">
+                    <div className="bg-[#14532D] dark:bg-emerald-500 h-full" style={{ width: `${mainFeature.artisanSharePercent}%` }} />
+                    <div className="bg-[#C2410C] h-full" style={{ width: '7%' }} />
+                    <div className="bg-stone-400 dark:bg-stone-500 h-full" style={{ width: '3%' }} />
                   </div>
-                  <div className="flex justify-between text-outline font-label-sm text-[10px]">
+                  <div className="flex justify-between text-stone-500 dark:text-stone-400 font-label-sm text-[10px]">
                     <span>Artisan Guild: {mainFeature.artisanSharePercent}%</span>
                     <span>GI Verification: 7%</span>
                     <span>Platform Escrow: 3%</span>
                   </div>
                 </div>
 
-                <div className="mt-space-md flex gap-space-xs">
+                <div className="mt-5 flex gap-3">
                   <button
                     type="button"
                     onClick={() => handleAcquire(mainFeature)}
-                    className="flex-1 bg-on-surface text-surface hover:bg-secondary hover:text-on-secondary py-space-sm font-label-sm text-label-sm uppercase tracking-[0.16em] font-semibold transition-colors shadow-sm text-center"
+                    className="flex-1 bg-[#14532D] hover:bg-[#0E3D20] text-white py-3 px-5 rounded-xl font-label-sm text-xs uppercase tracking-wider font-semibold transition-all shadow-xs hover:shadow-md text-center cursor-pointer"
                   >
                     {t('buyer.product.acquireBtn', 'Acquire Masterwork')}
                   </button>
                   <Link
                     to={`/product/${mainFeature.id}`}
-                    className="px-space-md py-space-sm bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider flex items-center justify-center"
+                    className="px-5 py-3 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 rounded-xl font-label-sm text-xs uppercase tracking-wider flex items-center justify-center font-semibold transition-colors"
                   >
                     {t('buyer.home.details', 'Details')}
                   </Link>
@@ -568,51 +569,51 @@ export default function Home() {
 
             {/* Medium Feature (5 cols) */}
             {secondFeature && (
-              <div className="md:col-span-5 group bg-surface-container-lowest p-space-lg shadow-md flex flex-col border border-outline-variant/40">
-                <div className="relative w-full aspect-[4/3] bg-surface-container-high overflow-hidden mb-space-lg">
+              <div className="md:col-span-5 group bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-xs hover:shadow-md flex flex-col border border-stone-200/80 dark:border-stone-800 transition-all duration-300">
+                <div className="relative w-full aspect-[4/3] bg-stone-100 dark:bg-stone-800 rounded-xl overflow-hidden mb-5">
                   <img
                     src={secondFeature.images[0]}
                     alt={secondFeature.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-md px-3 py-1 font-label-sm text-[11px] text-on-surface uppercase tracking-widest shadow-sm">
+                  <div className="absolute top-3.5 left-3.5 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-3 py-1 rounded-full font-label-sm text-[11px] text-stone-800 dark:text-stone-200 uppercase tracking-wider font-semibold shadow-xs">
                     {secondFeature.craftLineage} • {secondFeature.district}
                   </div>
                 </div>
-                <div className="flex justify-between items-start mb-space-xs">
+                <div className="flex justify-between items-start mb-2">
                   <div>
-                    <div className="font-label-sm text-[11px] text-secondary uppercase tracking-widest mb-1">
-                      Master Artisan: {secondFeature.artisanName}
+                    <div className="font-label-sm text-[11px] text-[#C2410C] uppercase tracking-wider font-bold mb-1">
+                      {t('buyer.home.masterArtisan', 'Master Artisan:')} {secondFeature.artisanName}
                     </div>
-                    <h3 className="font-garamond text-title-lg text-on-surface font-bold">
-                      <Link to={`/product/${secondFeature.id}`} className="hover:text-secondary transition-colors">
+                    <h3 className="font-garamond text-xl text-stone-900 dark:text-stone-100 font-bold">
+                      <Link to={`/product/${secondFeature.id}`} className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors">
                         {secondFeature.name}
                       </Link>
                     </h3>
                   </div>
                   <div className="text-right">
-                    <div className="font-garamond text-title-lg text-secondary font-bold">
-                      ₹ {secondFeature.price.toLocaleString('en-IN')}
+                    <div className="font-garamond text-xl text-[#14532D] dark:text-emerald-400 font-bold">
+                      {formatCurrency(secondFeature.price, i18n.language)}
                     </div>
-                    <div className="font-label-sm text-[10px] text-outline">
-                      Artisan: ₹ {secondFeature.artisanShareAmount.toLocaleString('en-IN')}
+                    <div className="font-label-sm text-[10px] text-stone-500 dark:text-stone-400">
+                      {t('buyer.home.artisanShare', 'Artisan:')} {formatCurrency(secondFeature.artisanShareAmount, i18n.language)}
                     </div>
                   </div>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mb-5 leading-relaxed">
                   {secondFeature.description}
                 </p>
                 <div className="mt-auto flex gap-2">
                   <button
                     type="button"
                     onClick={() => handleAcquire(secondFeature)}
-                    className="flex-1 py-2.5 bg-secondary text-on-secondary hover:bg-secondary-container hover:text-on-secondary-container font-label-sm text-label-sm uppercase tracking-widest transition-colors text-center font-semibold"
+                    className="flex-1 py-2.5 bg-[#14532D] hover:bg-[#0E3D20] text-white rounded-xl font-label-sm text-xs uppercase tracking-wider transition-all text-center font-semibold shadow-xs hover:shadow-md cursor-pointer"
                   >
                     {t('buyer.product.acquireBtn', 'Acquire Masterwork')}
                   </button>
                   <Link
                     to={`/product/${secondFeature.id}`}
-                    className="py-2.5 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-[11px] uppercase tracking-wider flex items-center justify-center"
+                    className="py-2.5 px-4 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 rounded-xl font-label-sm text-xs uppercase tracking-wider flex items-center justify-center font-semibold transition-colors"
                   >
                     {t('buyer.home.ledger', 'Ledger')}
                   </Link>
@@ -622,41 +623,41 @@ export default function Home() {
 
             {/* Small Features (3 x 4 cols) */}
             {smallFeatures.map((prod) => (
-              <div key={prod.id} className="md:col-span-4 group bg-surface-container-lowest p-space-lg shadow-md flex flex-col border border-outline-variant/40">
-                <div className="relative w-full aspect-square bg-surface-container-high overflow-hidden mb-space-md">
+              <div key={prod.id} className="md:col-span-4 group bg-white dark:bg-stone-900 rounded-2xl p-5 shadow-xs hover:shadow-md flex flex-col border border-stone-200/80 dark:border-stone-800 transition-all duration-300">
+                <div className="relative w-full aspect-square bg-stone-100 dark:bg-stone-800 rounded-xl overflow-hidden mb-4">
                   <img
                     src={prod.images[0]}
                     alt={prod.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute top-3 left-3 bg-secondary px-2 py-0.5 text-on-secondary font-label-sm text-[10px] uppercase tracking-widest">
+                  <div className="absolute top-2.5 left-2.5 bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 px-2.5 py-0.5 rounded-full font-label-sm text-[10px] uppercase tracking-wider font-bold">
                     {prod.giTagStatus}
                   </div>
                 </div>
-                <div className="font-label-sm text-[11px] text-secondary uppercase tracking-widest mb-1">
+                <div className="font-label-sm text-[11px] text-[#C2410C] uppercase tracking-wider font-bold mb-0.5">
                   {prod.district}
                 </div>
-                <h3 className="font-garamond text-title-md text-on-surface mb-1 font-bold">
-                  <Link to={`/product/${prod.id}`} className="hover:text-secondary transition-colors">
+                <h3 className="font-garamond text-lg text-stone-900 dark:text-stone-100 mb-1 font-bold">
+                  <Link to={`/product/${prod.id}`} className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors">
                     {prod.name}
                   </Link>
                 </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md line-clamp-2">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mb-4 line-clamp-2 leading-relaxed">
                   {prod.description}
                 </p>
-                <div className="mt-auto pt-space-xs flex flex-col gap-2 border-t border-outline-variant/30">
+                <div className="mt-auto pt-3 flex flex-col gap-2.5 border-t border-stone-200/60 dark:border-stone-800">
                   <div className="flex justify-between items-center">
-                    <span className="font-garamond text-title-md text-secondary font-bold">
-                      ₹ {prod.price.toLocaleString('en-IN')}
+                    <span className="font-garamond text-lg text-[#14532D] dark:text-emerald-400 font-bold">
+                      {formatCurrency(prod.price, i18n.language)}
                     </span>
-                    <span className="font-label-sm text-[10px] text-outline">
-                      {prod.artisanSharePercent}% Artisan Direct
+                    <span className="font-label-sm text-[10px] text-stone-500 dark:text-stone-400 font-medium">
+                      {formatNumber(prod.artisanSharePercent, i18n.language)}% {t('buyer.home.artisanDirect', 'Artisan Direct')}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleAcquire(prod)}
-                    className="w-full py-2 bg-on-surface text-surface hover:bg-secondary hover:text-on-secondary font-label-sm text-[11px] uppercase tracking-wider font-semibold transition-colors"
+                    className="w-full py-2.5 bg-[#14532D] hover:bg-[#0E3D20] text-white rounded-xl font-label-sm text-xs uppercase tracking-wider font-semibold transition-all shadow-xs hover:shadow-md cursor-pointer"
                   >
                     {t('buyer.product.acquireBtn', 'Acquire Masterwork')}
                   </button>
@@ -668,27 +669,27 @@ export default function Home() {
       </section>
 
       {/* 5. EDITORIAL HERITAGE QUOTE & CRAFT MAP CALLOUT */}
-      <section className="w-full bg-surface-container-high py-space-4xl relative overflow-hidden">
-        <div className="max-w-[1440px] mx-auto px-space-md sm:px-space-xl relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-center">
+      <section className="w-full bg-[#F8F4EC] dark:bg-stone-900/60 py-16 relative overflow-hidden border-t border-[#E7DECB]/80 dark:border-stone-800">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Editorial Quote Block */}
             <div className="lg:col-span-7 flex flex-col">
-              <div className="inline-flex items-center gap-2 text-secondary mb-space-md">
+              <div className="inline-flex items-center gap-2 text-[#14532D] dark:text-emerald-400 mb-4">
                 <ScrollText className="w-5 h-5" />
-                <span className="font-label-sm text-label-sm uppercase tracking-[0.24em] font-semibold">
+                <span className="font-label-sm text-xs uppercase tracking-[0.2em] font-bold">
                   {t('buyer.home.quoteBadge', 'UNESCO Intangible Cultural Heritage Manifesto')}
                 </span>
               </div>
-              <blockquote className="font-garamond text-headline-lg text-on-surface leading-tight mb-space-lg italic">
+              <blockquote className="font-garamond text-2xl sm:text-3xl text-stone-900 dark:text-stone-100 leading-snug mb-6 italic">
                 “The handloom is not an artifact of an obsolete past, but a living sacred mathematics that binds community, flora, and sovereignty into enduring cloth.”
               </blockquote>
-              <div className="flex items-center gap-space-md">
-                <div className="w-12 h-[1px] bg-secondary" />
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-[2px] bg-[#C2410C]" />
                 <div>
-                  <div className="font-title-md text-title-md text-on-surface font-semibold">
+                  <div className="font-title-md text-sm text-stone-900 dark:text-stone-100 font-bold">
                     {t('buyer.home.quoteAuthor', 'Prof. Kamaladevi Chattopadhyay Archive')}
                   </div>
-                  <div className="font-label-sm text-label-sm text-outline uppercase tracking-wider">
+                  <div className="font-label-sm text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wider">
                     {t('buyer.home.quoteRole', 'Patron of Indian Craft Renaissance')}
                   </div>
                 </div>
@@ -696,34 +697,34 @@ export default function Home() {
             </div>
 
             {/* Right Visual Map Callout Plate */}
-            <div className="lg:col-span-5 bg-surface-container-lowest p-space-xl shadow-xl flex flex-col justify-between border border-outline-variant/40">
+            <div className="lg:col-span-5 bg-white dark:bg-stone-900 rounded-2xl p-6 sm:p-8 shadow-xs hover:shadow-md flex flex-col justify-between border border-stone-200/80 dark:border-stone-800 transition-all">
               <div>
-                <div className="flex justify-between items-start mb-space-md">
-                  <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">
+                <div className="flex justify-between items-start mb-4">
+                  <span className="font-label-sm text-xs uppercase tracking-wider text-[#14532D] dark:text-emerald-400 font-bold">
                     {t('buyer.home.mapBadge', 'Interactive Map Registry')}
                   </span>
-                  <Globe className="w-5 h-5 text-outline" />
+                  <Globe className="w-5 h-5 text-stone-400" />
                 </div>
-                <h3 className="font-garamond text-headline-sm text-on-surface mb-space-xs font-bold">
+                <h3 className="font-garamond text-2xl text-stone-900 dark:text-stone-100 mb-2 font-bold">
                   {t('buyer.home.mapHeading', 'The National Craft Atlas')}
                 </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-lg leading-relaxed">
+                <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
                   Explore 750+ verified artisanal clusters across 28 states. View geo-tagged loom cooperatives, direct video feeds from workshops, and verifiable purity logs.
                 </p>
                 <div
-                  className="w-full h-48 bg-cover bg-center mb-space-md relative overflow-hidden shadow-inner border border-outline-variant/40"
+                  className="w-full h-44 bg-cover bg-center mb-5 rounded-xl relative overflow-hidden shadow-inner border border-stone-200/60 dark:border-stone-700"
                   style={{ backgroundImage: `url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80')` }}
                 >
-                  <div className="absolute inset-0 bg-on-surface/20" />
-                  <div className="absolute bottom-2 left-2 bg-surface-container-lowest/90 px-2 py-1 font-label-sm text-[11px] text-on-surface flex items-center gap-1 shadow-sm">
-                    <MapPin className="w-3.5 h-3.5 text-secondary" />
+                  <div className="absolute inset-0 bg-stone-900/20" />
+                  <div className="absolute bottom-2.5 left-2.5 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm px-3 py-1 rounded-full font-label-sm text-[11px] text-stone-800 dark:text-stone-200 flex items-center gap-1.5 shadow-xs font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-[#C2410C]" />
                     <span>{t('buyer.home.activeWeaveHubs', 'Active Weave Hubs in Focus')}</span>
                   </div>
                 </div>
               </div>
               <Link
                 to="/explore/west-bengal"
-                className="w-full py-space-md bg-on-surface text-surface-container-lowest font-label-sm text-label-sm uppercase tracking-[0.18em] text-center hover:bg-secondary transition-colors flex items-center justify-center gap-space-xs font-semibold"
+                className="w-full py-3 bg-[#14532D] hover:bg-[#0E3D20] text-white rounded-xl font-label-sm text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 font-semibold shadow-xs hover:shadow-md cursor-pointer"
               >
                 <span>{t('buyer.home.launchAtlas', 'Launch Sovereign Craft Atlas')}</span>
                 <Map className="w-4 h-4" />
@@ -735,47 +736,47 @@ export default function Home() {
 
       {/* ARTISAN STORY MODAL */}
       {isStoryModalOpen && (
-        <div className="fixed inset-0 z-50 bg-on-surface/80 backdrop-blur-sm flex items-center justify-center p-space-md animate-in fade-in duration-200">
-          <div className="bg-surface-container-lowest max-w-2xl w-full p-space-xl relative shadow-2xl border border-outline-variant/60">
+        <div className="fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-stone-900 max-w-2xl w-full p-6 sm:p-8 rounded-2xl relative shadow-2xl border border-stone-200/80 dark:border-stone-800">
             <button
               type="button"
               onClick={() => setIsStoryModalOpen(false)}
-              className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface transition-colors"
+              className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-1 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-space-xs text-secondary mb-space-xs">
+            <div className="flex items-center gap-1.5 text-[#14532D] dark:text-emerald-400 mb-2">
               <BadgeCheck className="w-4 h-4" />
-              <span className="font-label-sm text-label-sm uppercase tracking-widest font-semibold">
+              <span className="font-label-sm text-xs uppercase tracking-widest font-bold">
                 {t('buyer.home.modalBadge', 'Living Oral Histories')}
               </span>
             </div>
-            <h3 className="font-garamond text-headline-sm text-on-surface mb-space-sm font-bold">
+            <h3 className="font-garamond text-2xl text-stone-900 dark:text-stone-100 mb-4 font-bold">
               Voices from the Pit Loom: Kani & Pashmina of Kashmir
             </h3>
-            <div className="w-full aspect-video bg-on-background relative mb-space-md overflow-hidden flex items-center justify-center">
+            <div className="w-full aspect-video bg-stone-900 rounded-xl relative mb-4 overflow-hidden flex items-center justify-center shadow-inner">
               <img
                 src="https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1000&q=80"
-                alt="Story Video Preview"
+                alt={t('buyer.home.storyVideoPreview', 'Story Video Preview')}
                 className="w-full h-full object-cover opacity-80"
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                  <Play className="w-8 h-8 ml-1 fill-on-secondary" />
+                <div className="w-16 h-16 rounded-full bg-[#14532D] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer">
+                  <Play className="w-8 h-8 ml-1 fill-white" />
                 </div>
               </div>
             </div>
-            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-space-lg">
+            <p className="font-body-sm text-xs text-stone-600 dark:text-stone-400 leading-relaxed mb-6">
               Watch Master {t('buyer.home.ghulamName', 'Ghulam Hassan Mir')} demonstrate the ancient rhythmic chanting of the 'Talim'—the cryptographic weaver's shorthand that dictates color and warp count without a painted guide.
             </p>
-            <div className="flex justify-between items-center pt-space-xs border-t border-outline-variant/30">
-              <div className="font-label-sm text-[11px] text-outline">
-                Runtime: 06:45 • High-Definition Heritage Film
+            <div className="flex justify-between items-center pt-4 border-t border-stone-200/60 dark:border-stone-800">
+              <div className="font-label-sm text-[11px] text-stone-500 dark:text-stone-400 font-medium">
+                {t('buyer.home.filmRuntime', 'Runtime: 06:45 • High-Definition Heritage Film')}
               </div>
               <button
                 type="button"
                 onClick={() => setIsStoryModalOpen(false)}
-                className="px-space-lg py-2 bg-surface-container text-on-surface font-label-sm text-label-sm uppercase tracking-wider hover:bg-surface-container-high transition-colors font-semibold"
+                className="px-5 py-2.5 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-label-sm text-xs uppercase tracking-wider hover:bg-stone-200 dark:hover:bg-stone-700 rounded-xl transition-colors font-semibold cursor-pointer"
               >
                 {t('buyer.home.dismiss', 'Dismiss')}
               </button>

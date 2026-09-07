@@ -83,17 +83,17 @@ export default function StateSelectorDropdown({ className = '' }) {
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 lg:left-auto lg:right-0 top-full mt-2 w-80 max-h-[480px] bg-surface-container-lowest border border-outline-variant/60 shadow-2xl rounded-none z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute left-0 lg:left-auto lg:right-0 top-full mt-2 w-80 max-h-[480px] bg-[#FCFAF6] dark:bg-[#1E1A17] border border-[#E7DECB] dark:border-stone-700 shadow-xl rounded-2xl z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
           {/* Search Header */}
-          <div className="p-2.5 bg-surface-container-low border-b border-outline-variant/40 sticky top-0 z-10">
+          <div className="p-3 bg-[#F8F4EC] dark:bg-stone-800/70 border-b border-[#E7DECB]/80 dark:border-stone-700 sticky top-0 z-10">
             <div className="relative flex items-center">
-              <Search className="w-4 h-4 absolute left-3 text-outline pointer-events-none" />
+              <Search className="w-4 h-4 absolute left-3 text-stone-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('buyer.nav.searchStatePlaceholder', 'Search state or craft (e.g. Kashmir, Saree)...')}
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-surface text-on-surface border border-outline-variant/60 focus:border-secondary focus:outline-none placeholder:text-outline/70 font-sans"
+                className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 border border-[#D5C9B3] dark:border-stone-700 focus:border-[#14532D] dark:focus:border-emerald-500 focus:ring-1 focus:ring-[#14532D]/30 focus:outline-none placeholder:text-stone-400 font-sans transition-all"
                 autoFocus
               />
             </div>

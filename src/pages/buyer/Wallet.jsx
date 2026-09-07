@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Wallet as WalletIcon, ShieldCheck, ArrowDownRight, ArrowUpRight, Award, Lock } from 'lucide-react';
+import { formatCurrency } from '../../utils/formatters';
 
 export default function Wallet() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const transactions = [
     {
@@ -51,7 +52,7 @@ export default function Wallet() {
               <span>{t('buyer.wallet.activeEscrow', 'Active Escrow Balance Impounded')}</span>
             </div>
             <div className="font-headline-lg text-headline-lg text-on-surface font-bold">
-              ₹ 1,20,000
+              {formatCurrency(120000, i18n.language)}
             </div>
             <p className="text-body-sm text-on-surface-variant max-w-lg">
               {t('buyer.wallet.escrowExplanation', 'Patron funds remain securely vaulted under Government-compliant escrow. Money is only transferred to artisan bank accounts when delivery and authenticity are verified.')}
@@ -64,7 +65,7 @@ export default function Wallet() {
               <span>{t('buyer.wallet.guarantee', '100% Direct Payout Protocol')}</span>
             </div>
             <div className="font-headline-sm text-headline-sm text-primary-fixed font-bold">
-              ₹ 4.8 Cr+
+              {t('buyer.wallet.disbursedAmount', '₹ 4.8 Cr+')}
             </div>
             <p className="text-body-sm text-secondary-fixed text-xs">
               {t('buyer.wallet.totalDisbursed', 'Disbursed directly to national awardees and artisan cooperatives nationwide.')}
@@ -86,13 +87,15 @@ export default function Wallet() {
                     {tItem.isLock ? <Lock className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                   </div>
                   <div>
-                    <div className="font-title-md text-title-md font-semibold text-on-surface">{tItem.type}</div>
+                    <div className="font-title-md text-title-md font-semibold text-on-surface">
+                      {tItem.isLock ? t('buyer.wallet.escrowLocked', 'Escrow Locked') : t('buyer.wallet.escrowDisbursed', 'Escrow Disbursed to Artisan')}
+                    </div>
                     <div className="text-body-sm text-on-surface-variant text-xs">{tItem.description}</div>
                   </div>
                 </div>
                 <div className="text-right sm:text-right w-full sm:w-auto">
                   <div className="font-title-lg text-title-lg font-bold text-on-surface">
-                    ₹{tItem.amount.toLocaleString('en-IN')}
+                    {formatCurrency(tItem.amount, i18n.language)}
                   </div>
                   <div className="text-xs text-outline">{tItem.date}</div>
                 </div>

@@ -1,6 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const UPLOADS_DIR = path.resolve(__dirname, '..', 'public', 'uploads', 'avatars');
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'karigar_secret_jwt_artisan_2026_key';
@@ -41,31 +48,35 @@ export async function handleAuthRequest(req, res) {
     res.end(JSON.stringify(data));
   };
 
-  // Helper for reading JSON body
-  const parseBody = () => {
-    return new Promise((resolve, reject) => {
-      let body = '';
-      req.on('data', chunk => {
-        body += chunk;
-        if (body.length > 1e6) {
+  // Immediately attach body listener so chunks are never dropped
+  const bodyPromise = new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 1e7) { // 10MB limit for image uploads
+        if (req.connection && req.connection.destroy) {
           req.connection.destroy();
-          reject(new Error('Body too large'));
+        } else if (req.destroy) {
+          req.destroy();
         }
-      });
-      req.on('end', () => {
-        if (!body) {
-          resolve({});
-          return;
-        }
-        try {
-          resolve(JSON.parse(body));
-        } catch (e) {
-          reject(new Error('Invalid JSON'));
-        }
-      });
-      req.on('error', reject);
+        reject(new Error('Body too large'));
+      }
     });
-  };
+    req.on('end', () => {
+      if (!body) {
+        resolve({});
+        return;
+      }
+      try {
+        resolve(JSON.parse(body));
+      } catch (e) {
+        reject(new Error('Invalid JSON'));
+      }
+    });
+    req.on('error', reject);
+  });
+
+  const parseBody = () => bodyPromise;
 
   try {
     // -------------------------------------------------------------
@@ -143,7 +154,7 @@ export async function handleAuthRequest(req, res) {
         where: { email: normalizedEmail }
       });
       if (existingEmail) {
-        return jsonResponse(409, { error: 'An account with this email already exists' });
+        return jsonResponse(409, { error: 'An account already exists with this email. Please log in using the registered account type.' });
       }
 
       // Check duplicate mobile
@@ -152,7 +163,7 @@ export async function handleAuthRequest(req, res) {
           where: { mobile: cleanMobile }
         });
         if (existingMobile) {
-          return jsonResponse(409, { error: 'An account with this mobile number already exists' });
+          return jsonResponse(409, { error: 'An account already exists with this mobile number. Please log in using the registered account type.' });
         }
       }
 
@@ -205,7 +216,7 @@ export async function handleAuthRequest(req, res) {
 
       if (!selectedRole) {
         return jsonResponse(400, {
-          error: 'Please select Artisan / Weaver or Patron / Collector before continuing.'
+          error: 'Please select your account type first.'
         });
       }
 
@@ -217,7 +228,7 @@ export async function handleAuthRequest(req, res) {
 
       if (!targetRole) {
         return jsonResponse(400, {
-          error: 'Please select Artisan / Weaver or Patron / Collector before continuing.'
+          error: 'Please select your account type first.'
         });
       }
 
@@ -260,15 +271,15 @@ export async function handleAuthRequest(req, res) {
         return jsonResponse(401, { error: 'Invalid email/mobile or password' });
       }
 
-      // Role check: enforce registered role matching
+      // Role check: enforce registered role matching (NEVER AUTO-CHANGE ROLE)
       if (user.role !== targetRole) {
         if (user.role === 'ARTISAN') {
           return jsonResponse(403, {
-            error: 'This account is registered as an Artisan / Weaver. Please select the correct account type.'
+            error: 'This account is registered as Artisan / Weaver. Please select Artisan / Weaver to continue.'
           });
         } else {
           return jsonResponse(403, {
-            error: 'This account is registered as a Patron / Collector. Please select the correct account type.'
+            error: 'This account is registered as Patron / Collector. Please select Patron / Collector to continue.'
           });
         }
       }
@@ -299,7 +310,7 @@ export async function handleAuthRequest(req, res) {
 
       if (!selectedRole) {
         return jsonResponse(400, {
-          error: 'Please select Artisan / Weaver or Patron / Collector before continuing.'
+          error: 'Please select your account type first.'
         });
       }
 
@@ -311,7 +322,7 @@ export async function handleAuthRequest(req, res) {
 
       if (!targetRole) {
         return jsonResponse(400, {
-          error: 'Please select Artisan / Weaver or Patron / Collector before continuing.'
+          error: 'Please select your account type first.'
         });
       }
 
@@ -400,11 +411,11 @@ export async function handleAuthRequest(req, res) {
         if (user.role !== targetRole) {
           if (user.role === 'ARTISAN') {
             return jsonResponse(403, {
-              error: 'This Google account is registered as an Artisan / Weaver. Please select the correct account type.'
+              error: 'This account is registered as Artisan / Weaver. Please select Artisan / Weaver to continue.'
             });
           } else {
             return jsonResponse(403, {
-              error: 'This Google account is registered as a Patron / Collector. Please select the correct account type.'
+              error: 'This account is registered as Patron / Collector. Please select Patron / Collector to continue.'
             });
           }
         }
@@ -460,9 +471,9 @@ export async function handleAuthRequest(req, res) {
     }
 
     // -------------------------------------------------------------
-    // GET /api/auth/me
+    // GET /api/auth/me & GET /api/profile
     // -------------------------------------------------------------
-    if (pathname === '/api/auth/me' && method === 'GET') {
+    if ((pathname === '/api/auth/me' || pathname === '/api/profile') && method === 'GET') {
       const token = extractToken(req);
       if (!token) {
         return jsonResponse(401, { error: 'Authorization token required' });
@@ -481,6 +492,202 @@ export async function handleAuthRequest(req, res) {
         return jsonResponse(200, {
           success: true,
           user: sanitizeUser(user)
+        });
+      } catch (jwtErr) {
+        return jsonResponse(401, { error: 'Session expired or invalid token' });
+      }
+    }
+
+    // -------------------------------------------------------------
+    // PATCH /api/profile (Authenticated User Profile Update)
+    // -------------------------------------------------------------
+    if (pathname === '/api/profile' && method === 'PATCH') {
+      const token = extractToken(req);
+      if (!token) {
+        return jsonResponse(401, { error: 'Authorization token required' });
+      }
+
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await prisma.user.findUnique({
+          where: { id: decoded.id }
+        });
+
+        if (!user || !user.isActive) {
+          return jsonResponse(401, { error: 'User not found or inactive' });
+        }
+
+        const body = await parseBody();
+        const updateData = {};
+
+        // Full Name validation
+        if (body.fullName !== undefined) {
+          const trimmedName = String(body.fullName).trim();
+          if (!trimmedName) {
+            return jsonResponse(400, { error: 'Full Name cannot be empty' });
+          }
+          updateData.fullName = trimmedName;
+        }
+
+        // Mobile validation & uniqueness check
+        if (body.mobile !== undefined) {
+          const cleanMobile = body.mobile ? String(body.mobile).trim() : null;
+          if (cleanMobile) {
+            const mobileRegex = /^[6-9]\d{9}$/;
+            if (!mobileRegex.test(cleanMobile)) {
+              return jsonResponse(400, { error: 'Please enter a valid 10-digit mobile number' });
+            }
+
+            const existingMobile = await prisma.user.findFirst({
+              where: {
+                mobile: cleanMobile,
+                NOT: { id: user.id }
+              }
+            });
+
+            if (existingMobile) {
+              return jsonResponse(409, { error: 'An account with this mobile number already exists' });
+            }
+          }
+          updateData.mobile = cleanMobile;
+        }
+
+        // State & District (universal)
+        if (body.state !== undefined) {
+          updateData.state = body.state ? String(body.state).trim() : null;
+        }
+        if (body.district !== undefined) {
+          updateData.district = body.district ? String(body.district).trim() : null;
+        }
+        if (body.avatarUrl !== undefined) {
+          updateData.avatarUrl = body.avatarUrl ? String(body.avatarUrl).trim() : null;
+        }
+
+        // Artisan-specific fields (only if user is ARTISAN)
+        if (user.role === 'ARTISAN') {
+          if (body.businessName !== undefined) {
+            updateData.businessName = body.businessName ? String(body.businessName).trim() : null;
+          }
+          if (body.craftType !== undefined) {
+            updateData.craftType = body.craftType ? String(body.craftType).trim() : null;
+          }
+          if (body.yearsOfExperience !== undefined) {
+            const yrs = parseInt(body.yearsOfExperience, 10);
+            updateData.yearsOfExperience = isNaN(yrs) ? null : Math.max(0, yrs);
+          }
+          if (body.giTagNumber !== undefined) {
+            updateData.giTagNumber = body.giTagNumber ? String(body.giTagNumber).trim() : null;
+          }
+          if (body.clusterName !== undefined) {
+            updateData.clusterName = body.clusterName ? String(body.clusterName).trim() : null;
+          }
+        }
+
+        const updatedUser = await prisma.user.update({
+          where: { id: user.id },
+          data: updateData
+        });
+
+        return jsonResponse(200, {
+          success: true,
+          message: 'Profile updated successfully',
+          user: sanitizeUser(updatedUser)
+        });
+      } catch (jwtErr) {
+        return jsonResponse(401, { error: 'Session expired or invalid token' });
+      }
+    }
+
+    // -------------------------------------------------------------
+    // POST /api/profile/avatar & POST /api/upload
+    // -------------------------------------------------------------
+    if ((pathname === '/api/profile/avatar' || pathname === '/api/upload') && method === 'POST') {
+      const token = extractToken(req);
+      if (!token) {
+        return jsonResponse(401, { error: 'Authorization token required' });
+      }
+
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await prisma.user.findUnique({
+          where: { id: decoded.id }
+        });
+
+        if (!user || !user.isActive) {
+          return jsonResponse(401, { error: 'User not found or inactive' });
+        }
+
+        const body = await parseBody();
+        const rawImage = body.image || body.avatar || body.file;
+
+        if (!rawImage) {
+          return jsonResponse(400, { error: 'No image file provided' });
+        }
+
+        // Parse base64 data
+        let mimeType = 'image/jpeg';
+        let base64Data = rawImage;
+
+        if (rawImage.startsWith('data:')) {
+          const match = rawImage.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.*)$/);
+          if (match) {
+            mimeType = match[1].toLowerCase();
+            base64Data = match[2];
+          } else {
+            return jsonResponse(400, { error: 'Invalid data URL image format' });
+          }
+        } else if (body.mimeType) {
+          mimeType = String(body.mimeType).toLowerCase();
+        }
+
+        // Validate allowed image types
+        const allowedTypes = {
+          'image/jpeg': 'jpg',
+          'image/jpg': 'jpg',
+          'image/png': 'png',
+          'image/webp': 'webp'
+        };
+
+        if (!allowedTypes[mimeType]) {
+          return jsonResponse(400, {
+            error: 'Unsupported image format. Allowed formats are JPEG, PNG, and WEBP.'
+          });
+        }
+
+        const buffer = Buffer.from(base64Data, 'base64');
+        const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
+        if (buffer.length > MAX_SIZE) {
+          return jsonResponse(400, {
+            error: 'Image file exceeds the maximum allowed size of 5 MB.'
+          });
+        }
+
+        // Ensure upload directory exists
+        if (!fs.existsSync(UPLOADS_DIR)) {
+          fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+        }
+
+        const ext = allowedTypes[mimeType];
+        const filename = `avatar-${user.id}-${Date.now()}.${ext}`;
+        const filePath = path.join(UPLOADS_DIR, filename);
+
+        fs.writeFileSync(filePath, buffer);
+
+        // Production-compatible domain-relative URL
+        const avatarUrl = `/uploads/avatars/${filename}`;
+
+        // Save URL in Prisma
+        const updatedUser = await prisma.user.update({
+          where: { id: user.id },
+          data: { avatarUrl }
+        });
+
+        return jsonResponse(200, {
+          success: true,
+          message: 'Profile picture uploaded successfully',
+          avatarUrl,
+          user: sanitizeUser(updatedUser)
         });
       } catch (jwtErr) {
         return jsonResponse(401, { error: 'Session expired or invalid token' });

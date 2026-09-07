@@ -19,10 +19,11 @@ import {
 import { getStateBySlug, STATES_CRAFTS, REGIONS } from '../../data/statesCrafts';
 import { getProductsByState, PRODUCTS } from '../../data/products';
 import { useBuyer } from '../../context/BuyerContext';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 export default function StateExplore() {
   const { stateSlug } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { addToCart } = useBuyer();
 
@@ -296,7 +297,7 @@ export default function StateExplore() {
               <div className="py-space-md space-y-space-xs">
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-label-sm text-label-sm uppercase tracking-[0.16em] font-semibold text-on-surface">{t('buyer.stateExplore.maxPrice', 'Max Price')}</span>
-                  <span className="font-label-sm text-label-sm font-bold text-secondary">₹{maxPrice.toLocaleString('en-IN')}</span>
+                  <span className="font-label-sm text-label-sm font-bold text-secondary">{formatCurrency(maxPrice, i18n.language)}</span>
                 </div>
                 <input
                   type="range"
@@ -308,8 +309,8 @@ export default function StateExplore() {
                   className="w-full accent-secondary h-1.5 bg-surface-container-highest cursor-pointer"
                 />
                 <div className="flex justify-between text-outline font-label-sm text-[10px] uppercase tracking-wider pt-1">
-                  <span>₹5,000</span>
-                  <span>₹1,00,000</span>
+                  <span>{formatCurrency(5000, i18n.language)}</span>
+                  <span>{formatCurrency(100000, i18n.language)}</span>
                 </div>
               </div>
             </div>
@@ -411,10 +412,10 @@ export default function StateExplore() {
                       <div className="bg-surface-container-low p-space-sm shadow-xs space-y-1 border border-outline-variant/30">
                         <div className="flex justify-between items-baseline">
                           <span className="font-garamond text-headline-sm text-on-surface font-bold">
-                            ₹{product.price.toLocaleString('en-IN')}
+                            {formatCurrency(product.price, i18n.language)}
                           </span>
                           <span className="font-label-sm text-[10px] text-secondary font-bold">
-                            Artisan Share: ₹{product.artisanShareAmount.toLocaleString('en-IN')} ({product.artisanSharePercent}%)
+                            {t('buyer.stateExplore.artisanShare', 'Artisan Share:')} {formatCurrency(product.artisanShareAmount, i18n.language)} ({formatNumber(product.artisanSharePercent, i18n.language)}%)
                           </span>
                         </div>
                         <div className="w-full bg-surface-container-highest h-1 overflow-hidden">

@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, Edit3, Trash2, Award, CheckCircle2 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
+import { formatCurrency, formatNumber } from '../utils/formatters';
 
 export default function ProductTable({ products, onViewProduct, onEditProduct }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { deleteProduct } = useSeller();
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
@@ -112,12 +113,12 @@ export default function ProductTable({ products, onViewProduct, onEditProduct })
               </td>
 
               <td className="py-3.5 px-4 font-bold text-gray-900 dark:text-[#F9FAFB]">
-                ₹{Number(item.price).toLocaleString('en-IN')}
+                {formatCurrency(item.price, i18n.language)}
               </td>
 
               <td className="py-3.5 px-4">
                 <span className={`text-xs font-semibold ${item.stock < 5 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-gray-700 dark:text-gray-300'}`}>
-                  {item.stock} {t('common.inStock')}
+                  {formatNumber(item.stock, i18n.language)} {t('common.inStock')}
                 </span>
               </td>
 

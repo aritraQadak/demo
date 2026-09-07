@@ -29,21 +29,21 @@ export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
   const { logout } = useAuth();
 
   const mainNavItems = [
-    { name: t('nav.dashboard'), path: '/', icon: LayoutDashboard },
-    { name: t('nav.addProduct'), path: '/add-product', icon: PlusCircle, badge: 'AI' },
-    { name: t('nav.myProducts'), path: '/products', icon: Package, count: profile.totalProducts },
-    { name: t('nav.orders'), path: '/orders', icon: ShoppingBag, count: profile.totalOrders },
-    { name: t('nav.earnings'), path: '/earnings', icon: IndianRupee },
-    { name: t('nav.customers'), path: '/customers', icon: Users },
-    { name: t('nav.verification'), path: '/verification', icon: ShieldCheck, verifiedDot: true },
-    { name: t('nav.messages'), path: '/messages', icon: MessageSquare, badge: '2' },
+    { name: t('nav.dashboard'), path: '/seller/dashboard', icon: LayoutDashboard },
+    { name: t('nav.addProduct'), path: '/seller/add-product', icon: PlusCircle, badge: 'AI' },
+    { name: t('nav.myProducts'), path: '/seller/products', icon: Package, count: profile.totalProducts },
+    { name: t('nav.orders'), path: '/seller/orders', icon: ShoppingBag, count: profile.totalOrders },
+    { name: t('nav.earnings'), path: '/seller/earnings', icon: IndianRupee },
+    { name: t('nav.customers'), path: '/seller/customers', icon: Users },
+    { name: t('nav.verification'), path: '/seller/verification', icon: ShieldCheck, verifiedDot: true },
+    { name: t('nav.messages'), path: '/seller/messages', icon: MessageSquare, badge: '2' },
     { name: t('nav.myProfile'), path: '/seller/profile', icon: User },
-    { name: t('nav.settings'), path: '/settings', icon: Settings },
+    { name: t('nav.settings'), path: '/seller/settings', icon: Settings },
   ];
 
   const secondaryNavItems = [
-    { name: t('nav.aboutKarigar'), path: '/about', icon: Info },
-    { name: t('nav.getInTouch'), path: '/contact', icon: Mail },
+    { name: t('nav.aboutKarigar'), path: '/seller/about', icon: Info },
+    { name: t('nav.getInTouch'), path: '/seller/contact', icon: Mail },
   ];
 
   const handleLogout = async () => {
@@ -56,7 +56,7 @@ export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
     <div className="flex flex-col h-full bg-white dark:bg-[#0F172A] border-r border-gray-200/90 dark:border-gray-800 text-sm select-none transition-colors">
       {/* Brand / Logo */}
       <div className="h-20 px-4 sm:px-5 flex items-center justify-between border-b border-gray-100 dark:border-gray-800/80">
-        <RouterNavLink to="/" className="flex items-center group">
+        <RouterNavLink to="/seller/dashboard" className="flex items-center group">
           <div className="flex items-center justify-center transition-transform duration-200 group-hover:scale-102">
             <img
               src={logo}
@@ -86,7 +86,9 @@ export default function SellerSidebar({ isMobileOpen, setIsMobileOpen }) {
         </div>
         {mainNavItems.map((item) => {
           const Icon = item.icon;
-          const isActive = location.pathname === item.path;
+          const isActive =
+            location.pathname === item.path ||
+            (item.path === '/seller/dashboard' && (location.pathname === '/seller' || location.pathname === '/seller/dashboard' || location.pathname === '/dashboard'));
 
           return (
             <RouterNavLink

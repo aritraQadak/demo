@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Bookmark, Trash2, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useBuyer } from '../../context/BuyerContext';
 import { PRODUCTS } from '../../data/products';
+import { formatCurrency } from '../../utils/formatters';
 
 export default function Saved() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { savedItemIds, toggleSaveItem, addToCart } = useBuyer();
 
   const savedProducts = PRODUCTS.filter(p => savedItemIds.includes(p.id));
@@ -81,17 +82,17 @@ export default function Saved() {
                       {p.name}
                     </Link>
                     <div className="text-body-sm text-on-surface-variant mt-1">
-                      By {p.artisanName}
+                      {t('buyer.saved.byArtisan', 'By')} {p.artisanName}
                     </div>
                   </div>
 
                   <div className="bg-surface-container-low p-space-sm space-y-1">
                     <div className="flex justify-between items-baseline">
                       <span className="font-headline-sm text-headline-sm text-on-surface font-semibold">
-                        ₹{p.price.toLocaleString('en-IN')}
+                        {formatCurrency(p.price, i18n.language)}
                       </span>
                       <span className="font-label-sm text-label-sm text-secondary font-bold">
-                        Artisan: ₹{(p.artisanShareAmount || p.price * 0.9).toLocaleString('en-IN')}
+                        {t('buyer.saved.artisanShare', 'Artisan')}: {formatCurrency(p.artisanShareAmount || p.price * 0.9, i18n.language)}
                       </span>
                     </div>
                   </div>

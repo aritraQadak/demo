@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, useLocation, Outlet, Link } from 'react-router-dom';
+import { Navigate, useLocation, Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { ShieldAlert, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -7,6 +7,7 @@ import { ShieldAlert, ArrowLeft, ArrowRight } from 'lucide-react';
 export default function ProtectedRoute({ children, requiredRole, allowedRoles }) {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const roles = allowedRoles || (requiredRole ? [requiredRole] : ['ARTISAN']);
@@ -33,6 +34,12 @@ export default function ProtectedRoute({ children, requiredRole, allowedRoles })
   const hasAllowedRole = roles.includes(user.role);
   if (!hasAllowedRole) {
     const isArtisanTryingPatron = user.role === 'ARTISAN';
+
+    const handleSwitchAccount = async () => {
+      await logout();
+      navigate('/login', { replace: true, state: {} });
+    };
+
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-surface dark:bg-[#111827]">
         <div className="max-w-md w-full bg-surface-container-lowest dark:bg-[#1E293B] rounded-2xl p-6 sm:p-8 shadow-xl border border-outline-variant/60 dark:border-red-900/50 text-center">
@@ -50,8 +57,8 @@ export default function ProtectedRoute({ children, requiredRole, allowedRoles })
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               type="button"
-              onClick={logout}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-surface-container dark:bg-gray-800 hover:bg-surface-container-high dark:hover:bg-gray-700 text-on-surface dark:text-gray-200 text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+              onClick={handleSwitchAccount}
+              className="flex-1 py-2.5 px-4 rounded-xl bg-surface-container dark:bg-gray-800 hover:bg-surface-container-high dark:hover:bg-gray-700 text-on-surface dark:text-gray-200 text-sm font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('auth.switchAccount', 'Switch Account')}

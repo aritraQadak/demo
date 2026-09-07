@@ -2,9 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Eye, ShieldCheck } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
+import { formatCurrency } from '../utils/formatters';
 
 export default function OrderTable({ orders, showCustomer = false, limit, onViewOrder }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { setSelectedOrder } = useSeller();
 
   const displayedOrders = limit ? orders.slice(0, limit) : orders;
@@ -109,7 +110,7 @@ export default function OrderTable({ orders, showCustomer = false, limit, onView
               )}
 
               <td className="py-3.5 px-4 font-semibold text-gray-900 dark:text-[#F9FAFB]">
-                ₹{Number(order.amount).toLocaleString('en-IN')}
+                {formatCurrency(order.amount, i18n.language)}
               </td>
 
               <td className="py-3.5 px-4">

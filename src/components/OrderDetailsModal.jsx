@@ -12,10 +12,13 @@ import {
   Printer
 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
+import { useAuth } from '../context/AuthContext';
+import { formatCurrency, formatNumber } from '../utils/formatters';
 
 export default function OrderDetailsModal() {
-  const { t } = useTranslation();
-  const { selectedOrder, setSelectedOrder, addToast } = useSeller();
+  const { t, i18n } = useTranslation();
+  const { selectedOrder, setSelectedOrder, addToast, profile } = useSeller();
+  const { user } = useAuth();
 
   if (!selectedOrder) return null;
 
@@ -124,14 +127,14 @@ export default function OrderDetailsModal() {
               <div className="flex-1">
                 <h5 className="text-base font-bold text-gray-900 dark:text-[#F9FAFB]">{selectedOrder.product}</h5>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  {t('orderDetails.artisanLabel')}: Sushila Devi • {t('orderDetails.giTagVerified')}
+                  {t('orderDetails.artisanLabel')}: {selectedOrder.artisanName || profile?.fullName || user?.fullName || t('profile.roleArtisan', 'Artisan')} • {t('orderDetails.giTagVerified')}
                 </p>
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-xs text-gray-600 dark:text-gray-300">
-                    {t('orderDetails.qty')}: <strong>{selectedOrder.itemsCount || 1}</strong>
+                    {t('orderDetails.qty')}: <strong>{formatNumber(selectedOrder.itemsCount || 1, i18n.language)}</strong>
                   </span>
                   <span className="text-xs text-gray-600 dark:text-gray-300">
-                    {t('orderDetails.unit')}: <strong>₹{Number(selectedOrder.amount).toLocaleString('en-IN')}</strong>
+                    {t('orderDetails.unit')}: <strong>{formatCurrency(selectedOrder.amount, i18n.language)}</strong>
                   </span>
                   <span className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded font-semibold border border-emerald-200 dark:border-emerald-800">
                     {t('orderDetails.zeroCommission')}
@@ -141,7 +144,7 @@ export default function OrderDetailsModal() {
               <div className="text-right">
                 <p className="text-xs text-gray-400 dark:text-gray-500">{t('orderDetails.totalPayout')}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">
-                  ₹{Number(selectedOrder.amount).toLocaleString('en-IN')}
+                  {formatCurrency(selectedOrder.amount, i18n.language)}
                 </p>
               </div>
             </div>

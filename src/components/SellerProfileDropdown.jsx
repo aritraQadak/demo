@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useSeller } from '../context/SellerContext';
 import { useAuth } from '../context/AuthContext';
+import { getInitials } from '../utils/formatters';
 
 export default function SellerProfileDropdown() {
   const { t } = useTranslation();
@@ -20,7 +21,12 @@ export default function SellerProfileDropdown() {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const { profile, addToast } = useSeller();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+
+  const displayName = user?.fullName || profile.name || t('nav.verifiedBadge');
+  const displayEmail = user?.email || profile.email || '';
+  const displayAvatar = user?.avatarUrl || profile.avatar;
+  const initials = getInitials(displayName);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -47,9 +53,9 @@ export default function SellerProfileDropdown() {
 
   const menuItems = [
     { label: t('nav.myProfile'), path: '/seller/profile', icon: User, badge: t('common.confirmed') },
-    { label: t('nav.aboutKarigar'), path: '/about', icon: Info },
-    { label: t('nav.getInTouch'), path: '/contact', icon: Mail },
-    { label: t('nav.settings'), path: '/settings', icon: Settings },
+    { label: t('nav.aboutKarigar'), path: '/seller/about', icon: Info },
+    { label: t('nav.getInTouch'), path: '/seller/contact', icon: Mail },
+    { label: t('nav.settings'), path: '/seller/settings', icon: Settings },
   ];
 
   return (
@@ -58,16 +64,22 @@ export default function SellerProfileDropdown() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2.5 p-1 sm:px-2 sm:py-1 rounded-xl hover:bg-gray-100 dark:hover:bg-[#243244] transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 text-left focus:outline-none"
+        className="flex items-center gap-2.5 p-1 sm:px-2 sm:py-1 rounded-xl hover:bg-gray-100 dark:hover:bg-[#243244] transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 text-left focus:outline-none cursor-pointer"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <div className="relative flex-shrink-0">
-          <img
-            src={profile.avatar}
-            alt={profile.name}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs"
-          />
+          {displayAvatar ? (
+            <img
+              src={displayAvatar}
+              alt={displayName}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs"
+            />
+          ) : (
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs">
+              {initials}
+            </div>
+          )}
           {/* Green verified dot badge */}
           <span
             className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-[#1F2937] flex items-center justify-center text-white"
@@ -80,7 +92,7 @@ export default function SellerProfileDropdown() {
         <div className="hidden sm:block">
           <div className="flex items-center gap-1">
             <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-tight truncate max-w-[130px]">
-              {profile.name}
+              {displayName}
             </h3>
             <ChevronDown
               className={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${
@@ -105,10 +117,10 @@ export default function SellerProfileDropdown() {
               {t('nav.verifiedBadge')}
             </p>
             <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate mt-0.5">
-              {profile.name}
+              {displayName}
             </p>
             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate">
-              {profile.email || 'sushila@karigar.in'}
+              {displayEmail}
             </p>
           </div>
 

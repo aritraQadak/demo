@@ -17,10 +17,11 @@ import { useSeller } from '../../context/SellerContext';
 import StatCard from '../../components/StatCard';
 import OrderTable from '../../components/OrderTable';
 import TrustBadge from '../../components/TrustBadge';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { profile, orders, products } = useSeller();
 
   return (
@@ -65,28 +66,28 @@ export default function Dashboard() {
         {/* CARD 1: Total Products (Green) */}
         <StatCard
           type="products"
-          value={profile.totalProducts || products.length}
+          value={formatNumber(profile.totalProducts || products.length, i18n.language)}
           label={t('dashboard.totalProducts')}
-          growth="+2"
-          onClick={() => navigate('/products')}
+          growth={`+${formatNumber(2, i18n.language)}`}
+          onClick={() => navigate('/seller/products')}
         />
 
         {/* CARD 2: Total Orders (Blue) */}
         <StatCard
           type="orders"
-          value={profile.totalOrders || orders.length}
+          value={formatNumber(profile.totalOrders || orders.length, i18n.language)}
           label={t('dashboard.totalOrders')}
-          growth="+18%"
-          onClick={() => navigate('/orders')}
+          growth={`+${formatNumber(18, i18n.language)}%`}
+          onClick={() => navigate('/seller/orders')}
         />
 
         {/* CARD 3: Total Earnings (Light red/pink) */}
         <StatCard
           type="earnings"
-          value={`₹${Number(profile.totalEarnings).toLocaleString('en-IN')}`}
+          value={formatCurrency(profile.totalEarnings, i18n.language)}
           label={t('dashboard.totalEarnings')}
-          growth="₹7,850"
-          onClick={() => navigate('/earnings')}
+          growth={formatCurrency(7850, i18n.language)}
+          onClick={() => navigate('/seller/earnings')}
         />
 
         {/* CARD 4: Seller Rating / Trust Score (Purple) */}
@@ -95,7 +96,7 @@ export default function Dashboard() {
           value={profile.trustScore || '4.8'}
           label={t('dashboard.sellerRating')}
           subtext={t('nav.trustScore')}
-          onClick={() => navigate('/verification')}
+          onClick={() => navigate('/seller/verification')}
         />
       </div>
 

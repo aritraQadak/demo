@@ -25,22 +25,32 @@ export function getHomeRouteForRole(userOrRole) {
  * Reusable helper to navigate the authenticated user to their role interface
  * @param {Function} navigate - react-router navigate function
  * @param {Object} user - Authenticated user object
- * @param {string|null} fallbackFrom - Optional location state 'from' path to preserve deep-linking
+ * @param {string|Object|null} fallbackFrom - Optional location state 'from' path or object
  */
 export function navigateByRole(navigate, user, fallbackFrom = null) {
   if (!user || !user.role) {
-    navigate('/login', { replace: true });
+    if (typeof navigate === 'function') {
+      navigate('/login', { replace: true });
+    }
     return;
   }
 
-  // If a specific deep link exists and is allowed for this role, we can honor it
-  if (fallbackFrom && fallbackFrom !== '/login' && fallbackFrom !== '/auth') {
-    if (user.role === 'ARTISAN' && (fallbackFrom.startsWith('/seller') || fallbackFrom.startsWith('/dashboard'))) {
-      navigate(fallbackFrom, { replace: true });
+  // Normalize fallbackFrom to a string path if an object was passed
+  const targetPath =
+    typeof fallbackFrom === 'string'
+      ? fallbackFrom
+      : fallbackFrom && typeof fallbackFrom === 'object' && fallbackFrom.pathname
+      ? fallbackFrom.pathname
+      : null;
+
+  // If a specific deep link exists and is allowed for this role, honor it
+  if (targetPath && targetPath !== '/login' && targetPath !== '/auth' && targetPath !== '/') {
+    if (user.role === 'ARTISAN' && (targetPath.startsWith('/seller') || targetPath.startsWith('/dashboard'))) {
+      navigate(targetPath, { replace: true });
       return;
     }
-    if (user.role === 'PATRON' && !fallbackFrom.startsWith('/seller') && !fallbackFrom.startsWith('/dashboard')) {
-      navigate(fallbackFrom, { replace: true });
+    if (user.role === 'PATRON' && !targetPath.startsWith('/seller') && !targetPath.startsWith('/dashboard')) {
+      navigate(targetPath, { replace: true });
       return;
     }
   }
@@ -48,3 +58,15 @@ export function navigateByRole(navigate, user, fallbackFrom = null) {
   const destination = getHomeRouteForRole(user.role);
   navigate(destination, { replace: true });
 }
+
+/**
+ * Central role-based redirect helper.
+ * Supports calling as redirectByRole(navigate, user, fallback) or redirectByRole(user, navigate, fallback)
+ */
+export function redirectByRole(arg1, arg2, arg3) {
+  if (typeof arg1 === 'function') {
+    return navigateByRole(arg1, arg2, arg3);
+  }
+  return navigateByRole(arg2, arg1, arg3);
+}
+

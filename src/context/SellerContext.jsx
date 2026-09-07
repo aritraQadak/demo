@@ -8,10 +8,14 @@ import {
   initialMessages
 } from '../data/sellerData';
 import i18n from '../i18n/i18n';
+import { useAuth } from './AuthContext';
+import { formatCurrency } from '../utils/formatters';
 
 const SellerContext = createContext();
 
 export const SellerProvider = ({ children }) => {
+  const { user, updateUserProfile } = useAuth();
+
   // Language (synced with i18n and localStorage 'karigar-language')
   const [lang, setLangState] = useState(() => localStorage.getItem('karigar-language') || i18n.language || 'en');
 
@@ -31,11 +35,46 @@ export const SellerProvider = ({ children }) => {
     };
   }, []);
 
-  // Seller Profile
+  // Seller Profile dynamically derived from authenticated user
   const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem('karigar_profile');
-    return saved ? JSON.parse(saved) : initialSellerProfile;
+    const base = { ...initialSellerProfile };
+    if (user && user.role === 'ARTISAN') {
+      base.name = user.fullName || base.name;
+      base.email = user.email || base.email;
+      base.phone = user.mobile || base.phone;
+      base.avatar = user.avatarUrl || base.avatar;
+      base.businessName = user.businessName || base.businessName;
+      base.craftType = user.craftType || base.craftType;
+      base.experienceYears = user.yearsOfExperience ?? base.experienceYears;
+      base.district = user.district || base.district;
+      base.state = user.state || base.state;
+      base.giTagNumber = user.giTagNumber || base.giTagNumber;
+      base.cluster = user.clusterName || base.cluster;
+      base.location = [user.district, user.state].filter(Boolean).join(', ') || base.location;
+    }
+    return base;
   });
+
+  // Keep profile synchronized whenever user changes in AuthContext
+  useEffect(() => {
+    if (user && user.role === 'ARTISAN') {
+      setProfile((prev) => ({
+        ...prev,
+        name: user.fullName || prev.name,
+        email: user.email || prev.email,
+        phone: user.mobile || prev.phone,
+        avatar: user.avatarUrl || prev.avatar,
+        businessName: user.businessName || prev.businessName,
+        craftType: user.craftType || prev.craftType,
+        experienceYears: user.yearsOfExperience ?? prev.experienceYears,
+        district: user.district || prev.district,
+        state: user.state || prev.state,
+        giTagNumber: user.giTagNumber || prev.giTagNumber,
+        cluster: user.clusterName || prev.cluster,
+        location: [user.district, user.state].filter(Boolean).join(', ') || prev.location
+      }));
+    }
+  }, [user]);
 
   // Products
   const [products, setProducts] = useState(() => {
@@ -133,8 +172,26 @@ export const SellerProvider = ({ children }) => {
     addToast('Product removed from catalog', 'info');
   };
 
-  const updateProfile = (updated) => {
+  const updateProfile = async (updated) => {
     setProfile((prev) => ({ ...prev, ...updated }));
+    if (updateUserProfile) {
+      try {
+        await updateUserProfile({
+          fullName: updated.name,
+          mobile: updated.phone,
+          craftType: updated.craftType,
+          district: updated.district,
+          state: updated.state,
+          businessName: updated.businessName,
+          avatarUrl: updated.avatar,
+          yearsOfExperience: updated.experienceYears,
+          giTagNumber: updated.giTagNumber,
+          clusterName: updated.cluster
+        });
+      } catch (err) {
+        console.warn('Backend profile sync error:', err);
+      }
+    }
     addToast('Artisan profile updated successfully', 'success');
   };
 
@@ -157,7 +214,7 @@ export const SellerProvider = ({ children }) => {
       ...prev,
       availableBalance: prev.availableBalance - amount
     }));
-    addToast(`₹${amount.toLocaleString('en-IN')} transferred to your verified bank account!`, 'success');
+    addToast(`${formatCurrency(amount, i18n.language)} transferred to your verified bank account!`, 'success');
     return true;
   };
 

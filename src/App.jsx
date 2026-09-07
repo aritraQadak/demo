@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { SellerProvider } from './context/SellerContext';
 import { BuyerProvider } from './context/BuyerContext';
 import SellerLayout from './layouts/SellerLayout';
@@ -32,10 +33,89 @@ import BuyerOrders from './pages/buyer/Orders';
 import Certificates from './pages/buyer/Certificates';
 import Saved from './pages/buyer/Saved';
 import Wallet from './pages/buyer/Wallet';
+import BuyerProfile from './pages/buyer/Profile';
 
 // Shared Pages
 import About from './pages/About';
 import Contact from './pages/Contact';
+
+/**
+ * Smart Route for the default "/" path:
+ * - Shows loading state during auth check
+ * - Redirects authenticated ARTISAN to /seller/dashboard
+ * - Renders Home for authenticated PATRON and guest visitors
+ */
+function RoleHomeRoute() {
+  const { user, isAuthenticated, loading } = useAuth();
+  const { t } = useTranslation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] dark:bg-[#111827]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-emerald-800 border-t-transparent dark:border-emerald-500 rounded-full animate-spin"></div>
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            {t('common.loading', 'Loading Karigar...')}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated && user?.role === 'ARTISAN') {
+    return <Navigate to="/seller/dashboard" replace />;
+  }
+
+  return <Home />;
+}
+
+/**
+ * Smart Route for "/profile":
+ * - Shows loading state during auth check
+ * - Directs ARTISAN to /seller/profile
+ * - Directs PATRON to /buyer/profile
+ * - Redirects unauthenticated users to /login
+ */
+function RoleProfileRoute() {
+  const { user, isAuthenticated, loading } = useAuth();
+  const { t } = useTranslation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA] dark:bg-[#111827]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-emerald-800 border-t-transparent dark:border-emerald-500 rounded-full animate-spin"></div>
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            {t('common.loading', 'Loading Karigar...')}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role === 'ARTISAN') {
+    return <Navigate to="/seller/profile" replace />;
+  }
+
+  return <BuyerProfile />;
+}
+
+/**
+ * Smart Fallback Route:
+ * - Redirects authenticated ARTISAN to /seller/dashboard
+ * - Redirects PATRON & guests to /
+ */
+function FallbackRoute() {
+  const { user, isAuthenticated } = useAuth();
+  if (isAuthenticated && user?.role === 'ARTISAN') {
+    return <Navigate to="/seller/dashboard" replace />;
+  }
+  return <Navigate to="/" replace />;
+}
 
 export default function App() {
   return (
@@ -49,27 +129,117 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/auth" element={<Navigate to="/login" replace />} />
 
-                {/* Protected Buyer / Patron Application Routes (requires PATRON role) */}
-                <Route
-                  element={
-                    <ProtectedRoute allowedRoles={['PATRON']}>
-                      <BuyerLayout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route path="/" element={<Home />} />
+                {/* Buyer / Patron Application Routes */}
+                <Route element={<BuyerLayout />}>
+                  {/* Smart Root Path: Patron/Guest gets Home, Artisan gets redirected to /seller/dashboard */}
+                  <Route path="/" element={<RoleHomeRoute />} />
+
+                  {/* Public Marketplace Exploration & Info */}
                   <Route path="/explore/:stateSlug" element={<StateExplore />} />
                   <Route path="/product/:productId" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/buyer/orders" element={<BuyerOrders />} />
-                  <Route path="/buyer/certificates" element={<Certificates />} />
-                  <Route path="/buyer/saved" element={<Saved />} />
-                  <Route path="/buyer/wallet" element={<Wallet />} />
-
-                  {/* Shared Info Pages */}
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
+
+                  {/* Smart Profile Route */}
+                  <Route path="/profile" element={<RoleProfileRoute />} />
+
+                  {/* Strictly Protected Patron Routes (blocks ARTISAN with Access Restricted notice) */}
+                  <Route
+                    path="/cart"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Cart />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Checkout />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/orders"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <BuyerOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/certificates"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Certificates />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/saved"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Saved />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/wallet"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Wallet />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/buyer/profile"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <BuyerProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/patron/profile"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <BuyerProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/user/profile"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <BuyerProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/patron"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Navigate to="/" replace />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/patron/dashboard"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Navigate to="/" replace />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/user"
+                    element={
+                      <ProtectedRoute allowedRoles={['PATRON']}>
+                        <Navigate to="/" replace />
+                      </ProtectedRoute>
+                    }
+                  />
                 </Route>
 
                 {/* Protected Seller Application Routes (requires ARTISAN role) */}
@@ -101,15 +271,77 @@ export default function App() {
                   path="/dashboard"
                   element={
                     <ProtectedRoute requiredRole="ARTISAN">
-                      <SellerLayout />
+                      <Navigate to="/seller/dashboard" replace />
                     </ProtectedRoute>
                   }
-                >
-                  <Route index element={<Dashboard />} />
-                </Route>
+                />
+                <Route
+                  path="/products"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/products" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/add-product"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/add-product" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/orders"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/orders" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/earnings"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/earnings" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/customers"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/customers" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/verification"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/verification" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/messages" replace />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute requiredRole="ARTISAN">
+                      <Navigate to="/seller/settings" replace />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<FallbackRoute />} />
               </Routes>
             </BrowserRouter>
           </SellerProvider>

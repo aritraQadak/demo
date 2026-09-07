@@ -166,6 +166,118 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Refresh current user profile data from backend
+   */
+  const refreshUser = useCallback(async () => {
+    const currentToken = localStorage.getItem('karigar-auth-token') || token;
+    if (!currentToken) return null;
+
+    try {
+      const res = await fetch('/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${currentToken}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('karigar-user', JSON.stringify(data.user));
+          return data.user;
+        }
+      }
+    } catch (err) {
+      console.warn('refreshUser error:', err);
+    }
+    return null;
+  }, [token]);
+
+  /**
+   * Update current user profile in backend and local state
+   */
+  const updateUserProfile = async (updates) => {
+    const currentToken = localStorage.getItem('karigar-auth-token') || token;
+    if (!currentToken) throw new Error('Not authenticated');
+
+    const res = await fetch('/api/profile', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
+      },
+      body: JSON.stringify(updates)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update profile');
+    }
+
+    setUser(data.user);
+    try {
+      localStorage.setItem('karigar-user', JSON.stringify(data.user));
+    } catch (e) {
+      console.warn('Error persisting updated user:', e);
+    }
+
+    return data.user;
+  };
+
+  /**
+   * Upload and save a new profile picture
+   */
+  const uploadAvatar = async (file) => {
+    const currentToken = localStorage.getItem('karigar-auth-token') || token;
+    if (!currentToken) throw new Error('Not authenticated');
+
+    // Validate type and size
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Please select a valid image file (JPEG, PNG, or WEBP).');
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+    if (file.size > MAX_SIZE) {
+      throw new Error('Image size must be less than 5 MB.');
+    }
+
+    // Convert to base64 data URL
+    const base64Data = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to read image file'));
+      reader.readAsDataURL(file);
+    });
+
+    const res = await fetch('/api/profile/avatar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
+      },
+      body: JSON.stringify({
+        image: base64Data,
+        mimeType: file.type,
+        filename: file.name
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to upload profile picture');
+    }
+
+    setUser(data.user);
+    try {
+      localStorage.setItem('karigar-user', JSON.stringify(data.user));
+    } catch (e) {
+      console.warn('Error persisting updated user:', e);
+    }
+
+    return data;
+  };
+
+  /**
    * Log out: clears auth session while preserving karigar-theme & karigar-language
    */
   const logout = useCallback(async () => {
@@ -202,7 +314,10 @@ export const AuthProvider = ({ children }) => {
         loginWithGoogle,
         signup,
         logout,
-        setUser
+        setUser,
+        updateUserProfile,
+        uploadAvatar,
+        refreshUser
       }}
     >
       {children}

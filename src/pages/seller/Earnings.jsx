@@ -10,9 +10,10 @@ import {
   Building2
 } from 'lucide-react';
 import { useSeller } from '../../context/SellerContext';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 export default function Earnings() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { profile, transactions, withdrawFunds, addToast } = useSeller();
   const [withdrawAmount, setWithdrawAmount] = useState('5000');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,7 +98,7 @@ export default function Earnings() {
           </div>
           <div className="mt-3">
             <span className="text-3xl font-black tracking-tight">
-              ₹{availableBal.toLocaleString('en-IN')}
+              {formatCurrency(availableBal, i18n.language)}
             </span>
             <p className="text-xs text-emerald-200/80 mt-1">
               {t('orderDetails.fundsSecured')}
@@ -117,7 +118,7 @@ export default function Earnings() {
           </div>
           <div className="mt-3">
             <span className="text-3xl font-black text-gray-900 dark:text-[#F9FAFB] tracking-tight">
-              ₹{(profile.pendingBalance || 3100).toLocaleString('en-IN')}
+              {formatCurrency(profile.pendingBalance || 3100, i18n.language)}
             </span>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               {t('orderDetails.escrowDescPending')}
@@ -137,7 +138,7 @@ export default function Earnings() {
           </div>
           <div className="mt-3">
             <span className="text-3xl font-black text-gray-900 dark:text-[#F9FAFB] tracking-tight">
-              ₹{(profile.totalEarnings || 24560).toLocaleString('en-IN')}
+              {formatCurrency(profile.totalEarnings || 24560, i18n.language)}
             </span>
             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-1">
               {t('dashboard.topTier')}
@@ -225,7 +226,7 @@ export default function Earnings() {
                     </td>
                     <td className="py-3.5 px-4 font-bold text-sm">
                       <span className={isCredit ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}>
-                        {isCredit ? '+' : '-'}₹{Math.abs(tx.amount).toLocaleString('en-IN')}
+                        {isCredit ? '+' : '-'}{formatCurrency(Math.abs(tx.amount), i18n.language)}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
@@ -258,7 +259,7 @@ export default function Earnings() {
                 <div className="flex justify-between text-gray-600 dark:text-gray-300 mb-1">
                   <span>{t('earnings.availableForTransfer')}:</span>
                   <span className="font-bold text-gray-900 dark:text-white">
-                    ₹{availableBal.toLocaleString('en-IN')}
+                    {formatCurrency(availableBal, i18n.language)}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-300">

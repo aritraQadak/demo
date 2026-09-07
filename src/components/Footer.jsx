@@ -10,45 +10,51 @@ export default function Footer({ className = '', variant = 'seller' }) {
 
   if (variant === 'buyer') {
     return (
-      <footer className={`w-full bg-surface-container-low border-t border-outline-variant/40 pt-space-2xl pb-space-xl ${className}`}>
-        <div className="max-w-[1440px] mx-auto px-space-xl">
+      <footer className={`w-full bg-[#F8F4EC] dark:bg-stone-950 border-t border-[#E7DECB]/80 dark:border-stone-800 pt-12 sm:pt-16 pb-10 ${className}`}>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Institution & GI Credentials Row */}
-          <div className="border-b border-outline-variant/40 pb-space-xl mb-space-xl">
-            <div className="text-center mb-space-md">
-              <span className="font-label-sm text-label-sm uppercase tracking-[0.2em] text-outline font-semibold">
+          <div className="border-b border-stone-200/80 dark:border-stone-800 pb-10 mb-10">
+            <div className="text-center mb-6">
+              <span className="font-label-sm text-xs uppercase tracking-[0.2em] text-[#14532D] dark:text-emerald-400 font-bold">
                 {t('buyer.footer.nationalRegistry', 'National Heritage Provenance & Institutional Registry')}
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md max-w-4xl mx-auto">
-              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
-                <BadgeCheck className="w-6 h-6 text-secondary flex-shrink-0" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              <div className="border border-stone-200/80 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-2xl p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 flex-shrink-0">
+                  <BadgeCheck className="w-5 h-5" />
+                </div>
                 <div>
-                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                  <div className="font-label-sm text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100">
                     {t('buyer.footer.giTitle', 'Geographical Indication (GI)')}
                   </div>
-                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                  <div className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mt-0.5">
                     {t('buyer.footer.giDesc', 'Certified Sovereign Origin Mark')}
                   </div>
                 </div>
               </div>
-              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
-                <Store className="w-6 h-6 text-secondary flex-shrink-0" />
+              <div className="border border-stone-200/80 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-2xl p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 flex-shrink-0">
+                  <Store className="w-5 h-5" />
+                </div>
                 <div>
-                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                  <div className="font-label-sm text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100">
                     {t('buyer.footer.gemTitle', 'Government e-Marketplace')}
                   </div>
-                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                  <div className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mt-0.5">
                     {t('buyer.footer.gemDesc', 'Accredited GeM Guild Seller')}
                   </div>
                 </div>
               </div>
-              <div className="border border-outline-variant/60 bg-surface-container-lowest p-space-md flex items-center gap-space-sm shadow-xs">
-                <Building2 className="w-6 h-6 text-secondary flex-shrink-0" />
+              <div className="border border-stone-200/80 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-2xl p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-[#14532D] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 flex-shrink-0">
+                  <Building2 className="w-5 h-5" />
+                </div>
                 <div>
-                  <div className="font-label-sm text-label-sm uppercase tracking-[0.14em] font-semibold text-on-surface">
+                  <div className="font-label-sm text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100">
                     {t('buyer.footer.ministryTitle', 'Ministry of Textiles')}
                   </div>
-                  <div className="font-body-sm text-body-sm text-on-surface-variant">
+                  <div className="font-body-sm text-xs text-stone-600 dark:text-stone-400 mt-0.5">
                     {t('buyer.footer.ministryDesc', 'Office of Dev. Commissioner (Handlooms)')}
                   </div>
                 </div>
@@ -57,73 +63,73 @@ export default function Footer({ className = '', variant = 'seller' }) {
           </div>
 
           {/* Regional Guild Columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-space-xl pb-space-2xl border-b border-outline-variant/30">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 pb-10 border-b border-stone-200/80 dark:border-stone-800">
             <div>
-              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+              <h4 className="font-label-md text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100 mb-3.5">
                 {t('buyer.footer.northernWeaves', 'Northern Weaves')}
               </h4>
-              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/jammu-kashmir">{t('buyer.footer.kaniPashmina', 'Kani & Pashmina (Kashmir)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.banarasiKatan', 'Banarasi Katan (Varanasi)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.chikankari', 'Chikankari (Lucknow)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/himachal-pradesh">{t('buyer.footer.kulluShawls', 'Kullu Shawls (Himachal)')}</Link></li>
+              <ul className="space-y-2 font-body-sm text-xs text-stone-600 dark:text-stone-400">
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/jammu-kashmir">{t('buyer.footer.kaniPashmina', 'Kani & Pashmina (Kashmir)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.banarasiKatan', 'Banarasi Katan (Varanasi)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/uttar-pradesh">{t('buyer.footer.chikankari', 'Chikankari (Lucknow)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/himachal-pradesh">{t('buyer.footer.kulluShawls', 'Kullu Shawls (Himachal)')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+              <h4 className="font-label-md text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100 mb-3.5">
                 {t('buyer.footer.westernGuilds', 'Western Guilds')}
               </h4>
-              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/gujarat">{t('buyer.footer.patanPatola', 'Patan Patola (Gujarat)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/gujarat">{t('buyer.footer.ajrakhPrint', 'Ajrakh Block Print (Kutch)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/maharashtra">{t('buyer.footer.paithaniSilks', 'Paithani Silks (Maharashtra)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/rajasthan">{t('buyer.footer.kotaDoria', 'Kota Doria (Rajasthan)')}</Link></li>
+              <ul className="space-y-2 font-body-sm text-xs text-stone-600 dark:text-stone-400">
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/gujarat">{t('buyer.footer.patanPatola', 'Patan Patola (Gujarat)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/gujarat">{t('buyer.footer.ajrakhPrint', 'Ajrakh Block Print (Kutch)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/maharashtra">{t('buyer.footer.paithaniSilks', 'Paithani Silks (Maharashtra)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/rajasthan">{t('buyer.footer.kotaDoria', 'Kota Doria (Rajasthan)')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+              <h4 className="font-label-md text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100 mb-3.5">
                 {t('buyer.footer.southernHeirlooms', 'Southern Heirlooms')}
               </h4>
-              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/tamil-nadu">{t('buyer.footer.kanchipuramSilk', 'Kanchipuram Silk (Tamil Nadu)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/telangana">{t('buyer.footer.pochampallyIkat', 'Pochampally Ikat (Telangana)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/kerala">{t('buyer.footer.balaramapuram', 'Balaramapuram (Kerala)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/karnataka">{t('buyer.footer.mysoreCrepe', 'Mysore Crepe (Karnataka)')}</Link></li>
+              <ul className="space-y-2 font-body-sm text-xs text-stone-600 dark:text-stone-400">
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/tamil-nadu">{t('buyer.footer.kanchipuramSilk', 'Kanchipuram Silk (Tamil Nadu)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/telangana">{t('buyer.footer.pochampallyIkat', 'Pochampally Ikat (Telangana)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/kerala">{t('buyer.footer.balaramapuram', 'Balaramapuram (Kerala)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/karnataka">{t('buyer.footer.mysoreCrepe', 'Mysore Crepe (Karnataka)')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+              <h4 className="font-label-md text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100 mb-3.5">
                 {t('buyer.footer.easternLooms', 'Eastern Looms')}
               </h4>
-              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/west-bengal">{t('buyer.footer.jamdaniBaluchari', 'Jamdani & Baluchari (Bengal)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/assam">{t('buyer.footer.mugaEriSilk', 'Muga & Eri Silk (Assam)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/odisha">{t('buyer.footer.sambalpuriIkat', 'Sambalpuri Ikat (Odisha)')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/explore/bihar">{t('buyer.footer.bhagalpuriTussar', 'Bhagalpuri Tussar (Bihar)')}</Link></li>
+              <ul className="space-y-2 font-body-sm text-xs text-stone-600 dark:text-stone-400">
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/west-bengal">{t('buyer.footer.jamdaniBaluchari', 'Jamdani & Baluchari (Bengal)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/assam">{t('buyer.footer.mugaEriSilk', 'Muga & Eri Silk (Assam)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/odisha">{t('buyer.footer.sambalpuriIkat', 'Sambalpuri Ikat (Odisha)')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/explore/bihar">{t('buyer.footer.bhagalpuriTussar', 'Bhagalpuri Tussar (Bihar)')}</Link></li>
               </ul>
             </div>
             <div className="col-span-2 md:col-span-4 lg:col-span-1">
-              <h4 className="font-label-md text-label-md uppercase tracking-[0.16em] font-semibold text-on-surface mb-space-md">
+              <h4 className="font-label-md text-xs uppercase tracking-wider font-bold text-stone-900 dark:text-stone-100 mb-3.5">
                 {t('buyer.footer.patronServices', 'Patron Services')}
               </h4>
-              <ul className="space-y-space-xs font-body-sm text-body-sm text-on-surface-variant">
-                <li><Link className="hover:text-secondary transition-colors" to="/buyer/certificates">{t('buyer.footer.provenanceVerification', 'Provenance Verification')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/about">{t('buyer.footer.fairTrade', 'Artisan Direct Fair Trade')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/contact">{t('buyer.footer.institutionalInquiries', 'Institutional Inquiries')}</Link></li>
-                <li><Link className="hover:text-secondary transition-colors" to="/buyer/wallet">{t('buyer.footer.restorationFund', 'Cluster Restoration Fund')}</Link></li>
+              <ul className="space-y-2 font-body-sm text-xs text-stone-600 dark:text-stone-400">
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/buyer/certificates">{t('buyer.footer.provenanceVerification', 'Provenance Verification')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/about">{t('buyer.footer.fairTrade', 'Artisan Direct Fair Trade')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/contact">{t('buyer.footer.institutionalInquiries', 'Institutional Inquiries')}</Link></li>
+                <li><Link className="hover:text-[#14532D] dark:hover:text-emerald-400 transition-colors" to="/buyer/wallet">{t('buyer.footer.restorationFund', 'Cluster Restoration Fund')}</Link></li>
               </ul>
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant font-label-sm text-label-sm tracking-[0.1em]">
+          <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-stone-500 dark:text-stone-400 font-label-sm text-xs tracking-wider">
             <div>
               © 2026 KARIGAR Artisanal Heritage Platform. {t('buyer.footer.allRightsReserved', 'All rights reserved under National Handloom Archives.')}
             </div>
-            <div className="flex gap-space-lg">
-              <Link className="hover:text-on-surface transition-colors" to="/buyer/certificates">{t('buyer.footer.compliance', 'GI Compliance')}</Link>
-              <Link className="hover:text-on-surface transition-colors" to="/about">{t('buyer.footer.artisanRights', 'Artisan Rights')}</Link>
-              <Link className="hover:text-on-surface transition-colors" to="/contact">{t('buyer.footer.privacy', 'Privacy Gazette')}</Link>
+            <div className="flex gap-6">
+              <Link className="hover:text-stone-900 dark:hover:text-stone-200 transition-colors" to="/buyer/certificates">{t('buyer.footer.compliance', 'GI Compliance')}</Link>
+              <Link className="hover:text-stone-900 dark:hover:text-stone-200 transition-colors" to="/about">{t('buyer.footer.artisanRights', 'Artisan Rights')}</Link>
+              <Link className="hover:text-stone-900 dark:hover:text-stone-200 transition-colors" to="/contact">{t('buyer.footer.privacy', 'Privacy Gazette')}</Link>
             </div>
           </div>
         </div>
